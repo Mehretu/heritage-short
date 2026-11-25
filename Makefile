@@ -1,10 +1,11 @@
-.PHONY: all film radio-cut validate clean test help
+.PHONY: all film radio-cut validate clean test smoke-test help
 
 PYTHON ?= python3
 
 help:
 	@echo "AI-Content Generation: The Heritage Short Makefile"
 	@echo "--------------------------------------------------"
+	@echo "  make smoke-test : Run Phase 1 Step 1 provider latency smoke test"
 	@echo "  make film       : Run complete pipeline and export 16:9 & 9:16 films"
 	@echo "  make radio-cut  : Generate narration & score radio cut prototype (Phase 1)"
 	@echo "  make validate   : Validate storyboard.json against JSON Schema"
@@ -12,6 +13,9 @@ help:
 	@echo "  make clean      : Clear generated temporary outputs"
 
 all: film
+
+smoke-test:
+	$(PYTHON) pipeline/smoke_test.py
 
 film:
 	$(PYTHON) run_pipeline.py --stage all

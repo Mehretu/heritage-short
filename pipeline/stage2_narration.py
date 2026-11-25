@@ -37,7 +37,7 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, out_pa
     import json
 
     # Standard Gemini API speech/audio generation call
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
     # Payload requesting audio output modality with speech style instructions
     payload = {
         "contents": [{
@@ -53,7 +53,10 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, out_pa
     req = urllib.request.Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json"}
+        headers={
+            "Content-Type": "application/json",
+            "x-goog-api-key": os.environ.get("GEMINI_API_KEY", "")
+        }
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
         res = json.loads(resp.read().decode("utf-8"))

@@ -22,6 +22,16 @@ OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 CACHE_DIR = OUTPUTS_DIR / "cache"
 RUNS_LOG_PATH = PROJECT_ROOT / "runs.jsonl"
 
+# Auto-load .env file if present
+_env_file = PROJECT_ROOT / ".env"
+if _env_file.exists():
+    with open(_env_file, "r", encoding="utf-8") as _f:
+        for _line in _f:
+            _line = _line.strip()
+            if _line and not _line.startswith("#") and "=" in _line:
+                _k, _v = _line.split("=", 1)
+                os.environ.setdefault(_k.strip(), _v.strip())
+
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 for sub in ["keyframes", "shots", "audio", "music", "exports"]:
     (OUTPUTS_DIR / sub).mkdir(parents=True, exist_ok=True)

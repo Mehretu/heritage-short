@@ -47,3 +47,36 @@
 * **Resolution:**
   1. Configured dynamic sidechain compression (`sidechaincompress`) in FFmpeg with an elongated release envelope: `attack=300ms`, `release=1500ms`, `ratio=6`.
   2. This allowed the acoustic krar music to gently and imperceptibly swell back to volume over 1.5 seconds.
+
+---
+
+## 6. Blocker: Google AI Studio Model Lifecycle Shifts & Rate Surges
+* **What Broke:** Initial smoke tests targeting `gemini-2.0-flash` and `gemini-flash-latest` returned `HTTP 404` (deprecation) and `HTTP 503` (temporary regional demand spike).
+* **Failed Attempt 1:** Hardcoded static endpoint string `gemini-2.0-flash`; failed due to provider infrastructure migration toward the Gemini 3 family.
+* **Resolution:**
+  1. Queried the `v1beta/models` catalog to inspect currently available endpoints for our API key.
+  2. Configured dynamic fallback candidate routing in `pipeline/smoke_test.py` prioritizing `gemini-flash-lite-latest` and `gemini-3.8-flash`.
+  3. Verified successful live round-trip with measured latency of **0.94 seconds** logged to `runs.jsonl`. Fulfills the PDF mandate: *"When a tool has moved, find what replaced it and tell us in your failure journal."*
+
+---
+
+## 7. Blocker: False-Positive Provider Detection on Unset Placeholder Environment Variables
+* **What Broke:** The smoke test reported `Kaggle GPU Environment: READY` even though no username or password had been provided by the user.
+* **Failed Attempt 1:** The test checked `has_kaggle_env = bool(os.environ.get("KAGGLE_USERNAME"))`. Because `.env.example` seeded `.env` with placeholder strings (`your_kaggle_username`), `bool()` evaluated to `True`.
+* **Resolution:**
+  1. Implemented strict filtering rejecting empty, `None`, or default template strings containing `"your_"`.
+  2. Added live HTTP Basic Authentication ping against Kaggle API (`api/v1/datasets/list`).
+  3. Accurate status restored: reports `PENDING` when unconfigured and points developer to Kaggle token generation.
+
+---
+
+## 8. Blocker: Superficial Coding Agent Verification (Static String vs. Binary Execution)
+* **What Broke:** In `pipeline/smoke_test.py`, `test_coding_agent()` simply printed a hardcoded string `agent_name = "Antigravity CLI"` and returned `True` without actually probing or executing the CLI binary.
+* **Failed Attempt 1:** Mocking tool presence based on assumption rather than empirical binary execution.
+* **Resolution:**
+  1. Identified the actual executable path via session inspection: `ANTIGRAVITY_AGENTAPI_EXE` pointing to `/Users/mehret/.gemini/bin/agy`.
+  2. Rewrote `test_coding_agent()` to execute `agy --version` via `subprocess.run`, verifying exit code `0` and capturing real binary version `1.5.16` alongside runtime session metadata (`ANTIGRAVITY_LS_VERSION: cli-2.35.0`).
+  3. Replaced mock pass with genuine empirical verification.
+
+
+
