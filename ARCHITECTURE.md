@@ -58,3 +58,24 @@ All external API URLs are completely abstracted out of the code and defined as e
 
 *Benefit:* Eliminates hardcoded URLs, facilitates switching between cloud regions or local proxies, and adheres strictly to Twelve-Factor App config separation.
 
+---
+
+## 6. Architectural Decision Records (ADRs) for Error & Edge Handling
+
+### ADR 01: Circuit Breaker & Fallback Policy (Zero Fatal Crashes)
+* **Context:** The evaluation criteria mandate that an external reviewer can clone and execute the entire pipeline with zero fatal crashes, even without API keys or when cloud providers experience downtime.
+* **Decision:** Every cloud API stage encapsulates remote calls inside a defensive try/except circuit breaker that falls back to a deterministic, zero-dependency offline generator (`mock_or_local_tts` in Stage 2, PIL gradient canvas in Stage 3, Ken Burns pan-zoom in Stage 4, acoustic pink noise + krar in Stage 5).
+* **Consequence & Invariant:** Degraded/mock fallback artifacts must **never** be committed to the content-addressable SHA-256 cache (`store_cached_output()`). Caching is strictly reserved for authenticated, high-fidelity API generations to prevent poisoning future runs with placeholder content.
+
+### ADR 02: Pacing & Token-Bucket Rate Limiting for Foundation Model APIs
+* **Context:** Free-tier AI endpoints (e.g., Google AI Studio's 15 RPM limit) fail with HTTP 429 when hit in burst sequences across 9–14 shots.
+* **Decision:**
+  1. Wrapped all external network requests in an exponential backoff decorator (`@retry_with_backoff(max_retries=5, base_delay=5.0)`).
+  2. Implemented proactive inter-request sleep (`time.sleep(3.5)`) between consecutive pipeline shot calls to smooth out request spikes below provider burst thresholds.
+
+### ADR 03: Mitigation of Stateless LLM Voice Timbre Drift
+* **Context:** Autoregressive audio foundation models lack persistent acoustic latching. Stateless API requests cause vocal pitch, formant resonance, and emotional tone to drift between shots.
+* **Decision:**
+  1. Injected an explicit persona anchor into every prompt: fixed age, gender, baritone register, and anti-whisper directives.
+  2. Implemented per-shot dynamic peak normalization (scaling to 24,000 peak / -2.7 dBFS) in `pipeline/stage6_assemble.py` before concatenating individual audio frames, ensuring loudness uniformity across the narrative arc.
+

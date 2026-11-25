@@ -28,7 +28,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_URL_TEMPLATE = os.environ.get("GEMINI_URL")
 
 
-@retry_with_backoff(max_retries=3, base_delay=2.0)
+@retry_with_backoff(max_retries=5, base_delay=5.0)
 def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_name: str, out_path: Path):
     """
     Calls Gemini API TTS endpoint with explicit voice profile and phonetic steering.
@@ -38,16 +38,19 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_
 
     # Standard Gemini API speech/audio generation call using environment URL template
     url = GEMINI_URL_TEMPLATE.format(model_name="gemini-2.5-flash-preview-tts")
-    # Payload requesting audio output modality with speech style instructions and male voice config
+    # Payload requesting audio output modality with strict speaker persona anchoring
     payload = {
         "contents": [{
             "parts": [
                 {
                     "text": (
-                        f"You are a native Ethiopian young man speaking authentic, emotional, conversational {language} "
-                        f"with natural Addis Ababa cadence and correct Amharic consonant gemination (ጥብቅና ላልት).\n"
-                        f"Style instruction: {voice_instruction}\n\n"
-                        f"Read this line clearly and naturally:\n{text}"
+                        f"Consistent Speaker Persona: You are an adult Ethiopian male in his late 20s with a warm, "
+                        f"grounded, steady baritone voice. Maintain an identical pitch, resonance, speaking volume, and "
+                        f"cadence across every line. Do NOT whisper, do NOT pitch up into high register. "
+                        f"Speak authentic, conversational {language} with natural Addis Ababa cadence and correct "
+                        f"consonant gemination (ጥብቅና ላልት).\n"
+                        f"Scene mood: {voice_instruction}\n\n"
+                        f"Read this line clearly, steadily, and naturally:\n{text}"
                     )
                 }
             ]
@@ -144,8 +147,9 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
     global_lang = storyboard.get("language", "Amharic")
 
     generated_files = {}
+    shots_list = storyboard.get("shots", [])
 
-    for shot in storyboard.get("shots", []):
+    for idx, shot in enumerate(shots_list):
         shot_id = shot["shot_id"]
         if target_shot_id and shot_id != target_shot_id:
             continue
@@ -199,7 +203,10 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
             used_mock = True
 
         latency = time.time() - t0
-        store_cached_output("narration", input_hash, out_wav)
+        # CRITICAL ARCHITECTURAL FIX: Only cache genuine successful API generations.
+        # Degraded fallback mocks must NEVER poison the persistent content-addressable cache.
+        if not used_mock:
+            store_cached_output("narration", input_hash, out_wav)
 
         model_name = "gemini-3.8-flash-tts" if not used_mock else "local-synthesizer-tts"
         log_run(
@@ -214,6 +221,10 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
         )
         print(f"  ✅ [{shot_id}] Finished in {latency:.2f}s -> {out_wav.name}")
         generated_files[shot_id] = out_wav
+
+        # Proactive inter-request rate throttle to respect Google AI Studio Free Tier RPM limits
+        if not used_mock and idx < len(shots_list) - 1:
+            time.sleep(3.5)
 
     print(f"  🎉 Stage 2 complete: {len(generated_files)} narration files ready.\n")
     return generated_files

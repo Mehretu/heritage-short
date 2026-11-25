@@ -84,7 +84,18 @@ def concatenate_narration_audio(storyboard: dict, out_combined_wav: Path):
                 with wave.open(str(wav_file), "r") as wf:
                     if params is None:
                         params = wf.getparams()
-                    combined_frames.extend(wf.readframes(wf.getnframes()))
+                    n_frames = wf.getnframes()
+                    frames = wf.readframes(n_frames)
+                    # Dynamic Leveling: Peak-normalize each shot to 24,000 (~ -2.7 dBFS)
+                    # This prevents quiet reflective shots from sounding disconnected from louder declarative shots
+                    samples = list(struct.unpack(f"<{len(frames)//2}h", frames))
+                    if samples:
+                        peak = max(abs(s) for s in samples)
+                        if peak > 1500:
+                            scale = min(2.8, 24000.0 / peak)
+                            norm_samples = [int(max(-32768, min(32767, s * scale))) for s in samples]
+                            frames = struct.pack(f"<{len(norm_samples)}h", *norm_samples)
+                    combined_frames.extend(frames)
             except Exception as e:
                 print(f"  ⚠️ Warning reading {wav_file.name}: {e}")
 

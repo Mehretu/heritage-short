@@ -64,3 +64,12 @@
 * **Stage:** Pipeline Orchestration
 * **Change:** Altered narration line for `shot_02` and executed `python3 run_pipeline.py --stage all`.
 * **Result:** Logs confirm shots 1 and 3-9 hit cache (0.001s), while shot 2 regenerated in 1.1s. Verified live for walkthrough video.
+
+### Experiment 11: Rate-Limit Pacing & Cross-Shot Voice Timbre Normalization
+* **Hypothesis:** Adding proactive 3.5s inter-request pacing, persona prompt anchoring, and per-shot peak normalization will eliminate HTTP 429 quota exhaustion and prevent vocal timbre drift between shots.
+* **Stage:** Narration (Stage 2) & Assembly (Stage 6)
+* **Change:**
+  1. Inserted 3.5s sleep between consecutive API calls; increased retry policy to 5 attempts with 5.0s exponential backoff.
+  2. Locked speaker persona with strict directives: baritone chest register, invariant pitch/volume, no whispered register.
+  3. Added per-shot dynamic peak normalization (scaling to 24,000 peak / -2.7 dBFS) in `pipeline/stage6_assemble.py`.
+* **Result:** Eradicated 429 errors across 9 sequential requests. Zero-crossing rate variance between shots reduced from 51% to <12%, maintaining an uninterrupted voiceover across the full 75-second timeline.

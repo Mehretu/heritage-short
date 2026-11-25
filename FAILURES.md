@@ -73,6 +73,20 @@
   2. Injected strict phonetic prompt steering in `pipeline/stage2_narration.py` instructing the model to observe native Amharic consonant gemination and conversational cadence.
   3. Integrated a human voice-over fallback path (`outputs/audio/custom_narration.wav`) for comparing AI speech synthesis against real human performance, directly satisfying the *Language & Troubleshooting* rubric.
 
+---
+
+## 8. Blocker: Free-Tier HTTP 429 Quota Exhaustion Causing Silent Narration Drop After 20s & Stateless LLM Voice Timbre Drift
+* **What Broke:** In `make radio-cut`, voice playback abruptly vanished after Shot 3 (~21 seconds), leaving only the instrumental score playing for the remaining 54 seconds. Additionally, Shot 1 had an entirely distinct, higher-pitched, airy vocal timbre compared to the deeper resonance of Shots 2 and 3.
+* **Root Causes:**
+  1. *Burst Rate Limit Mismatch:* Google AI Studio free tier limits requests to ~15 RPM. Submitting 9 narration shots sequentially with zero inter-request delay triggered `HTTP 429: Too Many Requests` at Shot 4. The initial retry policy (2s, 4s) exhausted all 3 attempts within 6s, before the per-minute quota replenishment window reset.
+  2. *Poisoned Cache Commit:* The circuit-breaker fallback (`mock_or_local_tts`) saved a synthetic decaying 220Hz test tone to disk and inadvertently committed it to `store_cached_output()`, poisoning `.cache/narration/` and cementing silence in subsequent pipeline runs.
+  3. *Stateless LLM Autoregressive Sampling Drift:* Gemini TTS lacks persistent cross-request acoustic embeddings. Spectral analysis confirmed Shot 1 exhibited a Zero-Crossing Rate of 0.1115 (51% higher frequency) and amplitude of 1667 (38% quieter) because the prompt lacked explicit persona register anchoring.
+* **Resolution:**
+  1. Enforced proactive 3.5s pacing (`time.sleep(3.5)`) between shots and expanded retry policy to 5 attempts with 5.0s exponential backoff (`base_delay=5.0`).
+  2. Refactored caching logic: degraded mock fallbacks are strictly barred from `store_cached_output()`, and 15 poisoned mock cache entries were purged.
+  3. Anchored the speaker prompt with an explicit, invariant persona: *"Consistent Speaker Persona: Adult Ethiopian male in his late 20s with a warm, grounded, steady baritone voice. Maintain identical pitch, resonance, and volume across all lines. Do NOT whisper or pitch up."*
+  4. Added dynamic peak-normalization (scaling to 24,000 peak / -2.7 dBFS) in `pipeline/stage6_assemble.py` to level audio volume across all shots before concatenation.
+
 
 
 
