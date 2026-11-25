@@ -168,7 +168,53 @@ def test_cloudflare_flux():
         latency = time.time() - t0
         print(f"  Cloudflare AI Call Failed ({latency:.2f}s): {e}")
         return False
+def test_kaggle_gpu():
+    print("\n[4/5] 🦅 Kaggle GPU Environment (Wan 2.2 & ACE-Step 1.5):")
+    kaggle_cfg = Path.home() / ".kaggle" / "kaggle.json"
+    k_user = os.environ.get("KAGGLE_USERNAME")
+    k_key = os.environ.get("KAGGLE_KEY")
 
+    if kaggle_cfg.exists():
+        try:
+            with open(kaggle_cfg, "r") as f:
+                data = json.load(f)
+                k_user = k_user or data.get("username")
+                k_key = k_key or data.get("key")
+        except Exception:
+            pass
+
+    # Strictly filter out None, empty string, or default boilerplate placeholder string
+    if not k_user or not k_key or "your_" in k_user or "your_" in k_key:
+        print("   Kaggle credentials not yet configured in .env (or ~/.kaggle/kaggle.json).")
+        print("    For Wan 2.2 & ACE-Step 1.5 free GPU (30 hrs/wk): https://www.kaggle.com/settings -> 'Create New Token'")
+        print("     (Ken Burns pan-and-zoom & local audio synthesis ready as zero-cost offline fallbacks).")
+        return False
+
+    import base64
+    auth_str = base64.b64encode(f"{k_user}:{k_key}".encode("utf-8")).decode("utf-8")
+    url = "https://www.kaggle.com/api/v1/datasets/list?pageSize=1"
+    req = urllib.request.Request(url, headers={"Authorization": f"Basic {auth_str}"})
+
+    t0 = time.time()
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            latency = time.time() - t0
+            print(f"  Kaggle API Verified! User: {k_user} | Latency: {latency:.2f}s (30 GPU hrs/wk ready)")
+            log_run(
+                stage="smoke_test",
+                model="Kaggle-2xT4",
+                parameters={"gpu": "2x Nvidia T4", "user": k_user},
+                seed=0,
+                latency_seconds=latency,
+                cost_usd=0.0,
+                cached=False,
+                metadata={"provider": "Kaggle", "status": "AUTHENTICATED"}
+            )
+            return True
+    except Exception as e:
+        latency = time.time() - t0
+        print(f"   Kaggle Authentication Failed ({latency:.2f}s): {e}")
+        return False
 def main():
     print("================================================================================")
     print(" Phase 1 Step 1: Provider Smoke Test & Latency Audit")
@@ -179,6 +225,7 @@ def main():
         "Coding Agent": test_coding_agent(),
         "Gemini API & TTS": test_gemini_api(),
         "Cloudflare Workers AI": test_cloudflare_flux(),
+        "Kaggle GPU Environment": test_kaggle_gpu()
     }
 
     print("\n================================================================================")

@@ -14,7 +14,7 @@ SCHEMA_PATH = PROJECT_ROOT / "schema" / "storyboard.schema.json"
 
 
 def validate_storyboard(storyboard_path=None):
-    print("🔍 [Stage 1] Validating storyboard against schema...")
+    print("[Stage 1] Validating storyboard against schema...")
     storyboard = load_storyboard(storyboard_path)
 
     # Optional jsonschema validation if installed
@@ -23,12 +23,12 @@ def validate_storyboard(storyboard_path=None):
         with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
             schema = json.load(f)
         jsonschema.validate(instance=storyboard, schema=schema)
-        print("  ✅ JSON Schema validation passed.")
+        print("   JSON Schema validation passed.")
     except ImportError:
-        print("  ⚠️ jsonschema package not installed; performing thorough structural validation...")
+        print("   jsonschema package not installed; performing thorough structural validation...")
         _validate_structurally(storyboard)
     except Exception as e:
-        print(f"  ❌ JSON Schema validation error: {e}")
+        print(f"  JSON Schema validation error: {e}")
         raise
 
     # Semantic filmmaking validation
