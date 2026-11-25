@@ -79,3 +79,15 @@ All external API URLs are completely abstracted out of the code and defined as e
   1. Injected an explicit persona anchor into every prompt: fixed age, gender, baritone register, and anti-whisper directives.
   2. Implemented per-shot dynamic peak normalization (scaling to 24,000 peak / -2.7 dBFS) in `pipeline/stage6_assemble.py` before concatenating individual audio frames, ensuring loudness uniformity across the narrative arc.
 
+### ADR 04: Multi-Project Quota Pooling & Dynamic Key Rotation
+* **Context:** Foundation models on free tiers enforce strict token and request ceilings (e.g. 15 RPM or ~2-4 audio requests/min on Google AI Studio) on a per-project basis. A single key executing a multi-shot sequence inevitably encounters HTTP 429 quota exhaustion.
+* **Decision:**
+  1. Implemented `GeminiKeyRotator` in `pipeline/stage2_narration.py` supporting comma-separated `GEMINI_API_KEYS` or `GEMINI_API_KEY_FALLBACK`.
+  2. When an HTTP 429 occurs, the pipeline catches the error and immediately rotates to the next project's API key, retrying with zero downtime.
+
+### ADR 05: Phonetic Lexicon Steering for Low-Resource Consonant Gemination (ጥብቅና ላልት)
+* **Context:** Ge'ez script orthography lacks orthographic diacritics for consonant doubling (gemination) and glottal ejectives (`ጠረጴዛዬ`, `ጥቅጥቅ`, `ተደብቀን`, `ይፈሳሉ`). Foundation TTS models default to flat phonemes and foreign cadences.
+* **Decision:**
+  1. Built an in-memory morphological lexicon (`AMHARIC_PHONETIC_GUIDE`) mapping ambiguous words to syllable-hyphenated Latin transliterations with explicit stress markers.
+  2. Injected matching phonetic guidance directly into the attention context of the speech generation prompt, guiding the neural vocoder to articulate authentic Ethiopian gemination.
+

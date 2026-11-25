@@ -28,16 +28,83 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_URL_TEMPLATE = os.environ.get("GEMINI_URL")
 
 
-@retry_with_backoff(max_retries=5, base_delay=5.0)
+class GeminiKeyRotator:
+    """
+    Manages a pool of Gemini API keys across multiple Google Cloud / AI Studio projects.
+    Enables automatic zero-downtime quota rotation when HTTP 429 (Too Many Requests) is encountered.
+    """
+    def __init__(self):
+        self.keys = []
+        raw = os.environ.get("GEMINI_API_KEYS", "")
+        if raw:
+            for k in raw.split(","):
+                k = k.strip()
+                if k and not k.startswith("your_") and k not in self.keys:
+                    self.keys.append(k)
+        for var in ["GEMINI_API_KEY", "GEMINI_API_KEY_FALLBACK", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3"]:
+            val = os.environ.get(var, "").strip()
+            if val and not val.startswith("your_") and val not in self.keys:
+                self.keys.append(val)
+        self.idx = 0
+
+    @property
+    def pool_size(self) -> int:
+        return len(self.keys)
+
+    def current_key(self) -> str:
+        if not self.keys:
+            return os.environ.get("GEMINI_API_KEY", "")
+        return self.keys[self.idx % len(self.keys)]
+
+    def rotate_on_429(self) -> str:
+        if len(self.keys) > 1:
+            prev = self.idx % len(self.keys)
+            self.idx += 1
+            nxt = self.idx % len(self.keys)
+            print(f"  🔄 Quota 429 encountered: Rotating API key (pool slot {prev+1} -> {nxt+1} of {len(self.keys)})")
+            return self.current_key()
+        return self.current_key()
+
+
+KEY_ROTATOR = GeminiKeyRotator()
+
+AMHARIC_PHONETIC_GUIDE = {
+    "ጠረጴዛዬ": "ṭäräp-p̣éza-yé (crisp ejective 'ṭ', doubled geminated 'p')",
+    "ይሮጣል።": "yi-ro-T'al (crisp glottal ejective 'T')",
+    "ወደ": "wä-dä",
+    "የምድር": "yä-midir",
+    "ጥቅጥቅ": "T'iq-T'iq (sharp glottal ejective 'T')",
+    "ወንድሜ": "wän-dim-mé (doubled geminated 'm')",
+    "ተደብቀን": "tä-däb-bä-qän (doubled geminated 'b', crisp 'q')",
+    "ቅዳሜ": "qï-da-mé",
+    "ሳንደናገጥ": "san-dä-na-gäT (sharp ejective 'T')",
+    "የሚፈልቁት": "yä-mi-fäl-qut",
+    "ንጹሕ": "ni-T'uH (crisp glottal 'T')",
+    "ገንዳ": "gän-da",
+    "ጭንቀት": "Ch'in-qät (crisp ejectives 'Ch' and 'q')",
+    "ቀልጦ ይጠፋል": "qäl-T'o yi-T'ä-fal",
+    "በድንጋይ": "bä-din-gay",
+    "ይበልጥ": "yi-bälT' (crisp ejective 'T')",
+    "ስትጠልቅ": "sit-T'ä-liq (crisp ejectives 'T' and 'q')",
+    "ብትቆጣንም": "bit-T'o-T'a-nim (doubled ejective 'T')",
+    "ይፈሳሉ።": "yi-fäs-sa-lu (doubled geminated 's')"
+}
+
+
 def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_name: str, out_path: Path):
     """
-    Calls Gemini API TTS endpoint with explicit voice profile and phonetic steering.
+    Calls Gemini API TTS endpoint with explicit voice profile, multi-key quota rotation, and phonetic steering.
     """
     import urllib.request
+    import urllib.error
     import json
 
-    # Standard Gemini API speech/audio generation call using environment URL template
     url = GEMINI_URL_TEMPLATE.format(model_name="gemini-2.5-flash-preview-tts")
+
+    # Match phonetic hints for Amharic words present in the sentence
+    hints = [f"• '{word}' -> {guide}" for word, guide in AMHARIC_PHONETIC_GUIDE.items() if word.replace("።", "").replace("፣", "") in text]
+    phonetic_block = ("\nPhonetic & Consonant Gemination (ጥብቅና ላልት) Guide:\n" + "\n".join(hints)) if hints else ""
+
     # Payload requesting audio output modality with strict speaker persona anchoring
     payload = {
         "contents": [{
@@ -45,11 +112,12 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_
                 {
                     "text": (
                         f"Consistent Speaker Persona: You are an adult Ethiopian male in his late 20s with a warm, "
-                        f"grounded, steady baritone voice. Maintain an identical pitch, resonance, speaking volume, and "
+                        f"deep, grounded baritone voice. Maintain an identical pitch, resonance, speaking volume, and "
                         f"cadence across every line. Do NOT whisper, do NOT pitch up into high register. "
                         f"Speak authentic, conversational {language} with natural Addis Ababa cadence and correct "
                         f"consonant gemination (ጥብቅና ላልት).\n"
-                        f"Scene mood: {voice_instruction}\n\n"
+                        f"Scene mood: {voice_instruction}\n"
+                        f"{phonetic_block}\n\n"
                         f"Read this line clearly, steadily, and naturally:\n{text}"
                     )
                 }
@@ -60,48 +128,70 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_
             "speechConfig": {
                 "voiceConfig": {
                     "prebuiltVoiceConfig": {
-                        "voiceName": voice_name or "Puck"
+                        "voiceName": voice_name or "Charon"
                     }
                 }
             }
         }
     }
 
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "x-goog-api-key": os.environ.get("GEMINI_API_KEY", "")
-        }
-    )
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        res = json.loads(resp.read().decode("utf-8"))
-        # Decode base64 audio if returned, or write stream
-        # (Handling standard Gemini audio inline response)
-        audio_data = None
-        candidates = res.get("candidates", [])
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            for p in parts:
-                if "inlineData" in p and "data" in p["inlineData"]:
-                    import base64
-                    audio_data = base64.b64decode(p["inlineData"]["data"])
-                    break
-        if not audio_data:
-            raise RuntimeError("No audio data returned in Gemini response")
+    max_attempts = 5
+    base_delay = 3.0 if KEY_ROTATOR.pool_size > 1 else 6.0
+    for attempt in range(1, max_attempts + 1):
+        active_key = KEY_ROTATOR.current_key()
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "x-goog-api-key": active_key
+            }
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=35) as resp:
+                res = json.loads(resp.read().decode("utf-8"))
+                # Decode base64 audio
+                audio_data = None
+                candidates = res.get("candidates", [])
+                if candidates:
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    for p in parts:
+                        if "inlineData" in p and "data" in p["inlineData"]:
+                            import base64
+                            audio_data = base64.b64decode(p["inlineData"]["data"])
+                            break
+                if not audio_data:
+                    raise RuntimeError("No audio data returned in Gemini response")
 
-        # Wrap raw PCM in standard RIFF WAV header (Gemini returns 24kHz 16-bit linear PCM)
-        if not audio_data.startswith(b"RIFF"):
-            import wave
-            with wave.open(str(out_path), "wb") as wf:
-                wf.setnchannels(1)
-                wf.setsampwidth(2)
-                wf.setframerate(24000)
-                wf.writeframes(audio_data)
-        else:
-            with open(out_path, "wb") as f:
-                f.write(audio_data)
+                # Wrap raw PCM in standard RIFF WAV header (Gemini returns 24kHz 16-bit linear PCM)
+                if not audio_data.startswith(b"RIFF"):
+                    import wave
+                    with wave.open(str(out_path), "wb") as wf:
+                        wf.setnchannels(1)
+                        wf.setsampwidth(2)
+                        wf.setframerate(24000)
+                        wf.writeframes(audio_data)
+                else:
+                    with open(out_path, "wb") as f:
+                        f.write(audio_data)
+                return
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                if KEY_ROTATOR.pool_size > 1:
+                    KEY_ROTATOR.rotate_on_429()
+                    print(f"  ⚠️ HTTP 429 Quota: Switched to next key in pool, retrying (attempt {attempt}/{max_attempts})...")
+                    time.sleep(1.0)
+                    continue
+                else:
+                    delay = base_delay * (1.6 ** (attempt - 1))
+                    if attempt == max_attempts:
+                        raise e
+                    print(f"  ⚠️ HTTP 429 Quota (single key in use): Cooling down for {delay:.1f}s (attempt {attempt}/{max_attempts})...")
+                    time.sleep(delay)
+            else:
+                if attempt == max_attempts:
+                    raise e
+                time.sleep(3.0)
 
 
 def mock_or_local_tts(text: str, duration_target: float, out_path: Path):
@@ -222,9 +312,11 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
         print(f"  ✅ [{shot_id}] Finished in {latency:.2f}s -> {out_wav.name}")
         generated_files[shot_id] = out_wav
 
-        # Proactive inter-request rate throttle to respect Google AI Studio Free Tier RPM limits
+        # Dynamic inter-request rate throttle: if multiple keys in pool, pace 2s; if 1 key, pace 7s
+        pace_delay = 2.0 if KEY_ROTATOR.pool_size > 1 else 7.0
         if not used_mock and idx < len(shots_list) - 1:
-            time.sleep(3.5)
+            print(f"  ⏳ Pacing {pace_delay:.0f}s to respect free-tier speech quota...")
+            time.sleep(pace_delay)
 
     print(f"  🎉 Stage 2 complete: {len(generated_files)} narration files ready.\n")
     return generated_files
