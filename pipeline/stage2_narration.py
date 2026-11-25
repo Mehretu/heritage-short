@@ -29,25 +29,38 @@ GEMINI_URL_TEMPLATE = os.environ.get("GEMINI_URL")
 
 
 @retry_with_backoff(max_retries=3, base_delay=2.0)
-def generate_gemini_tts(text: str, voice_instruction: str, language: str, out_path: Path):
+def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_name: str, out_path: Path):
     """
-    Calls Gemini API TTS endpoint (Gemini 3.8 Flash TTS).
-    If google-genai or requests is used, formats audio as wav/mp3.
+    Calls Gemini API TTS endpoint with explicit voice profile and phonetic steering.
     """
     import urllib.request
     import json
 
     # Standard Gemini API speech/audio generation call using environment URL template
     url = GEMINI_URL_TEMPLATE.format(model_name="gemini-2.5-flash-preview-tts")
-    # Payload requesting audio output modality with speech style instructions
+    # Payload requesting audio output modality with speech style instructions and male voice config
     payload = {
         "contents": [{
             "parts": [
-                {"text": f"Read the following {language} narration with style: {voice_instruction}.\n\nText: {text}"}
+                {
+                    "text": (
+                        f"You are a native Ethiopian young man speaking authentic, emotional, conversational {language} "
+                        f"with natural Addis Ababa cadence and correct Amharic consonant gemination (ጥብቅና ላልት).\n"
+                        f"Style instruction: {voice_instruction}\n\n"
+                        f"Read this line clearly and naturally:\n{text}"
+                    )
+                }
             ]
         }],
         "generationConfig": {
-            "responseModalities": ["AUDIO"]
+            "responseModalities": ["AUDIO"],
+            "speechConfig": {
+                "voiceConfig": {
+                    "prebuiltVoiceConfig": {
+                        "voiceName": voice_name or "Puck"
+                    }
+                }
+            }
         }
     }
 
@@ -126,7 +139,8 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
     print(" [Stage 2] Generating narration tracks per shot...")
     storyboard = load_storyboard()
     voice_prof = storyboard.get("voice_profile", {})
-    voice_instruction = voice_prof.get("voice_instruction", "calm, warm, slow")
+    voice_instruction = voice_prof.get("voice_instruction", "calm, warm, slow young man")
+    voice_name = voice_prof.get("voice_name", "Puck")  # 'Puck' or 'Charon' for male voice
     global_lang = storyboard.get("language", "Amharic")
 
     generated_files = {}
@@ -145,6 +159,7 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
         cache_data = {
             "text": text,
             "voice_instruction": voice_instruction,
+            "voice_name": voice_name,
             "language": lang
         }
         input_hash = compute_sha256(cache_data)
@@ -174,7 +189,7 @@ def run_narration_stage(target_shot_id=None, force_regenerate=False):
 
         if GEMINI_API_KEY and GEMINI_API_KEY != "your_gemini_api_key_here":
             try:
-                generate_gemini_tts(text, voice_instruction, lang, out_wav)
+                generate_gemini_tts(text, voice_instruction, lang, voice_name, out_wav)
             except Exception as e:
                 print(f"  ⚠️ Gemini TTS API call failed ({e}); using resilient local audio synthesizer.")
                 mock_or_local_tts(text, target_dur, out_wav)

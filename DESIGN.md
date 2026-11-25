@@ -45,13 +45,20 @@
 
 ## 5. User Testing & Feedback Protocol
 
-### Planned User Test 1: The Radio Cut Prototype (Audio + Black Screen)
-* **Target Date:** Phase 1 Checkpoint
-* **Audience:** 3 viewers (1 family member, 1 childhood peer, 1 colleague).
-* **Focus Questions:**
-  1. Did the contrast between the modern desk and the forest freedom translate through voice alone?
-  2. Does the Amharic narration sound authentic to Arba Minch memories?
-  3. Does the background washint flute and spring water sound mix evoke the right nostalgic ache?
+### User Test 1: The Radio Cut Prototype (Audio & Narration Audit)
+* **Date & Participants:** Evaluated with native Ethiopian listener and family audience.
+* **Artifact Tested:** `outputs/exports/radio_cut.wav` (75.5s combined Amharic narration + ducked ambient score).
+* **Participant Feedback & Findings:**
+  1. **Voice Gender Mismatch:** The default AI voice was female, which breaks immersion for a first-person male memory about his brother and friends.
+  2. **Severe Phonetic Breakdown on Amharic Gemination (ጥብቅና ላልት):** The model mispronounced 19 crucial words:
+     - `ጠረጴዛዬ`, `ይሮጣል።`, `ወደ`, `የምድር`, `ጥቅጥቅ`, `ወንድሜ`, `ተደብቀን`, `ቅዳሜ`, `ሳንደናገጥ`, `ወደ ደኑ ስንሮጥ`, `የሚፈልቁት`, `ንጹሕ`, `ገንዳ`, `ጭንቀት`, `ቀልጦ ይጠፋል`, `በድንጋይ`, `ይበልጥ`, `ስትጠልቅ`, `ብትቆጣንም`, `ይፈሳሉ።`
+     - The AI read them with flat English-like phonetic pacing, ignoring unwritten Ge'ez consonant doubling.
+  3. **Pacing & Timing:** The 75.5-second total duration landed squarely in the desired 60–90 second window, and the ambient stream background was praised for naturalness.
+* **Concrete Changes Made to Storyboard & Pipeline:**
+  * Updated `voice_profile` in `storyboard.json` to explicitly configure a male voice (`voiceName: "Puck"`) and updated the prompt to enforce native Addis Ababa gemination rules.
+  * Added human voice-over bypass in `pipeline/stage2_narration.py` so authentic voice recordings can be compared against AI synthesis for the final report.
 
-### Planned User Test 2: The Near-Final Cut (Dual Aspect Ratios)
+---
+
+### Planned User Test 2: The Near-Final Cut (Dual Aspect Ratios & Keyframes)
 * **Focus Questions:** Subtitle readability on mobile 9:16 safe areas, visual consistency of the 4 boys across shots, and loudness balance.

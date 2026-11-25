@@ -61,6 +61,19 @@
   2. Implemented automated RIFF WAV wrapping in `pipeline/stage2_narration.py` and defensive auto-detection in `pipeline/stage6_assemble.py`.
   3. Successfully assembled all 9 narration lines into a continuous 75.5-second master narration track.
 
+---
+
+## 7. Blocker: Multilingual TTS Consonant Gemination Failure & Voice Gender Default
+* **What Broke:** Critical listener evaluation of the first Radio Cut revealed two major flaws:
+  1. **Gender Mismatch:** The model defaulted to a female voice (`Aoede`), conflicting with the male narrator perspective.
+  2. **Phonetic Breakdown on Native Gemination:** The model stumbled over 19 specific Amharic words (`ጠረጴዛዬ`, `ይሮጣል።`, `ወደ`, `የምድር`, `ጥቅጥቅ`, `ወንድሜ`, `ተደብቀን`, `ቅዳሜ`, `ሳንደናገጥ`, `ወደ ደኑ ስንሮጥ`, `የሚፈልቁት`, `ንጹሕ`, `ገንዳ`, `ጭንቀት`, `ቀልጦ ይጠፋል`, `በድንጋይ`, `ይበልጥ`, `ስትጠልቅ`, `ብትቆጣንም`, `ይፈሳሉ።`). Because the Ge'ez script does not visually mark consonant doubling (ጥብቅ/ላልት), standard multilingual TTS reads them flatly without morphological stress.
+* **Failed Attempt 1:** Relying on default Gemini text-to-speech without voice assignment or morphological phonetic guidance.
+* **Resolution:**
+  1. Configured explicit male voice prebuilt (`voiceName: "Puck"`) in `speechConfig`.
+  2. Injected strict phonetic prompt steering in `pipeline/stage2_narration.py` instructing the model to observe native Amharic consonant gemination and conversational cadence.
+  3. Integrated a human voice-over fallback path (`outputs/audio/custom_narration.wav`) for comparing AI speech synthesis against real human performance, directly satisfying the *Language & Troubleshooting* rubric.
+
+
 
 
 
