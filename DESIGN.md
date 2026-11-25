@@ -1,56 +1,57 @@
 # DESIGN.md — Audience, Intent & Design Thinking
 
 ## 1. Intent & Creative Vision
-* **Core Question:** How can generative AI capture the delicate sensory memory and intergenerational love of the Ethiopian coffee ritual without reducing it to a generic ethnographic trope?
-* **Emotional Target:** Nostalgic warmth, ancestral gratitude, grounded cultural pride.
-* **Format & Platform:** 60–90s short film designed primarily for mobile feeds (9:16 vertical TikTok/Instagram Reels/YouTube Shorts) and widescreen viewing (16:9).
-
-## 2. Target Audience & Persona
-* **Primary Persona:** *Hermela*, 24, second-generation Ethiopian diaspora in Washington D.C., nostalgic for family memories, consumes short-form vertical cultural stories on phones.
-* **Secondary Persona:** *Ato Tadesse*, 58, Addis Ababa resident, appreciative of authentic cultural details, cautious about AI misrepresenting traditional heritage.
-* **Viewing Context:** Watched on smartphones with sound on, captions active.
+* **Working Title:** *The Forty Springs of Arba Minch (የአርባ ምንጭ ምንጮች)*
+* **Core Question:** How does the sensory memory of childhood brotherhood and raw natural wonder in Arba Minch anchor an adult navigating the modern, high-pressure professional grind?
+* **Emotional Target:** Deep nostalgic warmth, innocent joy, connection to nature, enduring brotherhood.
+* **Format & Platform:** 60–90s short film designed for dual presentation: mobile vertical feeds (9:16 for TikTok/Reels/Shorts) and horizontal cinematic presentation (16:9).
 
 ---
 
-## 3. Shot-by-Shot Filmmaking Rationale
-*Every shot must carry a clear dramatic reason justifying its place in the 68-second cut:*
+## 2. Target Audience & Persona
+* **Primary Persona:** *Mikiyas, Mihretab & Surafel* (the brother and childhood friends), now adults working across cities, reminiscing about the freedom of youth.
+* **Secondary Persona:** Young Ethiopian diaspora and urban professionals who spend long hours behind computer screens in concrete offices, feeling disconnected from the natural landscapes and carefree adventures of their upbringing.
+* **Viewing Context:** Watched on mobile devices with headphones or phone speakers, captions burned in for dual Amharic and English comprehension.
+
+---
+
+## 3. Narrative Arc (The Flashback Structure)
+1. **The Anchor (Present):** A tired developer sitting at a cluttered work desk in the evening, fingers resting on the keyboard. A photo, water glass, or screen reflection triggers a memory.
+2. **The Reveal (Past - Arba Minch):** Breathtaking panoramic view from the hill overlooking the emerald canopy of the groundwater forest between Lake Abaya and Lake Chamo.
+3. **The Mischief (Childhood):** Whispering behind the mud-brick wall, ducking away from mothers' calls on Sunday morning.
+4. **The Descent:** Bare feet racing along forest dirt tracks shaded by giant fig trees.
+5. **The Secret Sanctuary:** The crystal-clear natural pool bubbling from the forty underground springs.
+6. **The Joy:** Splashing, swimming, laughing under shafts of golden sunlight piercing the canopy.
+7. **The Return (Present):** The narrator looks up from the keyboard with a gentle smile, knowing that heaven on earth still flows inside him.
+
+---
+
+## 4. Shot-by-Shot Filmmaking Rationale
+*Every shot has a stated dramatic reason justifying its place in the 70-second cut:*
 
 | Shot ID | Shot Type | Duration | Dramatic & Narrative Purpose |
 | :--- | :--- | :--- | :--- |
-| **shot_01** | Establishing | 7.0s | Establishes the tranquil mountain dawn of Addis Ababa before domestic life stirs; grounds the viewer in the altitude and morning atmosphere. |
-| **shot_02** | Close-Up | 6.5s | Tactile opening: shows weathered grandmotherly hands sorting green coffee beans on a straw tray, honoring the physical labor of the ritual. |
-| **shot_03** | Medium Portrait | 7.0s | Introduces the central character (Elder Emaye); locks visual continuity and conveys her serene resilience against past hardships. |
-| **shot_04** | Close-Up | 6.5s | Sensory transformation: beans crackling and darkening over charcoal; fragrant smoke rising into sunlight. |
-| **shot_05** | Medium Close-Up | 7.0s | Cultural climax: the traditional wafting of the roasting pan smoke toward guests with maternal blessings (*Merekata*). |
-| **shot_06** | Insert | 6.0s | Focuses on the iconic black clay *Jebena* simmering; symbolizes patience, time, and ancestral craftsmanship. |
-| **shot_07** | Medium | 7.0s | Transmission beat: pouring the first round (*Abol*) into handleless *cini* cups while the younger generation gathers. |
-| **shot_08** | Medium Close-Up | 6.5s | Modern diaspora bridge: the granddaughter holding a cup by an apartment window, connecting memory across oceans. |
-| **shot_09** | Wide | 7.0s | Poetic resolution: embers and empty cups on the woven mat (*ketema*), leaving the viewer with quiet continuity and warmth. |
+| **shot_01** | Medium Close-Up | 6.5s | **The Catalyst:** Establishes the narrator at a modern work desk late at night, tired eyes lit by monitor glow; creates visual contrast with the lush nature to come. |
+| **shot_02** | Extreme Wide | 7.5s | **The Awakening (Arba Minch):** Grand establishing shot from the hill above Arba Minch, revealing the endless sea of green forest canopy stretching between the two lakes. |
+| **shot_03** | Medium | 6.5s | **The Conspiracy:** Childhood friends (Mihretab, Surafel, Mikiyas, narrator) whispering conspiratorially near a gate, glancing back to make sure moms aren't looking. |
+| **shot_04** | Wide Tracking | 7.0s | **The Escape:** The four boys running barefoot down a forest trail, laughing freely as branches part and sunlight glints. |
+| **shot_05** | Close-Up | 6.0s | **The Sacred Water:** Underground spring water bubbling up through black volcanic stones and sand; tactile purity of the "Forty Springs". |
+| **shot_06** | Wide Action | 7.5s | **The Plunge:** Boys jumping into the natural emerald swimming pool, water droplets catching the sunlight like diamonds. |
+| **shot_07** | Medium Close-Up | 7.0s | **The Bond:** Surafel and Mikiyas laughing on sun-warmed rocks by the water's edge, soaking wet and utterly carefree. |
+| **shot_08** | Wide Sunset | 7.0s | **The Golden Walk Home:** Golden hour dusk filtering through tall acacia trees as the tired, smiling boys walk back before nightfall. |
+| **shot_09** | Close-Up | 6.5s | **The Resolution:** Back at the desk in the present; narrator looking away from the monitor with a serene, grounded smile. The spring is still alive in memory. |
 
 ---
 
-## 4. User Testing & Iteration Notes
+## 5. User Testing & Feedback Protocol
 
-### User Test 1: The Radio Cut Prototype (Audio & Black Screen)
-* **Date & Medium:** Conducted with 3 test viewers (1 diaspora family member, 2 peers on Slack).
-* **Artifact Tested:** `outputs/exports/radio_cut.mp4` (Narration + Temp Score).
-* **Participant Feedback:**
-  1. *Viewer A (Diaspora):* "The Amharic cadence in shot 3 felt a bit too brisk. In real life, grandmother takes a deep breath before giving advice."
-  2. *Viewer B (Peer):* "The acoustic music drowned out the word 'መከራ' (hardship) around second 16."
-  3. *Viewer C (Elder):* "The transition between the roasting and the pouring was too quick; we usually linger on the scent."
-* **Changes Made to Storyboard:**
-  * Extended `shot_03` duration from 5.5s to 7.0s and added a prosody pause instruction.
-  * Adjusted audio ducking threshold to 0.02 and deepened score attenuation under voice.
-  * Inserted `shot_05` specifically dedicated to the smoke-wafting blessing.
+### Planned User Test 1: The Radio Cut Prototype (Audio + Black Screen)
+* **Target Date:** Phase 1 Checkpoint
+* **Audience:** 3 viewers (1 family member, 1 childhood peer, 1 colleague).
+* **Focus Questions:**
+  1. Did the contrast between the modern desk and the forest freedom translate through voice alone?
+  2. Does the Amharic narration sound authentic to Arba Minch memories?
+  3. Does the background washint flute and spring water sound mix evoke the right nostalgic ache?
 
----
-
-### User Test 2: The Near-Final Cut (Video + Subtitles + Ducked Score)
-* **Date & Medium:** Conducted with 3 test viewers using the 9:16 mobile export.
-* **Participant Feedback:**
-  1. *Viewer A:* "Subtitles were partially blocked by TikTok's UI buttons at the very bottom."
-  2. *Viewer B:* "The face of the grandmother in shot 5 looked slightly different from shot 3."
-  3. *Viewer C:* "The end card timing felt natural, giving a moment to reflect before loop restarted."
-* **Changes Made to Assembly:**
-  * Raised subtitle positioning (`MarginV=90`) to sit safely inside vertical phone UI safe zones.
-  * Re-conditioned shot 5 prompt with explicit character facial traits from the golden reference sheet to eliminate identity drift.
+### Planned User Test 2: The Near-Final Cut (Dual Aspect Ratios)
+* **Focus Questions:** Subtitle readability on mobile 9:16 safe areas, visual consistency of the 4 boys across shots, and loudness balance.
