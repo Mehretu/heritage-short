@@ -29,16 +29,15 @@ from common import (
 KEYFRAMES_DIR = OUTPUTS_DIR / "keyframes"
 CLOUDFLARE_ACCOUNT_ID = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
 CLOUDFLARE_API_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN")
+CLOUDFLARE_FLUX_URL_TEMPLATE = os.environ.get("CLOUDFLARE_FLUX_URL")
 
 
 @retry_with_backoff(max_retries=3, base_delay=2.0)
 def generate_cloudflare_flux(full_prompt: str, seed: int, out_path: Path):
     """Call Cloudflare Workers AI endpoint for @cf/black-forest-labs/flux-1-schnell."""
-    url = f"https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/black-forest-labs/flux-1-schnell"
+    url = CLOUDFLARE_FLUX_URL_TEMPLATE.format(account_id=CLOUDFLARE_ACCOUNT_ID)
     payload = {
-        "prompt": full_prompt,
-        "seed": seed,
-        "num_steps": 4
+        "prompt": full_prompt
     }
     req = urllib.request.Request(
         url,

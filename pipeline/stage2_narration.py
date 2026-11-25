@@ -25,6 +25,7 @@ from common import (
 
 AUDIO_OUT_DIR = OUTPUTS_DIR / "audio"
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_URL_TEMPLATE = os.environ.get("GEMINI_URL")
 
 
 @retry_with_backoff(max_retries=3, base_delay=2.0)
@@ -36,8 +37,8 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, out_pa
     import urllib.request
     import json
 
-    # Standard Gemini API speech/audio generation call
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    # Standard Gemini API speech/audio generation call using environment URL template
+    url = GEMINI_URL_TEMPLATE.format(model_name="gemini-2.5-flash-preview-tts")
     # Payload requesting audio output modality with speech style instructions
     payload = {
         "contents": [{

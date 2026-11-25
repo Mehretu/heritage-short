@@ -47,3 +47,14 @@ The pipeline is designed to execute successfully from a clean clone even when ex
 4. **Assembly Audio Ducking & Loudnorm:**
    - Uses FFmpeg's `sidechaincompress` filter (`threshold=0.02, ratio=6, attack=300ms, release=1500ms`) to duck score dynamically under speech.
    - Normalizes audio to broadcast standard **-14 LUFS (EBU R128)** with **-1.0 dB true peak** to avoid platform distortion.
+
+---
+
+## 5. Configuration & Endpoint Decoupling
+All external API URLs are completely abstracted out of the code and defined as environment templates in `.env`:
+* **`GEMINI_URL`:** Parameterized model template (`.../models/{model_name}:generateContent`) supporting dynamic fallback across `gemini-flash-lite`, `gemini-3.8-flash`, and TTS preview endpoints.
+* **`CLOUDFLARE_FLUX_URL`:** Parameterized account template (`.../accounts/{account_id}/ai/run/@cf/black-forest-labs/flux-1-schnell`).
+* **`KAGGLE_API_URL`:** Base endpoint for remote dataset and GPU execution.
+
+*Benefit:* Eliminates hardcoded URLs, facilitates switching between cloud regions or local proxies, and adheres strictly to Twelve-Factor App config separation.
+
