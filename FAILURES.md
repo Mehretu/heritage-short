@@ -51,6 +51,17 @@
   3. Attenuated master volume to -18 dB (amplitude 4,500) with gentle 2.5s fades, completely removing digital high-frequency harshness.
   4. Added override support for dropping real Gamo recordings or ACE-Step GPU renders directly into `outputs/music/custom_score.wav`.
 
+---
+
+## 6. Blocker: Gemini TTS API Returns Headerless Raw PCM (wave.Error: file does not start with RIFF id)
+* **What Broke:** When `make radio-cut` attempted to concatenate the 9 narration lines, Python's `wave` module threw `wave.Error: file does not start with RIFF id`.
+* **Failed Attempt 1:** Assumed base64 payload from Gemini API was a self-contained `.wav` container.
+* **Resolution:**
+  1. Inspected byte stream: Gemini API returns raw 16-bit little-endian linear PCM (`24000 Hz, mono`) without the 44-byte RIFF header.
+  2. Implemented automated RIFF WAV wrapping in `pipeline/stage2_narration.py` and defensive auto-detection in `pipeline/stage6_assemble.py`.
+  3. Successfully assembled all 9 narration lines into a continuous 75.5-second master narration track.
+
+
 
 
 

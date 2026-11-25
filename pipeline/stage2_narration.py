@@ -74,8 +74,18 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, out_pa
                     break
         if not audio_data:
             raise RuntimeError("No audio data returned in Gemini response")
-        with open(out_path, "wb") as f:
-            f.write(audio_data)
+
+        # Wrap raw PCM in standard RIFF WAV header (Gemini returns 24kHz 16-bit linear PCM)
+        if not audio_data.startswith(b"RIFF"):
+            import wave
+            with wave.open(str(out_path), "wb") as wf:
+                wf.setnchannels(1)
+                wf.setsampwidth(2)
+                wf.setframerate(24000)
+                wf.writeframes(audio_data)
+        else:
+            with open(out_path, "wb") as f:
+                f.write(audio_data)
 
 
 def mock_or_local_tts(text: str, duration_target: float, out_path: Path):
@@ -113,7 +123,7 @@ def mock_or_local_tts(text: str, duration_target: float, out_path: Path):
 
 
 def run_narration_stage(target_shot_id=None, force_regenerate=False):
-    print("🎙️ [Stage 2] Generating narration tracks per shot...")
+    print(" [Stage 2] Generating narration tracks per shot...")
     storyboard = load_storyboard()
     voice_prof = storyboard.get("voice_profile", {})
     voice_instruction = voice_prof.get("voice_instruction", "calm, warm, slow")

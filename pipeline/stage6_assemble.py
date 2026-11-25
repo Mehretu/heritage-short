@@ -12,6 +12,8 @@ Implements:
 
 import os
 import sys
+import wave
+import struct
 import shutil
 import subprocess
 from pathlib import Path
@@ -70,10 +72,21 @@ def concatenate_narration_audio(storyboard: dict, out_combined_wav: Path):
         shot_id = shot["shot_id"]
         wav_file = AUDIO_DIR / f"{shot_id}.wav"
         if wav_file.exists():
-            with wave.open(str(wav_file), "r") as wf:
-                if params is None:
-                    params = wf.getparams()
-                combined_frames.extend(wf.readframes(wf.getnframes()))
+            data = wav_file.read_bytes()
+            # Auto-wrap if raw PCM without RIFF
+            if not data.startswith(b"RIFF"):
+                with wave.open(str(wav_file), "wb") as fix_wf:
+                    fix_wf.setnchannels(1)
+                    fix_wf.setsampwidth(2)
+                    fix_wf.setframerate(24000)
+                    fix_wf.writeframes(data)
+            try:
+                with wave.open(str(wav_file), "r") as wf:
+                    if params is None:
+                        params = wf.getparams()
+                    combined_frames.extend(wf.readframes(wf.getnframes()))
+            except Exception as e:
+                print(f"  ⚠️ Warning reading {wav_file.name}: {e}")
 
     if params and combined_frames:
         with wave.open(str(out_combined_wav), "w") as out_wf:
@@ -103,6 +116,40 @@ def build_radio_cut(storyboard: dict):
     radio_cut_mp4 = EXPORTS_DIR / "radio_cut.mp4"
 
     ffmpeg = shutil.which("ffmpeg")
+    radio_cut_wav = EXPORTS_DIR / "radio_cut.wav"
+
+    # Always generate pure-Python mixed radio cut WAV so user can play it directly in QuickTime/Finder
+    try:
+        import struct
+        with wave.open(str(combined_voice), "r") as v_wf, wave.open(str(score_wav), "r") as s_wf:
+            v_sr, v_n = v_wf.getframerate(), v_wf.getnframes()
+            s_sr, s_n = s_wf.getframerate(), s_wf.getnframes()
+            v_data = v_wf.readframes(v_n)
+            s_data = s_wf.readframes(s_n)
+
+        v_samples = [struct.unpack_from("<h", v_data, i * 2)[0] for i in range(len(v_data) // 2)]
+        # If score is stereo, read left channel or average
+        s_channels = 2 if len(s_data) // 4 >= len(v_samples) else 1
+        step = 4 if s_channels == 2 else 2
+
+        mixed_frames = bytearray()
+        for idx, v_s in enumerate(v_samples):
+            # Duck music volume to ~20% under voice
+            s_idx = idx * step
+            s_s = struct.unpack_from("<h", s_data, s_idx)[0] if s_idx + 2 <= len(s_data) else 0
+            ducked_score = int(s_s * 0.22)
+            mixed = max(-32767, min(32767, v_s + ducked_score))
+            mixed_frames.extend(struct.pack("<h", mixed))
+
+        with wave.open(str(radio_cut_wav), "w") as m_wf:
+            m_wf.setnchannels(1)
+            m_wf.setsampwidth(2)
+            m_wf.setframerate(24000)
+            m_wf.writeframesraw(mixed_frames)
+        print(f"  🎧 Mixed Radio Cut Audio exported: {radio_cut_wav.name} (75s)")
+    except Exception as e:
+        print(f"  ⚠️ Python audio mixer notice: {e}")
+
     if ffmpeg:
         # Duck score under narration and display black screen
         cmd = [

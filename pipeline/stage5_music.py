@@ -38,7 +38,7 @@ def synthesize_soothing_score_track(duration: float, tempo_bpm: int, key_name: s
     - Mastered at quiet background level (-20 dB) with zero harsh electronic buzz.
     """
     random.seed(seed)
-    sample_rate = 44100
+    sample_rate = 24000
     total_samples = int(duration * sample_rate)
 
     # Pentatonic root & intervals: D3 (146.8 Hz), F#3 (185 Hz), A3 (220 Hz), B3 (246.9 Hz), D4 (293.6 Hz)

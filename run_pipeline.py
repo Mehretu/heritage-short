@@ -47,8 +47,8 @@ def main():
     args = parser.parse_args()
 
     print("================================================================================")
-    print("🎬 AI-Content Generation: The Heritage Short Pipeline")
-    print(f"📌 Stage: {args.stage} | Target Shot: {args.shot or 'All'} | Force: {args.force}")
+    print(" AI-Content Generation: The Heritage Short Pipeline")
+    print(f" Stage: {args.stage} | Target Shot: {args.shot or 'All'} | Force: {args.force}")
     print("================================================================================\n")
 
     if args.stage in ["validate", "all"]:
