@@ -178,9 +178,11 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_
         except urllib.error.HTTPError as e:
             if e.code == 429:
                 if KEY_ROTATOR.pool_size > 1:
+                    if attempt == max_attempts:
+                        raise e
                     KEY_ROTATOR.rotate_on_429()
-                    print(f"  ⚠️ HTTP 429 Quota: Switched to next key in pool, retrying (attempt {attempt}/{max_attempts})...")
-                    time.sleep(1.0)
+                    print(f"  ⚠️ HTTP 429 Quota: Switched to next key in pool, cooling 3.5s before retry (attempt {attempt}/{max_attempts})...")
+                    time.sleep(3.5)
                     continue
                 else:
                     delay = base_delay * (1.6 ** (attempt - 1))
@@ -192,6 +194,8 @@ def generate_gemini_tts(text: str, voice_instruction: str, language: str, voice_
                 if attempt == max_attempts:
                     raise e
                 time.sleep(3.0)
+
+    raise RuntimeError(f"Gemini TTS generation failed after {max_attempts} attempts.")
 
 
 def mock_or_local_tts(text: str, duration_target: float, out_path: Path):
