@@ -34,11 +34,12 @@
 * **Change:** Tested ratio 3:1 vs 6:1 vs 10:1.
 * **Result:** 6:1 smoothly suppressed background krar score by -9 dB during speech and recovered naturally over 1.5 seconds.
 
-### Experiment 06: ACE-Step 1.5 Score Texture & Instrumentation
-* **Hypothesis:** Specifying traditional Ethiopian modal terms (*Tizita*, *krar*, *washint*) in ACE-Step caption produces authentic acoustic timbre without modern electronic beats.
+### Experiment 06: Gamo Mothers' Polyphonic Hymns vs Generic Instrumental
+* **Hypothesis:** Prompting and synthesizing Southern Ethiopian Gamo maternal polyphonic vocal humming and harmonic fifths creates cultural rootedness in Arba Minch while naturally resting beneath the frequency band of the spoken Amharic voice.
 * **Stage:** Music (Stage 5)
-* **Change:** Used caption `"Acoustic krar and washint flute in Tizita scale, contemplative, minimal room reverb, instrumental"`.
-* **Result:** Generated clean pentatonic melody with zero synthetic percussion interference.
+* **Change:** Shifted score caption from generic `"washint and krar"` to `"Traditional Gamo mothers' sacred polyphonic vocal humming and resonant pastoral harmonies, gentle layered maternal choir, warm natural acoustic drone"`. Modeled open fourths/fifths with natural 4.5s respiratory swell.
+* **Result:** Eliminated high-frequency flute interference with dialogue. Polyphonic humming provides an ancient, deeply emotional spiritual weight that anchors the childhood memory.
+
 
 ### Experiment 07: Ken Burns Fallback Zoom Pacing
 * **Hypothesis:** Keeping Ken Burns zoom expansion under 1.15x over a 7-second duration prevents motion sickness while adding cinematic life.

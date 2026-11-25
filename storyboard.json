@@ -1,58 +1,58 @@
 {
-  "title": "The Scent of Roasted Coffee: A Mother's Sunday",
-  "logline": "Across fifty years and three generations, an Ethiopian mother's morning coffee ceremony preserves family continuity against displacement and change.",
-  "treatment": "Through the sensory ritual of the Ethiopian coffee ceremony (Buna Tetu) in Addis Ababa, a grandmother recalls how her mother roasted green beans during the drought in Wollo, proving that tradition is not a static relic, but a daily deliberate act of love.",
+  "title": "The Forty Springs of Arba Minch",
+  "logline": "From behind a glowing computer screen late at night, a developer is transported back to the emerald forests and forty springs of Arba Minch, where four boys risked their mothers' scoldings for one afternoon of heaven.",
+  "treatment": "Sitting at a cluttered work desk in the quiet of the night, the narrator remembers childhood in Arba Minch. Looking out from the hill above the town, the ancient groundwater forest appears like paradise between the great lakes. Four young boys—the narrator, his brother Mikiyas, and inseparable friends Mihretab and Surafel—sneak out past their mothers' watch to plunge into the secret natural spring pool. The memory of pure water, towering fig trees, and unbroken brotherhood proves that paradise was never lost; it remains the foundation of who they are today.",
   "language": "Amharic",
   "total_target_duration_seconds": 68.0,
   "voice_profile": {
-    "speaker_name": "Eden",
-    "voice_instruction": "Calm, warm, unhurried, intimate elder female cadence with gentle pauses between reflective thoughts."
+    "speaker_name": "Narrator (Young Adult)",
+    "voice_instruction": "Warm, reflective, unhurried, intimate conversational tone with gentle pauses as if recollecting a treasured memory."
   },
   "style_block": {
-    "visual_style": "Kodachrome 64 cinematography, natural diffused morning sunlight, gentle film grain, soft atmospheric smoke, 35mm lens, authentic Ethiopian domestic interiors",
+    "visual_style": "2000s 35mm film aesthetic, warm Kodak daylight, vibrant tropical emerald greens, natural sunbeams filtering through giant rainforest trees, crystal water refractions, nostalgic authentic Ethiopian youth",
     "aspect_ratios": ["16:9", "9:16"],
-    "color_palette": "Deep amber, terracotta, roasted espresso brown, warm gold, emerald green grass (ketema)",
-    "lighting": "Low golden-hour directional light cutting through incense and frankincense smoke"
+    "color_palette": "Deep rainforest emerald, turquoise natural spring water, terracotta soil, golden hour sunlight, warm room ambient tungsten",
+    "lighting": "Modern cool monitor glow in shot 1 and 9; dreamy natural morning sunbeams and warm golden hour for shots 2-8"
   },
   "reference_assets": {
-    "character_sheet": "references/character_sheet_emaye.png",
-    "golden_reference": "references/golden_ref_ceremony.png"
+    "character_sheet": "references/boys_arba_minch_sheet.png",
+    "golden_reference": "references/arba_minch_forest_spring.png"
   },
   "music": {
-    "title": "Memories of the Jebena",
-    "caption": "Acoustic traditional Ethiopian krar and masenqo with gentle washint flute, contemplative tempo, minimalist acoustic drone, warm room reverb, no harsh drums",
-    "tempo_bpm": 68,
-    "key": "E minor / Tizita scale",
-    "instrumental": true,
-    "seed": 42801
+    "title": "Hymns of the Gamo Mothers (የጋሞ እናቶች ዝማሬ)",
+    "caption": "Traditional Southern Ethiopian Gamo mothers' sacred polyphonic vocal humming and resonant pastoral harmonies, gentle layered maternal choir, warm natural acoustic drone, contemplative, ancient, deeply emotional, unhurried, reflecting the hills of Arba Minch, wordless choral hums",
+    "tempo_bpm": 62,
+    "key": "Gamo polyphonic modal harmony (open fifths and fourths)",
+    "instrumental": false,
+    "seed": 40401
   },
   "end_card": {
-    "text": "Made with AI • Antigravity Pipeline • In memory of Emaye",
+    "text": "Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel",
     "duration_seconds": 3.0
   },
   "shots": [
     {
       "shot_id": "shot_01",
       "shot_number": 1,
-      "shot_type": "establishing",
-      "duration_seconds": 7.0,
-      "reason": "Establishes place and sacred morning quiet before domestic activity starts, grounding the viewer in the altitude and light of Addis Ababa.",
+      "shot_type": "medium_close_up",
+      "duration_seconds": 6.5,
+      "reason": "Establishes the present-day frame: an adult working late at a desk; monitor glow highlights fatigue and sparks the nostalgic flashback.",
       "narration": {
-        "text": "በጧቱ ፀጥታ ውስጥ የልጅነቴ ከተማ ትነቃለች።",
-        "english_translation": "In the morning silence, the city of my childhood awakens.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Quiet whisper, deep breath"
+        "text": "አንዳንድ ምሽት በሥራ ጠረጴዛዬ ላይ ስቀመጥ፣ አእምሮዬ ወደ ኋላ ይሮጣል።",
+        "english_translation": "Some nights, sitting at my work desk, my mind runs back in time.",
+        "speaker": "Narrator",
+        "prosody_note": "Quiet, reflective, gentle exhale"
       },
       "image_prompt": {
-        "prompt": "Dawn overlooking eucalyptus trees and corrugated iron rooftops in Addis Ababa, golden morning haze, mountains in distant background, warm golden hour, 35mm film aesthetic",
-        "negative_prompt": "modern skyscrapers, blurry, oversaturated, neon, cartoon",
-        "seed": 101,
-        "reference_tag": "environment"
+        "prompt": "Young adult Ethiopian professional sitting at a desk with a glowing computer monitor late at night, soft warm desk lamp, thoughtful reflective expression, looking away from screen, cinematic moody lighting",
+        "negative_prompt": "cartoon, oversaturated, messy, bright daylight",
+        "seed": 201,
+        "reference_tag": "desk_present"
       },
       "motion_prompt": {
-        "camera_motion": "Slow locked-off panoramic drift from left to right",
-        "subject_motion": "Subtle mist drifting across the hillside eucalyptus trees",
-        "seed": 1011
+        "camera_motion": "Slow subtle push-in toward the narrator's thoughtful face",
+        "subject_motion": "Subtle blink, fingers pausing gently on the keyboard",
+        "seed": 2011
       },
       "music_cue": {
         "action": "start",
@@ -62,28 +62,28 @@
     {
       "shot_id": "shot_02",
       "shot_number": 2,
-      "shot_type": "close_up",
-      "duration_seconds": 6.5,
-      "reason": "Focuses on raw earth and harvest: green coffee beans held in hands with history, anchoring the ritual's tactile beginning.",
+      "shot_type": "extreme_wide",
+      "duration_seconds": 7.5,
+      "reason": "The dramatic transition into memory: reveals the breathtaking panoramic paradise of Arba Minch forest and lakes from the hilltop.",
       "narration": {
-        "text": "እማዬ ሁልጊዜ አረንጓዴውን የቡና ፍሬ በእጇ ታበጥራለች።",
-        "english_translation": "My mother always sifted the raw green coffee beans by hand.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Fondness, gentle smile in the tone"
+        "text": "ወደ ልጅነቴ ከተማ... ወደ አርባ ምንጭ፤ ያ የምድር ገነት ወደነበረው ጥቅጥቅ ደን።",
+        "english_translation": "To the town of my childhood... to Arba Minch, to that dense forest that was heaven on earth.",
+        "speaker": "Narrator",
+        "prosody_note": "Awe, wonder, expansive breathing"
       },
       "image_prompt": {
-        "prompt": "Weathered, caring hands of an elder Ethiopian woman gently sifting raw green coffee beans on a traditional woven straw plate, warm morning light, soft focus background",
-        "negative_prompt": "extra fingers, deformed hands, plastic bowls, artificial lighting",
-        "seed": 102,
-        "reference_tag": "character_hands"
+        "prompt": "Breathtaking high-angle panorama of Arba Minch, Ethiopia, lush emerald groundwater forest canopy sprawling between Lake Abaya and Lake Chamo, morning mist rising, golden sunlight rays, 35mm film photography",
+        "negative_prompt": "desert, barren, modern highways, industrial buildings",
+        "seed": 202,
+        "reference_tag": "arba_minch_landscape"
       },
       "motion_prompt": {
-        "camera_motion": "Gentle push-in toward the woven straw plate",
-        "subject_motion": "Hands slowly turning and shifting green beans",
-        "seed": 1021
+        "camera_motion": "Expansive slow aerial drift over the emerald tree canopy",
+        "subject_motion": "Morning mist gently parting over the lake and trees",
+        "seed": 2021
       },
       "music_cue": {
-        "action": "continue",
+        "action": "swell",
         "ducking_active": true
       }
     },
@@ -91,24 +91,24 @@
       "shot_id": "shot_03",
       "shot_number": 3,
       "shot_type": "medium",
-      "duration_seconds": 7.0,
-      "reason": "Introduces the main character in her element; verifies character consistency established in the character sheet.",
+      "duration_seconds": 6.5,
+      "reason": "Introduces the core characters and the relatable mischief: boys conspiring to sneak past their mothers for the weekend swim.",
       "narration": {
-        "text": "መከራ ቢመጣም ቡና ሳይፈላ ቀን አይጀምርም ትል ነበር።",
-        "english_translation": "She used to say: whatever hardship arrives, no day begins without brewing coffee.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Firm philosophical resolve, carrying ancestral strength"
+        "text": "እኔ፣ ወንድሜ ሚኪያስ፣ ምሕረተአብ እና ሱራፌል... ከእማዬ ዓይን ተደብቀን የምናሴረው ሴራ ሁልጊዜ ቅዳሜ ነበር።",
+        "english_translation": "Me, my brother Mikiyas, Mihretab, and Surafel... hiding from our mothers' watchful eyes was our Saturday mission.",
+        "speaker": "Narrator",
+        "prosody_note": "Playful, fond smile, whispering excitement"
       },
       "image_prompt": {
-        "prompt": "Elder Ethiopian woman wearing a traditional white netela shawl with subtle gold embroidery border, seated beside small charcoal stove, dignified serene expression, warm room interior",
-        "negative_prompt": "western clothes, distorted face, inconsistent age, high contrast studio lighting",
-        "seed": 103,
-        "reference_tag": "character_portrait"
+        "prompt": "Four young Ethiopian boys, ages 10 to 12, standing near a rustic wooden compound gate, whispering playfully and looking around mischievously, sunny morning in a provincial town, authentic 1990s attire, warm film grain",
+        "negative_prompt": "modern smartphones, western city streets, extra limbs, deformed faces",
+        "seed": 203,
+        "reference_tag": "four_boys_conspiracy"
       },
       "motion_prompt": {
-        "camera_motion": "Subtle handheld eye-level portrait float",
-        "subject_motion": "Gentle nod of the head, eyes blinking softly with serene look",
-        "seed": 1031
+        "camera_motion": "Subtle handheld eye-level camera capturing their conspiratorial glance",
+        "subject_motion": "One boy turns his head to check behind, then waves the others forward",
+        "seed": 2031
       },
       "music_cue": {
         "action": "continue",
@@ -118,25 +118,25 @@
     {
       "shot_id": "shot_04",
       "shot_number": 4,
-      "shot_type": "close_up",
-      "duration_seconds": 6.5,
-      "reason": "Captures the transformation beat: green beans roasting to dark amber, releasing fragrant smoke that unites the family.",
+      "shot_type": "wide",
+      "duration_seconds": 7.0,
+      "reason": "Kinetic freedom: boys running barefoot into the cool shade of the forest, leaving all discipline behind.",
       "narration": {
-        "text": "ፍሬዎቹ በእሳት ሲያብረቀርቁ ጭሱ በቤቱ ውስጥ ይሰራጫል።",
-        "english_translation": "As the beans glisten over the coals, the fragrance spreads through the home.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Sensory, unhurried, evocative"
+        "text": "ሳንደናገጥ በባዶ እግራችን ወደ ደኑ ስንሮጥ፣ ነፃነታችን በዙሪያችን ይዘፍን ነበር።",
+        "english_translation": "Running barefoot into the forest without looking back, freedom sang all around us.",
+        "speaker": "Narrator",
+        "prosody_note": "Energetic, exhilarating, nostalgic"
       },
       "image_prompt": {
-        "prompt": "Black iron roasting pan over glowing charcoal embers, oily dark roasted coffee beans crackling, delicate blue-white aromatic smoke swirling upwards into morning ray",
-        "negative_prompt": "digital flames, electric stove, cartoonish smoke, blurry",
-        "seed": 104,
-        "reference_tag": "roasting_pan"
+        "prompt": "Four barefoot young Ethiopian boys joyfully running down a sun-dappled dirt path into a towering rainforest, lush ferns and giant fig trees, golden sunbeams slicing through green leaves, dynamic motion, 35mm film",
+        "negative_prompt": "shoes, cars, scary dark forest, blurry artifacts",
+        "seed": 204,
+        "reference_tag": "forest_run"
       },
       "motion_prompt": {
-        "camera_motion": "Slight orbital arc around the smoking roasting pan",
-        "subject_motion": "Smoke rising lazily, embers gently pulsating orange glow",
-        "seed": 1041
+        "camera_motion": "Forward tracking shot following the boys as they race through the trees",
+        "subject_motion": "Children running enthusiastically, dust kicking up softly",
+        "seed": 2041
       },
       "music_cue": {
         "action": "build",
@@ -146,25 +146,25 @@
     {
       "shot_id": "shot_05",
       "shot_number": 5,
-      "shot_type": "medium_close_up",
-      "duration_seconds": 7.0,
-      "reason": "Emotional centerpiece: the customary offering of the roast aroma to guests and children, symbolizing hospitality.",
+      "shot_type": "close_up",
+      "duration_seconds": 6.0,
+      "reason": "The sensory heart of Arba Minch: crystal spring water bubbling from the volcanic rocks, establishing the purity of the place.",
       "narration": {
-        "text": "ጭሱን ወደ እኛ እያወዛወዘች ምርቃቷን ታዘንባለች።",
-        "english_translation": "Wafting the fragrant smoke toward us, she poured out her blessings.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Tender, emotional warmth, maternal cadence"
+        "text": "ከመሬት ሥር የሚፈልቁት አርባ ምንጮች... ንጹሕ፣ ቀዝቃዛ እና ሕያው።",
+        "english_translation": "The forty natural springs bubbling from the earth... pure, cold, and vibrant with life.",
+        "speaker": "Narrator",
+        "prosody_note": "Reverent, sensory, gentle cadence"
       },
       "image_prompt": {
-        "prompt": "Elder Ethiopian woman in white netela gently waving a small grass fan over the smoking pan toward the camera with a heartfelt loving smile, warm golden light",
-        "negative_prompt": "frightened expression, modern room, blurred face, deformed fingers",
-        "seed": 105,
-        "reference_tag": "character_wafting"
+        "prompt": "Close-up of pristine crystal-clear spring water bubbling up through smooth black pebbles and white volcanic sand, emerald green moss and ferns surrounding, bright sparkling reflections of sunlight, cinematic macro shot",
+        "negative_prompt": "muddy, dirty water, plastic bottles, pipes, artificial pools",
+        "seed": 205,
+        "reference_tag": "bubbling_spring"
       },
       "motion_prompt": {
-        "camera_motion": "Gentle slow push-in at eye-level",
-        "subject_motion": "Rhythmic gentle motion of the hand wafting incense and coffee smoke",
-        "seed": 1051
+        "camera_motion": "Gentle slow vertical drift following the bubbling water rings",
+        "subject_motion": "Clear water rippling naturally over smooth stones",
+        "seed": 2051
       },
       "music_cue": {
         "action": "continue",
@@ -174,53 +174,25 @@
     {
       "shot_id": "shot_06",
       "shot_number": 6,
-      "shot_type": "insert",
-      "duration_seconds": 6.0,
-      "reason": "Iconic cultural object: the clay Jebena pot boiling on the charcoal hearth, representing patience and craft.",
+      "shot_type": "wide",
+      "duration_seconds": 7.5,
+      "reason": "The emotional climax of joy: boys diving and splashing into the hidden natural forest pool.",
       "narration": {
-        "text": "ጥቁሯ ጀበና በእርጋታ ስትፈላ ትዕግስትን አስተማረችን።",
-        "english_translation": "The black clay jebena simmering peacefully taught us quiet patience.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Reflective and measured"
+        "text": "ያ የተፈጥሮ ገንዳ ውስጥ ስንዘል፣ የዓለም ጭንቀት ሁሉ በውኃው ላይ ቀልጦ ይጠፋል።",
+        "english_translation": "When we plunged into that natural pool, all the worries of the world melted away upon the water.",
+        "speaker": "Narrator",
+        "prosody_note": "Euphoric, warm, release of joy"
       },
       "image_prompt": {
-        "prompt": "Traditional black clay Ethiopian coffee pot (jebena) resting on embers, steam rising from its long slender spout, fresh green grass (ketema) strewn around on the earthen floor",
-        "negative_prompt": "ceramic teapot, metal kettle, modern tiles, cluttered objects",
-        "seed": 106,
-        "reference_tag": "jebena_vessel"
+        "prompt": "Four Ethiopian boys swimming and splashing in a pristine natural forest pool, turquoise clear water, surrounded by ancient jungle roots and vines, sunbeams illuminating water droplets in mid-air, pure childhood euphoria",
+        "negative_prompt": "chlorine tiled pool, modern swimwear, adult swimmers, scary depth",
+        "seed": 206,
+        "reference_tag": "swimming_pool_joy"
       },
       "motion_prompt": {
-        "camera_motion": "Locked-off static camera with subtle lens breathing",
-        "subject_motion": "Steam puffing softly from the jebena spout",
-        "seed": 1061
-      },
-      "music_cue": {
-        "action": "continue",
-        "ducking_active": true
-      }
-    },
-    {
-      "shot_id": "shot_07",
-      "shot_number": 7,
-      "shot_type": "medium",
-      "duration_seconds": 7.0,
-      "reason": "Intergenerational transmission: pouring the first cup (Abol) while children watch, passing cultural memory onward.",
-      "narration": {
-        "text": "አቦል ሲቀዳ ትውልዶች በአንድ ሰሌዳ ዙሪያ ይሰበሰባሉ።",
-        "english_translation": "As the first cup is poured, generations gather around one mat.",
-        "speaker": "Elder Emaye",
-        "prosody_note": "Inspiring and communal"
-      },
-      "image_prompt": {
-        "prompt": "Elder woman pouring dark stream of coffee from height into small handleless ceramic cups (cini) arranged on a wooden tray (rekebot), young granddaughter watching respectfully",
-        "negative_prompt": "spilling, multiple arms, awkward poses, western cups",
-        "seed": 107,
-        "reference_tag": "pouring_ritual"
-      },
-      "motion_prompt": {
-        "camera_motion": "Slow tilt-down following the dark coffee stream into the cini cups",
-        "subject_motion": "Continuous steady pour of coffee into cup without shaking",
-        "seed": 1071
+        "camera_motion": "Slow-motion side tracking along the surface of the shimmering pool",
+        "subject_motion": "Water splashing gracefully in slow motion as the boys swim",
+        "seed": 2061
       },
       "music_cue": {
         "action": "swell",
@@ -228,27 +200,55 @@
       }
     },
     {
-      "shot_id": "shot_08",
-      "shot_number": 8,
+      "shot_id": "shot_07",
+      "shot_number": 7,
       "shot_type": "medium_close_up",
       "duration_seconds": 6.5,
-      "reason": "Connection to the modern viewer: showing that the heritage remains alive within the grandchild in the diaspora.",
+      "reason": "Focuses on the enduring human connection: brotherhood between Mikiyas, Mihretab, Surafel, and the narrator.",
       "narration": {
-        "text": "ዛሬ ባሕር ማዶ ብሆንም ይህ መዓዛ ሁልጊዜ ወደቤቴ ይመልሰኛል።",
-        "english_translation": "Today, even across oceans, this scent always brings me back home.",
-        "speaker": "Younger Narrator",
-        "prosody_note": "Nostalgic, deeply personal resolution"
+        "text": "ሚኪያስ፣ ምሕረተአብ፣ ሱራፌል... በድንጋይ ላይ ተቀምጠን በሳቅ የምናሳልፈው ያ ሰዓት፣ ከማንኛውም ሀብት ይበልጥ ነበር።",
+        "english_translation": "Mikiyas, Mihretab, Surafel... sitting on the warm rocks laughing together, those hours were worth more than any treasure.",
+        "speaker": "Narrator",
+        "prosody_note": "Tender affection, genuine brotherhood"
       },
       "image_prompt": {
-        "prompt": "Young Ethiopian woman holding a small steaming cini cup with both hands, looking out a sunlit apartment window, calm contemplative smile, warm morning lighting",
-        "negative_prompt": "disfigured face, cold clinical colors, crowded background",
-        "seed": 108,
-        "reference_tag": "diaspora_connection"
+        "prompt": "Two Ethiopian boys sitting on a sun-warmed mossy river rock beside the spring pool, dripping wet with genuine happy smiles, sharing a laugh, lush green jungle backdrop, soft warm golden light, cinematic portrait",
+        "negative_prompt": "sad expressions, modern clothes, disfigured faces",
+        "seed": 207,
+        "reference_tag": "boys_laughing_rock"
       },
       "motion_prompt": {
-        "camera_motion": "Slow dolly push-in toward the young woman's serene face",
-        "subject_motion": "Subtle steam rising from the cup, gentle blink of eyes",
-        "seed": 1081
+        "camera_motion": "Slow gentle arc around the boys seated on the rock",
+        "subject_motion": "Natural laughter, one boy playfully nudges the other",
+        "seed": 2071
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_08",
+      "shot_number": 8,
+      "shot_type": "wide",
+      "duration_seconds": 7.0,
+      "reason": "The poignant transition of time: walking home at sunset, tired, drenched, but spiritually full.",
+      "narration": {
+        "text": "ፀሐይ ስትጠልቅ ወደ ቤት ስንመለስ፣ እማዬ ብትቆጣንም በውስጣችን ያለው ገነት አልጠፋም።",
+        "english_translation": "When we walked home at sunset, even if mother scolded us, the paradise inside us never faded.",
+        "speaker": "Narrator",
+        "prosody_note": "Nostalgic, gentle humor, heartwarming"
+      },
+      "image_prompt": {
+        "prompt": "Silhouettes of four young boys walking along an earthen pathway at golden sunset, tall tropical trees and acacia silhouetted against deep amber and violet sky, warm evening light in Arba Minch",
+        "negative_prompt": "city skyline, darkness, muddy indistinct shapes",
+        "seed": 208,
+        "reference_tag": "sunset_walk_home"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slow pull-back following the boys' silhouettes walking away into the sunset",
+        "subject_motion": "Slow steady footsteps, shadows lengthening across the path",
+        "seed": 2081
       },
       "music_cue": {
         "action": "continue",
@@ -258,25 +258,25 @@
     {
       "shot_id": "shot_09",
       "shot_number": 9,
-      "shot_type": "wide",
-      "duration_seconds": 7.0,
-      "reason": "Poetic resolution: leaves the viewer with the lingering warmth of the hearth and ancestral continuity.",
+      "shot_type": "close_up",
+      "duration_seconds": 6.5,
+      "reason": "Full circle resolution: back at the work desk, the adult narrator smiles. The memory revitalizes his present.",
       "narration": {
-        "text": "ሥራችን ቅርሳችን ነው፤ ፍቅር ደግሞ ቋንቋችን ነው።",
-        "english_translation": "Our roots are our heritage; love is our enduring language.",
-        "speaker": "Elder Emaye & Granddaughter in unison",
-        "prosody_note": "Harmonious, gentle, lingering final cadence"
+        "text": "ዛሬም እዚህ ጠረጴዛዬ ላይ ብሆን... የአርባ ምንጭ ምንጮች አሁንም በውስጤ ይፈሳሉ።",
+        "english_translation": "Even today, sitting at this desk... the forty springs of Arba Minch still flow within me.",
+        "speaker": "Narrator",
+        "prosody_note": "Peaceful, grounded, inspiring final cadence"
       },
       "image_prompt": {
-        "prompt": "Still life of empty cini cups on the rekebot tray, smoking incense burner (mabokhia) beside it, soft golden light fading gently to dusk, peaceful atmosphere",
-        "negative_prompt": "harsh darkness, artifacts, cluttered mess",
-        "seed": 109,
-        "reference_tag": "closing_hearth"
+        "prompt": "Close-up portrait of the adult Ethiopian man sitting at his modern computer desk, smiling serenely with eyes full of warm memories, looking up toward the room window, soft ambient light, 35mm film grain",
+        "negative_prompt": "depressed, crying, harsh contrast, blurry",
+        "seed": 209,
+        "reference_tag": "desk_resolution"
       },
       "motion_prompt": {
-        "camera_motion": "Slow pull-back dissolving into warm sunset light",
-        "subject_motion": "Very slow gentle smoke curling from the burner",
-        "seed": 1091
+        "camera_motion": "Very slow gentle push-in fading into warm light",
+        "subject_motion": "A gentle, genuine peaceful smile touches the narrator's face",
+        "seed": 2091
       },
       "music_cue": {
         "action": "fade_out",

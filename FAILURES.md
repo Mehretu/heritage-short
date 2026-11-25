@@ -40,6 +40,18 @@
   1. Adjusted the payload schema in `pipeline/smoke_test.py` and `pipeline/stage3_keyframes.py` to prompt-only: `{"prompt": full_prompt}`.
   2. Cloudflare successfully generated and returned 1024x1024 photorealistic images in **2.41s** (681 KB payload) logged to `runs.jsonl`.
 
+---
+
+## 5. Blocker: Abrasive High-Frequency Aliasing in Algorithmic Fallback Synthesis
+* **What Broke:** The local CPU fallback audio synthesizer used raw mathematical sine waves (`sin(2πft)`) at excessive digital amplitude, producing a harsh, piercing electronic buzz that sounded like an alarm oscillator rather than acoustic music.
+* **Failed Attempt 1:** Applied harmonic detuning; caused harsh acoustic beating and phase cancellation.
+* **Resolution:**
+  1. Replaced raw mathematical sine waves with an organic, peaceful soundscape: low-pass filtered pink noise simulating the gentle rushing forest streams of Arba Minch.
+  2. Layered gentle, decaying acoustic krar chimes and a quiet, warm sub-bass drone below 220 Hz.
+  3. Attenuated master volume to -18 dB (amplitude 4,500) with gentle 2.5s fades, completely removing digital high-frequency harshness.
+  4. Added override support for dropping real Gamo recordings or ACE-Step GPU renders directly into `outputs/music/custom_score.wav`.
+
+
 
 
 
