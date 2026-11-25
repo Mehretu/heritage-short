@@ -116,10 +116,15 @@ def concatenate_narration_audio(storyboard: dict, out_combined_wav: Path):
 def build_radio_cut(storyboard: dict):
     """
     Builds the 'Radio Cut' (Phase 1 Checkpoint):
-    Narration over placeholder music on a black screen, used for User Test 1.
+    Narration over placeholder music on a black screen with burned subtitles, used for User Test 1.
     """
     print("\n📻 Assembling Radio Cut (Phase 1 Deliverable)...")
     total_duration = sum(s.get("duration_seconds", 6.0) for s in storyboard.get("shots", []))
+    
+    # 1. Generate subtitles matching shot timings
+    srt_file = EXPORTS_DIR / "subtitles.srt"
+    generate_subtitles_srt(storyboard, srt_file)
+
     combined_voice = AUDIO_DIR / "combined_narration.wav"
     concatenate_narration_audio(storyboard, combined_voice)
 
@@ -162,20 +167,35 @@ def build_radio_cut(storyboard: dict):
         print(f"  ⚠️ Python audio mixer notice: {e}")
 
     if ffmpeg:
-        # Duck score under narration and display black screen
+        # Render black screen MP4 with ducked music and burned subtitles
+        srt_escaped = str(srt_file.resolve()).replace(":", "\\:").replace("\\", "/")
         cmd = [
             ffmpeg, "-y",
             "-f", "lavfi", "-i", f"color=c=black:s=1280x720:d={total_duration}:r=24",
             "-i", str(combined_voice),
             "-i", str(score_wav),
             "-filter_complex",
-            "[2:a]volume=0.25[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout]",
-            "-map", "0:v", "-map", "[aout]",
+            f"[2:a]volume=0.22[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout];[0:v]subtitles='{srt_escaped}':force_style='FontSize=20,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=2,Alignment=2,MarginV=40'[vout]",
+            "-map", "[vout]", "-map", "[aout]",
             "-c:v", "libx264", "-c:a", "aac", "-b:a", "192k",
             str(radio_cut_mp4)
         ]
-        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print(f"  ✅ Radio Cut exported successfully: {radio_cut_mp4}")
+        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if res.returncode != 0:
+            # Fallback if libass subtitle filter is unavailable
+            fallback_cmd = [
+                ffmpeg, "-y",
+                "-f", "lavfi", "-i", f"color=c=black:s=1280x720:d={total_duration}:r=24",
+                "-i", str(combined_voice),
+                "-i", str(score_wav),
+                "-filter_complex",
+                "[2:a]volume=0.22[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout]",
+                "-map", "0:v", "-map", "[aout]",
+                "-c:v", "libx264", "-c:a", "aac", "-b:a", "192k",
+                str(radio_cut_mp4)
+            ]
+            subprocess.run(fallback_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print(f"  ✅ Radio Cut Video (with burned subtitles) exported successfully: {radio_cut_mp4}")
     else:
         # Save placeholder radio cut manifest
         with open(radio_cut_mp4.with_suffix(".txt"), "w") as f:
