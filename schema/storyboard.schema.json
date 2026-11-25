@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "StoryboardSchema",
+  "description": "Validation schema for The Heritage Short AI film pipeline contract",
+  "type": "object",
+  "required": [
+    "title",
+    "logline",
+    "language",
+    "total_target_duration_seconds",
+    "style_block",
+    "shots",
+    "music",
+    "end_card"
+  ],
+  "properties": {
+    "title": { "type": "string" },
+    "logline": { "type": "string" },
+    "treatment": { "type": "string" },
+    "language": { "type": "string", "description": "Language code or name (e.g. 'am' or 'Amharic')" },
+    "total_target_duration_seconds": {
+      "type": "number",
+      "minimum": 60.0,
+      "maximum": 90.0,
+      "description": "Overall target duration between 60 and 90 seconds"
+    },
+    "voice_profile": {
+      "type": "object",
+      "required": ["speaker_name", "voice_instruction"],
+      "properties": {
+        "speaker_name": { "type": "string" },
+        "voice_instruction": { "type": "string", "description": "Prosody instructions e.g. 'calm, warm, unhurried, reflective'" }
+      }
+    },
+    "style_block": {
+      "type": "object",
+      "required": ["visual_style", "aspect_ratios", "color_palette", "lighting"],
+      "properties": {
+        "visual_style": { "type": "string", "description": "Global visual aesthetics (e.g. 35mm film grain, warm kodachrome)" },
+        "aspect_ratios": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["16:9", "9:16"] },
+          "minItems": 2
+        },
+        "color_palette": { "type": "string" },
+        "lighting": { "type": "string" }
+      }
+    },
+    "reference_assets": {
+      "type": "object",
+      "properties": {
+        "character_sheet": { "type": "string" },
+        "golden_reference": { "type": "string" }
+      }
+    },
+    "music": {
+      "type": "object",
+      "required": ["title", "caption", "tempo_bpm", "key", "instrumental", "seed"],
+      "properties": {
+        "title": { "type": "string" },
+        "caption": { "type": "string", "description": "Prompt for ACE-Step 1.5 including genre, instruments, texture" },
+        "tempo_bpm": { "type": "integer", "minimum": 40, "maximum": 200 },
+        "key": { "type": "string" },
+        "instrumental": { "type": "boolean" },
+        "seed": { "type": "integer" }
+      }
+    },
+    "end_card": {
+      "type": "object",
+      "required": ["text", "duration_seconds"],
+      "properties": {
+        "text": { "type": "string" },
+        "duration_seconds": { "type": "number", "minimum": 1.5, "maximum": 5.0 }
+      }
+    },
+    "shots": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 14,
+      "items": {
+        "type": "object",
+        "required": [
+          "shot_id",
+          "shot_number",
+          "shot_type",
+          "duration_seconds",
+          "reason",
+          "narration",
+          "image_prompt",
+          "motion_prompt",
+          "music_cue"
+        ],
+        "properties": {
+          "shot_id": { "type": "string" },
+          "shot_number": { "type": "integer", "minimum": 1 },
+          "shot_type": {
+            "type": "string",
+            "enum": [
+              "extreme_wide",
+              "wide",
+              "medium",
+              "medium_close_up",
+              "close_up",
+              "extreme_close_up",
+              "establishing",
+              "insert",
+              "cutaway",
+              "pov"
+            ]
+          },
+          "duration_seconds": { "type": "number", "minimum": 2.0, "maximum": 12.0 },
+          "reason": {
+            "type": "string",
+            "description": "Filmmaking purpose of this shot (vital for DESIGN.md and grading rubric)"
+          },
+          "narration": {
+            "type": "object",
+            "required": ["text", "english_translation"],
+            "properties": {
+              "text": { "type": "string" },
+              "english_translation": { "type": "string" },
+              "speaker": { "type": "string" },
+              "prosody_note": { "type": "string" }
+            }
+          },
+          "image_prompt": {
+            "type": "object",
+            "required": ["prompt", "seed"],
+            "properties": {
+              "prompt": { "type": "string" },
+              "negative_prompt": { "type": "string" },
+              "seed": { "type": "integer" },
+              "reference_tag": { "type": "string" }
+            }
+          },
+          "motion_prompt": {
+            "type": "object",
+            "required": ["camera_motion", "subject_motion", "seed"],
+            "properties": {
+              "camera_motion": { "type": "string" },
+              "subject_motion": { "type": "string" },
+              "seed": { "type": "integer" }
+            }
+          },
+          "music_cue": {
+            "type": "object",
+            "required": ["action", "ducking_active"],
+            "properties": {
+              "action": { "type": "string", "enum": ["start", "continue", "build", "fade_out", "swell"] },
+              "ducking_active": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

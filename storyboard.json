@@ -1,0 +1,287 @@
+{
+  "title": "The Scent of Roasted Coffee: A Mother's Sunday",
+  "logline": "Across fifty years and three generations, an Ethiopian mother's morning coffee ceremony preserves family continuity against displacement and change.",
+  "treatment": "Through the sensory ritual of the Ethiopian coffee ceremony (Buna Tetu) in Addis Ababa, a grandmother recalls how her mother roasted green beans during the drought in Wollo, proving that tradition is not a static relic, but a daily deliberate act of love.",
+  "language": "Amharic",
+  "total_target_duration_seconds": 68.0,
+  "voice_profile": {
+    "speaker_name": "Eden",
+    "voice_instruction": "Calm, warm, unhurried, intimate elder female cadence with gentle pauses between reflective thoughts."
+  },
+  "style_block": {
+    "visual_style": "Kodachrome 64 cinematography, natural diffused morning sunlight, gentle film grain, soft atmospheric smoke, 35mm lens, authentic Ethiopian domestic interiors",
+    "aspect_ratios": ["16:9", "9:16"],
+    "color_palette": "Deep amber, terracotta, roasted espresso brown, warm gold, emerald green grass (ketema)",
+    "lighting": "Low golden-hour directional light cutting through incense and frankincense smoke"
+  },
+  "reference_assets": {
+    "character_sheet": "references/character_sheet_emaye.png",
+    "golden_reference": "references/golden_ref_ceremony.png"
+  },
+  "music": {
+    "title": "Memories of the Jebena",
+    "caption": "Acoustic traditional Ethiopian krar and masenqo with gentle washint flute, contemplative tempo, minimalist acoustic drone, warm room reverb, no harsh drums",
+    "tempo_bpm": 68,
+    "key": "E minor / Tizita scale",
+    "instrumental": true,
+    "seed": 42801
+  },
+  "end_card": {
+    "text": "Made with AI • Antigravity Pipeline • In memory of Emaye",
+    "duration_seconds": 3.0
+  },
+  "shots": [
+    {
+      "shot_id": "shot_01",
+      "shot_number": 1,
+      "shot_type": "establishing",
+      "duration_seconds": 7.0,
+      "reason": "Establishes place and sacred morning quiet before domestic activity starts, grounding the viewer in the altitude and light of Addis Ababa.",
+      "narration": {
+        "text": "በጧቱ ፀጥታ ውስጥ የልጅነቴ ከተማ ትነቃለች።",
+        "english_translation": "In the morning silence, the city of my childhood awakens.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Quiet whisper, deep breath"
+      },
+      "image_prompt": {
+        "prompt": "Dawn overlooking eucalyptus trees and corrugated iron rooftops in Addis Ababa, golden morning haze, mountains in distant background, warm golden hour, 35mm film aesthetic",
+        "negative_prompt": "modern skyscrapers, blurry, oversaturated, neon, cartoon",
+        "seed": 101,
+        "reference_tag": "environment"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slow locked-off panoramic drift from left to right",
+        "subject_motion": "Subtle mist drifting across the hillside eucalyptus trees",
+        "seed": 1011
+      },
+      "music_cue": {
+        "action": "start",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_02",
+      "shot_number": 2,
+      "shot_type": "close_up",
+      "duration_seconds": 6.5,
+      "reason": "Focuses on raw earth and harvest: green coffee beans held in hands with history, anchoring the ritual's tactile beginning.",
+      "narration": {
+        "text": "እማዬ ሁልጊዜ አረንጓዴውን የቡና ፍሬ በእጇ ታበጥራለች።",
+        "english_translation": "My mother always sifted the raw green coffee beans by hand.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Fondness, gentle smile in the tone"
+      },
+      "image_prompt": {
+        "prompt": "Weathered, caring hands of an elder Ethiopian woman gently sifting raw green coffee beans on a traditional woven straw plate, warm morning light, soft focus background",
+        "negative_prompt": "extra fingers, deformed hands, plastic bowls, artificial lighting",
+        "seed": 102,
+        "reference_tag": "character_hands"
+      },
+      "motion_prompt": {
+        "camera_motion": "Gentle push-in toward the woven straw plate",
+        "subject_motion": "Hands slowly turning and shifting green beans",
+        "seed": 1021
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_03",
+      "shot_number": 3,
+      "shot_type": "medium",
+      "duration_seconds": 7.0,
+      "reason": "Introduces the main character in her element; verifies character consistency established in the character sheet.",
+      "narration": {
+        "text": "መከራ ቢመጣም ቡና ሳይፈላ ቀን አይጀምርም ትል ነበር።",
+        "english_translation": "She used to say: whatever hardship arrives, no day begins without brewing coffee.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Firm philosophical resolve, carrying ancestral strength"
+      },
+      "image_prompt": {
+        "prompt": "Elder Ethiopian woman wearing a traditional white netela shawl with subtle gold embroidery border, seated beside small charcoal stove, dignified serene expression, warm room interior",
+        "negative_prompt": "western clothes, distorted face, inconsistent age, high contrast studio lighting",
+        "seed": 103,
+        "reference_tag": "character_portrait"
+      },
+      "motion_prompt": {
+        "camera_motion": "Subtle handheld eye-level portrait float",
+        "subject_motion": "Gentle nod of the head, eyes blinking softly with serene look",
+        "seed": 1031
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_04",
+      "shot_number": 4,
+      "shot_type": "close_up",
+      "duration_seconds": 6.5,
+      "reason": "Captures the transformation beat: green beans roasting to dark amber, releasing fragrant smoke that unites the family.",
+      "narration": {
+        "text": "ፍሬዎቹ በእሳት ሲያብረቀርቁ ጭሱ በቤቱ ውስጥ ይሰራጫል።",
+        "english_translation": "As the beans glisten over the coals, the fragrance spreads through the home.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Sensory, unhurried, evocative"
+      },
+      "image_prompt": {
+        "prompt": "Black iron roasting pan over glowing charcoal embers, oily dark roasted coffee beans crackling, delicate blue-white aromatic smoke swirling upwards into morning ray",
+        "negative_prompt": "digital flames, electric stove, cartoonish smoke, blurry",
+        "seed": 104,
+        "reference_tag": "roasting_pan"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slight orbital arc around the smoking roasting pan",
+        "subject_motion": "Smoke rising lazily, embers gently pulsating orange glow",
+        "seed": 1041
+      },
+      "music_cue": {
+        "action": "build",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_05",
+      "shot_number": 5,
+      "shot_type": "medium_close_up",
+      "duration_seconds": 7.0,
+      "reason": "Emotional centerpiece: the customary offering of the roast aroma to guests and children, symbolizing hospitality.",
+      "narration": {
+        "text": "ጭሱን ወደ እኛ እያወዛወዘች ምርቃቷን ታዘንባለች።",
+        "english_translation": "Wafting the fragrant smoke toward us, she poured out her blessings.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Tender, emotional warmth, maternal cadence"
+      },
+      "image_prompt": {
+        "prompt": "Elder Ethiopian woman in white netela gently waving a small grass fan over the smoking pan toward the camera with a heartfelt loving smile, warm golden light",
+        "negative_prompt": "frightened expression, modern room, blurred face, deformed fingers",
+        "seed": 105,
+        "reference_tag": "character_wafting"
+      },
+      "motion_prompt": {
+        "camera_motion": "Gentle slow push-in at eye-level",
+        "subject_motion": "Rhythmic gentle motion of the hand wafting incense and coffee smoke",
+        "seed": 1051
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_06",
+      "shot_number": 6,
+      "shot_type": "insert",
+      "duration_seconds": 6.0,
+      "reason": "Iconic cultural object: the clay Jebena pot boiling on the charcoal hearth, representing patience and craft.",
+      "narration": {
+        "text": "ጥቁሯ ጀበና በእርጋታ ስትፈላ ትዕግስትን አስተማረችን።",
+        "english_translation": "The black clay jebena simmering peacefully taught us quiet patience.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Reflective and measured"
+      },
+      "image_prompt": {
+        "prompt": "Traditional black clay Ethiopian coffee pot (jebena) resting on embers, steam rising from its long slender spout, fresh green grass (ketema) strewn around on the earthen floor",
+        "negative_prompt": "ceramic teapot, metal kettle, modern tiles, cluttered objects",
+        "seed": 106,
+        "reference_tag": "jebena_vessel"
+      },
+      "motion_prompt": {
+        "camera_motion": "Locked-off static camera with subtle lens breathing",
+        "subject_motion": "Steam puffing softly from the jebena spout",
+        "seed": 1061
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_07",
+      "shot_number": 7,
+      "shot_type": "medium",
+      "duration_seconds": 7.0,
+      "reason": "Intergenerational transmission: pouring the first cup (Abol) while children watch, passing cultural memory onward.",
+      "narration": {
+        "text": "አቦል ሲቀዳ ትውልዶች በአንድ ሰሌዳ ዙሪያ ይሰበሰባሉ።",
+        "english_translation": "As the first cup is poured, generations gather around one mat.",
+        "speaker": "Elder Emaye",
+        "prosody_note": "Inspiring and communal"
+      },
+      "image_prompt": {
+        "prompt": "Elder woman pouring dark stream of coffee from height into small handleless ceramic cups (cini) arranged on a wooden tray (rekebot), young granddaughter watching respectfully",
+        "negative_prompt": "spilling, multiple arms, awkward poses, western cups",
+        "seed": 107,
+        "reference_tag": "pouring_ritual"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slow tilt-down following the dark coffee stream into the cini cups",
+        "subject_motion": "Continuous steady pour of coffee into cup without shaking",
+        "seed": 1071
+      },
+      "music_cue": {
+        "action": "swell",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_08",
+      "shot_number": 8,
+      "shot_type": "medium_close_up",
+      "duration_seconds": 6.5,
+      "reason": "Connection to the modern viewer: showing that the heritage remains alive within the grandchild in the diaspora.",
+      "narration": {
+        "text": "ዛሬ ባሕር ማዶ ብሆንም ይህ መዓዛ ሁልጊዜ ወደቤቴ ይመልሰኛል።",
+        "english_translation": "Today, even across oceans, this scent always brings me back home.",
+        "speaker": "Younger Narrator",
+        "prosody_note": "Nostalgic, deeply personal resolution"
+      },
+      "image_prompt": {
+        "prompt": "Young Ethiopian woman holding a small steaming cini cup with both hands, looking out a sunlit apartment window, calm contemplative smile, warm morning lighting",
+        "negative_prompt": "disfigured face, cold clinical colors, crowded background",
+        "seed": 108,
+        "reference_tag": "diaspora_connection"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slow dolly push-in toward the young woman's serene face",
+        "subject_motion": "Subtle steam rising from the cup, gentle blink of eyes",
+        "seed": 1081
+      },
+      "music_cue": {
+        "action": "continue",
+        "ducking_active": true
+      }
+    },
+    {
+      "shot_id": "shot_09",
+      "shot_number": 9,
+      "shot_type": "wide",
+      "duration_seconds": 7.0,
+      "reason": "Poetic resolution: leaves the viewer with the lingering warmth of the hearth and ancestral continuity.",
+      "narration": {
+        "text": "ሥራችን ቅርሳችን ነው፤ ፍቅር ደግሞ ቋንቋችን ነው።",
+        "english_translation": "Our roots are our heritage; love is our enduring language.",
+        "speaker": "Elder Emaye & Granddaughter in unison",
+        "prosody_note": "Harmonious, gentle, lingering final cadence"
+      },
+      "image_prompt": {
+        "prompt": "Still life of empty cini cups on the rekebot tray, smoking incense burner (mabokhia) beside it, soft golden light fading gently to dusk, peaceful atmosphere",
+        "negative_prompt": "harsh darkness, artifacts, cluttered mess",
+        "seed": 109,
+        "reference_tag": "closing_hearth"
+      },
+      "motion_prompt": {
+        "camera_motion": "Slow pull-back dissolving into warm sunset light",
+        "subject_motion": "Very slow gentle smoke curling from the burner",
+        "seed": 1091
+      },
+      "music_cue": {
+        "action": "fade_out",
+        "ducking_active": false
+      }
+    }
+  ]
+}
