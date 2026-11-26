@@ -118,3 +118,15 @@
   2. Purged all 9 poisoned cache entries: `rm -rf outputs/cache/keyframes`.
   3. Purged stale solid-color PNG files: `rm -f outputs/keyframes/*.png`.
   4. All 9 shot MP4 stubs (32-byte MOCK_VIDEO_CONTAINER files) also cleared.
+
+---
+
+## 11. Blocker: Silent Audio Playback in Apple QuickTime Player Due to 96,000 Hz AAC Sampling Rate
+* **What Broke:** Video exports rendered successfully, but playing `heritage_short_16x9.mp4` or `heritage_short_9x16.mp4` in Apple QuickTime Player or macOS Finder produced no sound (completely silent playback).
+* **Root Cause Analysis:**
+  1. Mixing mono voiceover with stereo background score through FFmpeg's `loudnorm` filter without explicit resampler directives caused `loudnorm` to upsample the audio stream to **96,000 Hz mono**.
+  2. Apple's native CoreAudio / AudioToolbox framework rejects 96 kHz AAC in standard MP4 containers (`kAudioFileUnsupportedDataFormatError (-66680)`), silencing the audio stream upon playback.
+* **Resolution:**
+  1. Upgraded the audio filter graph in `pipeline/stage6_assemble.py`: used `asplit` to feed sidechain compression, boosted the musical score volume by 2.5x, and injected `aformat=channel_layouts=stereo:sample_rates=48000`.
+  2. Explicitly enforced broadcast parameters on the output encoder: `-c:a aac -b:a 192k -ar 48000 -ac 2`.
+  3. Validated with native macOS audio player `/usr/bin/afplay`: verified clean, synchronous playback with both Amharic voiceover and Gamo choral score clearly audible.
