@@ -468,13 +468,20 @@ def assemble_final_film(storyboard: dict):
         ]
         subprocess.run(cmd_16_9, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        # 2. Rendering Vertical 9:16 (Center crop to 720x1280)
-        print("  📱 Rendering 9:16 vertical crop for mobile feeds with subtitle stream...")
+        # 2. Rendering Vertical 9:16 (Professional mobile fit with ambient blurred background)
+        print("  📱 Rendering 9:16 mobile fit with ambient background and subtitle stream...")
+        mobile_filter = (
+            "split[main][bg];"
+            "[bg]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,boxblur=25:5[blurred];"
+            "[main]scale=720:405[fg];"
+            "[blurred][fg]overlay=0:(1280-405)/2"
+        )
         cmd_9_16 = [
             ffmpeg, "-y",
             "-i", str(export_16_9),
-            "-vf", "crop=ih*(9/16):ih,scale=720:1280",
-            "-c:v", "libx264", "-c:a", "copy",
+            "-vf", mobile_filter,
+            "-c:v", "libx264", "-pix_fmt", "yuv420p",
+            "-c:a", "copy",
             "-c:s", "mov_text",
             str(export_9_16)
         ]

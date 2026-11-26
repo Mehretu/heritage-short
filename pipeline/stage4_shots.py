@@ -63,7 +63,9 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
 
     ffmpeg_bin = shutil.which("ffmpeg")
     if ffmpeg_bin:
-        filter_str = f"zoompan=z='{zoom_expr}':x='{x_expr}':y='{y_expr}':d={total_frames}:s=1280x720:fps={fps}"
+        # Pre-crop square 1024x1024 keyframe to 16:9 panorama without stretching, then apply camera motion
+        prep_filter = "crop=in_w:in_w*9/16:0:(in_h-in_w*9/16)/2,scale=1280:720"
+        filter_str = f"{prep_filter},zoompan=z='{zoom_expr}':x='{x_expr}':y='{y_expr}':d={total_frames}:s=1280x720:fps={fps}"
         cmd = [
             ffmpeg_bin, "-y",
             "-loop", "1",
@@ -146,7 +148,7 @@ def run_shots_stage(target_shot_id=None, force_regenerate=False):
 
         # Check if Kaggle Wan 2.2 clip is already dropped in outputs/wan_drops/{shot_id}.mp4
         wan_drop = PROJECT_ROOT / "outputs" / "wan_drops" / f"{shot_id}.mp4"
-        if wan_drop.exists():
+        if wan_drop.exists() and wan_drop.stat().st_size > 1000:
             shutil.copy2(wan_drop, out_mp4)
             model_used = "Wan-2.2-TI2V-5B-Kaggle"
             used_mock = False
