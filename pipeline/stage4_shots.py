@@ -136,9 +136,11 @@ def run_shots_stage(target_shot_id=None, force_regenerate=False):
             if not out_mp4_9x16.exists():
                 generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4_9x16, aspect="9x16")
             print(f"  ⚡ [{shot_id}] CACHE HIT (hash: {input_hash[:8]}...) -> Reusing moving shot")
+            wan_drop = PROJECT_ROOT / "outputs" / "wan_drops" / f"{shot_id}.mp4"
+            model_cached = "Wan-2.2-TI2V-5B-Kaggle" if (wan_drop.exists() and wan_drop.stat().st_size > 1000) else "FFmpeg-KenBurns-PanZoom"
             log_run(
                 stage="shots",
-                model="Wan-2.2-TI2V-5B/KenBurns",
+                model=model_cached,
                 parameters={"motion": motion_cfg, "duration": duration},
                 seed=seed,
                 latency_seconds=0.001,
