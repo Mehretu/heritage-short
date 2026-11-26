@@ -4,11 +4,6 @@
   <meta charset="UTF-8">
   <title>The Forty Springs of Arba Minch — Final Engineering & Creative Production Report</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <style>
     :root {
       --primary: #0f172a;
@@ -25,20 +20,20 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       font-size: 10.5pt;
       line-height: 1.65;
       color: #1e293b;
       background: #ffffff;
       margin: 0 auto;
       padding: 40px 30px;
-      max-width: 900px;
+      max-width: 920px;
       -webkit-font-smoothing: antialiased;
     }
 
     /* Screen-only Print Bar */
     .print-bar {
-      margin-bottom: 30px;
+      margin-bottom: 25px;
       padding: 12px 20px;
       background: #f8fafc;
       border: 1px solid #cbd5e1;
@@ -195,14 +190,106 @@
       color: #1e293b;
     }
 
-    /* Diagrams */
-    .mermaid {
-      margin: 22px 0;
+    .math-box {
+      background: #f8fafc;
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      padding: 10px 14px;
+      margin: 14px 0;
       text-align: center;
-      background: #ffffff;
-      padding: 12px;
-      border: 1px solid var(--border);
+      font-family: ui-monospace, Menlo, Monaco, monospace;
+      font-size: 10pt;
+      color: #0f172a;
+    }
+
+    /* Flowchart Visual Cards */
+    .flow-container {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 20px 0;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-dark);
       border-radius: 6px;
+    }
+
+    .flow-step {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 8px 12px;
+      min-width: 130px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .flow-step-tag {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .flow-step-desc {
+      font-size: 8pt;
+      color: #64748b;
+      line-height: 1.3;
+    }
+
+    .flow-arrow {
+      color: #94a3b8;
+      font-weight: bold;
+      font-size: 12pt;
+    }
+
+    /* Architecture Grid */
+    .arch-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 20px 0;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border-dark);
+      border-radius: 6px;
+    }
+
+    .arch-box {
+      flex: 1;
+      min-width: 170px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .arch-title {
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .arch-body {
+      font-size: 8.5pt;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .arch-arrow {
+      display: flex;
+      align-items: center;
+      color: #94a3b8;
+      font-weight: bold;
+      font-size: 14pt;
     }
 
     /* Print Specific Rules */
@@ -221,7 +308,7 @@
 
       @page {
         size: A4 portrait;
-        margin: 16mm 14mm 16mm 14mm;
+        margin: 15mm 12mm 15mm 12mm;
       }
 
       h1, h2, h3, h4 {
@@ -230,7 +317,7 @@
         color: #000000;
       }
 
-      table, figure, .mermaid, pre, blockquote {
+      table, figure, .flow-container, .arch-grid, pre, blockquote {
         page-break-inside: avoid;
         break-inside: avoid;
       }
@@ -267,231 +354,339 @@
 </head>
 <body>
   <div class="print-bar">
-    <span>Document: Final Engineering & Creative Production Report</span>
+    <div>
+      <span style="font-weight: 600; color: #0f172a;">Final Engineering & Creative Production Report</span>
+      <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+        To remove the file directory URL from the PDF: in the Print dialog (Cmd+P), expand <strong>More settings</strong> and uncheck <strong>Headers and footers</strong>.
+      </div>
+    </div>
     <button class="print-btn" onclick="window.print()">Print to PDF / Save</button>
   </div>
-  <div id="content">Rendering document...</div>
 
-  <script id="raw-markdown" type="text/plain">
-# The Forty Springs of Arba Minch (የአርባ ምንጭ 40 ምንጮች)
-## Final Engineering & Creative Production Report
-**Course / Challenge:** 10 Academy — AI-Content Generation: The Heritage Short  
-**Author:** Mehret  
-**Date:** November 2026  
-**Master Film Deliverables:**
-* **16:9 Cinema Master:** `outputs/exports/heritage_short_16x9.mp4` (1280×720 • 72.5s • -14 LUFS • 48 kHz Stereo AAC • Baked-in Bilingual Subtitles • AI End Card)
-* **9:16 Vertical Mobile Master:** `outputs/exports/heritage_short_9x16.mp4` (720×1280 • 72.5s • Native Full-Bleed • Mobile Safe-Zone Captions)
-* **Synchronized SubRip Subtitles:** `outputs/exports/subtitles.srt` (Amharic & English synced to speech)
-* **Model Execution Audit Trail:** `runs.jsonl` (Full latency, seed, model, cost, and SHA-256 hash log)
-
----
-
-## 1. What We Set Out to Make and for Whom
-
-### 1.1 The Creative Concept
-*The Forty Springs of Arba Minch* is a 72.5-second generative short film exploring the interplay between sensory memory, brotherhood, and natural heritage. It opens in a contemporary setting: an Ethiopian software developer sits at his cluttered work desk late into the evening, drained by the demands of code and modern professional isolation. A glass of water and the glow of his monitor trigger a sensory memory that pulls him back to his childhood in Arba Minch, Southern Ethiopia.
-
-The film transitions into an evocative flashback: beneath the lush, emerald groundwater forest canopy nestled between Lake Abaya and Lake Chamo, four barefoot boys—the narrator, his younger brother **Mikiyas**, and their inseparable friends **Mihretab** and **Surafel**—sneak past their mothers' Sunday morning watch. They race through sun-dappled acacia forests to dive into the bubbling sanctuary of the forty natural springs (*Arba Minch*). The memory restores the narrator's emotional equilibrium, returning him to his desk with a peaceful, grounded smile.
-
-```mermaid
-flowchart LR
-    A["Present: Late-Night Desk<br/>(Sensory Catalyst)"] --> B["The Awakening<br/>(Arba Minch Canopy)"]
-    B --> C["The Mischief<br/>(Conspiracy by Gate)"]
-    C --> D["The Escape<br/>(Running Barefoot)"]
-    D --> E["The Sacred Springs<br/>(Bubbling Water)"]
-    E --> F["The Joy & Brotherhood<br/>(Natural Pool Plunge)"]
-    F --> G["The Sunset Walk<br/>(Golden Silhouettes)"]
-    G --> H["Present: Grounded Smile<br/>(Enduring Sanctuary)"]
-```
-
-### 1.2 Target Audience & Personal Stakes
-The film was engineered for two distinct, highly personal audiences:
-1. **Primary Persona (The Real-Life Protagonists):** The narrator's real-life brother **Mikiyas** and childhood friends **Mihretab** and **Surafel ("Abulala")**, now young adults scattered across urban careers. The film serves as a living, permanent artistic tribute to their shared youth.
-2. **Secondary Persona (The Ethiopian Diaspora & Urban Tech Workers):** Young Ethiopian professionals and diaspora workers who spend long hours behind computers in concrete cities, feeling an unspoken longing for the carefree outdoor freedom, natural landscapes, and unhurried human bonds of their homeland.
-
----
-
-## 2. What We Learned from Our Audience (User Testing & Iterations)
-
-We conducted two structured rounds of user testing with real audience members to ground the generative pipeline in genuine human response rather than theoretical assumptions.
-
-### Round 1: The Radio Cut Prototype (Audio & Narration Audit)
-* **Tested Artifact:** `outputs/exports/radio_cut.wav` / `radio_cut.mp4` (75.5s combined Amharic narration over background score on a black screen).
-* **Audience:** Native Amharic speakers and family members.
-* **Key Findings & What We Learned:**
-  1. *Voice Identity Disconnect:* The default multilingual voice was female, which broke emotional immersion for a first-person male memory about his brother and childhood mischief.
-  2. *Phonetic Collapse on Amharic Gemination (ጥብቅና ላልት):* Ge'ez script does not graphically represent consonant doubling. The neural TTS mispronounced 19 critical words (e.g., `ጠረጴዛዬ`, `የምድር`, `ተደብቀን`, `ቀልጦ ይጠፋል`), reading them with flat phonetic pacing.
-* **Iterative Changes Made:** Switched to a male baritone voice profile (`Charon`) and injected strict phonetic directives and phonetic spacing into the TTS prompts, restoring authentic Addis Ababa cadence.
-
-### Round 2: The Near-Final Master Cut (Visuals, Subtitles, Codecs & Score)
-* **Audience:** Tested with 3 audience members representing our target personas and technical peers:
-  1. **Surafel ("Abulala" — Real-Life Childhood Friend & Named Protagonist):**
-     Surafel's reaction upon seeing his childhood recreation was visceral and emotional:
-     > **[26/11/2026 10:16 AM] Abulala:** *"Bro WTF! i was not ready for this"*  
-     > **[26/11/2026 10:24 AM] Abulala:** *"Mareamn it gave me mixed emotions , ye ai amaregna besak gedelegn and the nostalgia made me cry fr, ahun yalenbetn saseb,,,,,the freedom eza sinhed yalkew sinmeles ebet bikotunem worth yaderg neber mnamn as you said, brooo also the ጠረጴዛ part broooooo i was not ready for these"*
-     *What we learned:* Surafel's response confirmed that the narrative arc—the contrast between the freedom of childhood Arba Minch and the adult desk-bound reality (*"the ጠረጴዛ part"*)—hit the exact emotional target. His reaction also highlighted the subtle uncanniness of synthetic Amharic (*"ye ai amaregna besak gedelegn"*), reinforcing why prominent AI transparency labels are vital.
-  2. **Mikiyas (Younger Brother & Protagonist):** Praised Candidate 1 score (Southern Ethiopian Gamo polyphonic humming, seed 40401) for capturing the sacred mist of Arba Minch mornings, and validated the emotional closure of the dedication end card.
-  3. **Dawit (Senior Multimedia Video Editor, Addis Ababa):** Discovered that macOS QuickTime Player played the video with **complete silence**, exposing an underlying audio container bug.
-  4. **Eden (Diaspora UX Designer, Toronto):** Pointed out that letterbox black bars in vertical mode looked like an amateur screen-record; she strongly advocated for native full-bleed vertical framing.
-* **Iterative Changes Made:**
-  - Enforced broadcast-standard **48,000 Hz Stereo AAC** audio encoding to fix the QuickTime playback bug.
-  - Replaced pillarbox padding with native full-bleed **720×1280** vertical framing.
-  - Baked bilingual subtitles directly into the video pixels in mobile and widescreen safe zones.
-
----
-
-## 3. The Hardest Problem and How We Solved It
-
-Our single hardest engineering challenge was the **Headless Remote GPU Platform Security Boundary (ADR 09)**, combined with the downstream **Apple CoreAudio 96kHz Codec Silence (Blocker 11)**.
-
-### Problem A: The Kaggle REST API Compute Boundary
-To generate neural video motion using Wan 2.2 I2V (14B parameters), we required high-VRAM NVIDIA GPUs (2x T4 or P100), which Kaggle offers on its free tier (30 hours/week). We wrote a Python orchestrator to programmatically push notebook kernels via Kaggle's REST API (`https://www.kaggle.com/api/v1/kernels/push`).
-
-However, while Kaggle's API accepts bearer tokens for reading data, any `POST` request attempting to allocate GPU compute programmatically returned `HTTP 401 Unauthorized access`. Kaggle's infrastructure intentionally gates GPU allocation behind interactive, human-verified web sessions to prevent automated botnet crypto-mining and headless compute abuse.
-
-* **How We Solved It (ADR 09 — The Asynchronous Drop-In Pattern):**
-  Rather than writing brittle headless browser scrapers (which violate platform terms) or giving up on zero-cost pipelines, we architected a decoupled drop-in architecture:
-  1. The pipeline defaults to a built-in mathematical Ken Burns pan-and-zoom engine in FFmpeg, producing smooth 24fps motion from keyframes in under 2 seconds per shot. This guarantees the entire pipeline runs deterministically from a clean clone without blocking.
-  2. A file-system watcher monitors `outputs/wan_drops/{shot_id}.mp4`. When Wan 2.2 clips are batch-rendered via Kaggle's interactive session or local GPUs, the pipeline automatically ingests them on the next run without altering pipeline code.
-
-### Problem B: The QuickTime Silent Audio Bug (Blocker 11)
-During User Test 2, video files played with full sound in VLC, but QuickTime Player on macOS was completely silent.
-* **Root Cause:** FFmpeg's `loudnorm` filter (EBU R128 normalization) defaulted to an internal resampling rate of **96,000 Hz mono**. Apple CoreAudio's `AudioToolbox` framework strictly rejects 96 kHz AAC streams in standard MP4 containers, throwing error code `kAudioFileUnsupportedDataFormatError (-66680)` and muting audio playback.
-* **How We Solved It:** We restructured the assembly audio filtergraph in `pipeline/stage6_assemble.py`:
-  ```bash
-  [1:a]aformat=channel_layouts=stereo:sample_rates=48000,asplit=2[v_main][v_sc];
+  <main>
+<h1>The Forty Springs of Arba Minch (የአርባ ምንጭ 40 ምንጮች)</h1>
+<h2>Final Engineering & Creative Production Report</h2>
+<p><strong>Course / Challenge:</strong> 10 Academy — AI-Content Generation: The Heritage Short</p>
+<p><strong>Author:</strong> Mehret</p>
+<p><strong>Date:</strong> November 2026</p>
+<p><strong>Master Film Deliverables:</strong></p>
+<ul>
+  <li><strong>16:9 Cinema Master:</strong> <code>outputs/exports/heritage_short_16x9.mp4</code> (1280×720 • 72.5s • -14 LUFS • 48 kHz Stereo AAC • Baked-in Bilingual Subtitles • AI End Card)</li>
+  <li><strong>9:16 Vertical Mobile Master:</strong> <code>outputs/exports/heritage_short_9x16.mp4</code> (720×1280 • 72.5s • Native Full-Bleed • Mobile Safe-Zone Captions)</li>
+  <li><strong>Synchronized SubRip Subtitles:</strong> <code>outputs/exports/subtitles.srt</code> (Amharic & English synced to speech)</li>
+  <li><strong>Model Execution Audit Trail:</strong> <code>runs.jsonl</code> (Full latency, seed, model, cost, and SHA-256 hash log)</li>
+</ul>
+<hr>
+<h2>1. What We Set Out to Make and for Whom</h2>
+<h3>1.1 The Creative Concept</h3>
+<p><em>The Forty Springs of Arba Minch</em> is a 72.5-second generative short film exploring the interplay between sensory memory, brotherhood, and natural heritage. It opens in a contemporary setting: an Ethiopian software developer sits at his cluttered work desk late into the evening, drained by the demands of code and modern professional isolation. A glass of water and the glow of his monitor trigger a sensory memory that pulls him back to his childhood in Arba Minch, Southern Ethiopia.</p>
+<p>The film transitions into an evocative flashback: beneath the lush, emerald groundwater forest canopy nestled between Lake Abaya and Lake Chamo, four barefoot boys—the narrator, his younger brother <strong>Mikiyas</strong>, and their inseparable friends <strong>Mihretab</strong> and <strong>Surafel</strong>—sneak past their mothers' Sunday morning watch. They race through sun-dappled acacia forests to dive into the bubbling sanctuary of the forty natural springs (<em>Arba Minch</em>). The memory restores the narrator's emotional equilibrium, returning him to his desk with a peaceful, grounded smile.</p>
+<div class="flow-container"><div class="flow-step"><div class="flow-step-tag">Present</div><div class="flow-step-desc">Late-Night Desk<br><small>Sensory Catalyst</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">The Awakening</div><div class="flow-step-desc">Arba Minch Canopy<br><small>Emerald Groundwater</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">The Mischief</div><div class="flow-step-desc">Conspiracy by Gate<br><small>Saturday Morning</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">The Escape</div><div class="flow-step-desc">Running Barefoot<br><small>Forest Trails</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">The Springs</div><div class="flow-step-desc">The Sacred Springs<br><small>Bubbling Water</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">Brotherhood</div><div class="flow-step-desc">Pool Plunge<br><small>Laughter & Joy</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">Return</div><div class="flow-step-desc">Golden Silhouettes<br><small>Sunset Walk</small></div></div><div class="flow-arrow">&rarr;</div><div class="flow-step"><div class="flow-step-tag">Present</div><div class="flow-step-desc">Grounded Smile<br><small>Enduring Sanctuary</small></div></div></div>
+<h3>1.2 Target Audience & Personal Stakes</h3>
+<p>The film was engineered for two distinct, highly personal audiences:</p>
+<ol>
+  <li><strong>Primary Persona (The Real-Life Protagonists):</strong> The narrator's real-life brother <strong>Mikiyas</strong> and childhood friends <strong>Mihretab</strong> and <strong>Surafel ("Abulala")</strong>, now young adults scattered across urban careers. The film serves as a living, permanent artistic tribute to their shared youth.</li>
+  <li><strong>Secondary Persona (The Ethiopian Diaspora & Urban Tech Workers):</strong> Young Ethiopian professionals and diaspora workers who spend long hours behind computers in concrete cities, feeling an unspoken longing for the carefree outdoor freedom, natural landscapes, and unhurried human bonds of their homeland.</li>
+</ol>
+<hr>
+<h2>2. What We Learned from Our Audience (User Testing & Iterations)</h2>
+<p>We conducted two structured rounds of user testing with real audience members to ground the generative pipeline in genuine human response rather than theoretical assumptions.</p>
+<h3>Round 1: The Radio Cut Prototype (Audio & Narration Audit)</h3>
+<ul>
+  <li><strong>Tested Artifact:</strong> <code>outputs/exports/radio_cut.wav</code> / <code>radio_cut.mp4</code> (75.5s combined Amharic narration over background score on a black screen).</li>
+  <li><strong>Audience:</strong> Native Amharic speakers and family members.</li>
+  <li><strong>Key Findings & What We Learned:</strong></li>
+</ul>
+<ol>
+  <li><em>Voice Identity Disconnect:</em> The default multilingual voice was female, which broke emotional immersion for a first-person male memory about his brother and childhood mischief.</li>
+  <li><em>Phonetic Collapse on Amharic Gemination (ጥብቅና ላልት):</em> Ge'ez script does not graphically represent consonant doubling. The neural TTS mispronounced 19 critical words (e.g., <code>ጠረጴዛዬ</code>, <code>የምድር</code>, <code>ተደብቀን</code>, <code>ቀልጦ ይጠፋል</code>), reading them with flat phonetic pacing.</li>
+</ol>
+<ul>
+  <li><strong>Iterative Changes Made:</strong> Switched to a male baritone voice profile (<code>Charon</code>) and injected strict phonetic directives and phonetic spacing into the TTS prompts, restoring authentic Addis Ababa cadence.</li>
+</ul>
+<h3>Round 2: The Near-Final Master Cut (Visuals, Subtitles, Codecs & Score)</h3>
+<ul>
+  <li><strong>Audience:</strong> Tested with 3 audience members representing our target personas and technical peers:</li>
+</ul>
+<ol>
+  <li><strong>Surafel ("Abulala" — Real-Life Childhood Friend & Named Protagonist):</strong></li>
+</ol>
+<p>Surafel's reaction upon seeing his childhood recreation was visceral and emotional:</p>
+<blockquote><strong>[26/11/2026 10:16 AM] Abulala:</strong> <em>"Bro WTF! i was not ready for this"</em><br>
+<strong>[26/11/2026 10:24 AM] Abulala:</strong> <em>"Mareamn it gave me mixed emotions , ye ai amaregna besak gedelegn and the nostalgia made me cry fr, ahun yalenbetn saseb,,,,,the freedom eza sinhed yalkew sinmeles ebet bikotunem worth yaderg neber mnamn as you said, brooo also the ጠረጴዛ part broooooo i was not ready for these"</em></blockquote>
+<p><em>What we learned:</em> Surafel's response confirmed that the narrative arc—the contrast between the freedom of childhood Arba Minch and the adult desk-bound reality (<em>"the ጠረጴዛ part"</em>)—hit the exact emotional target. His reaction also highlighted the subtle uncanniness of synthetic Amharic (<em>"ye ai amaregna besak gedelegn"</em>), reinforcing why prominent AI transparency labels are vital.</p>
+<ol>
+  <li><strong>Mikiyas (Younger Brother & Protagonist):</strong> Praised Candidate 1 score (Southern Ethiopian Gamo polyphonic humming, seed 40401) for capturing the sacred mist of Arba Minch mornings, and validated the emotional closure of the dedication end card.</li>
+  <li><strong>Dawit (Senior Multimedia Video Editor, Addis Ababa):</strong> Discovered that macOS QuickTime Player played the video with <strong>complete silence</strong>, exposing an underlying audio container bug.</li>
+  <li><strong>Eden (Diaspora UX Designer, Toronto):</strong> Pointed out that letterbox black bars in vertical mode looked like an amateur screen-record; she strongly advocated for native full-bleed vertical framing.</li>
+</ol>
+<ul>
+  <li><strong>Iterative Changes Made:</strong></li>
+  <li>Enforced broadcast-standard <strong>48,000 Hz Stereo AAC</strong> audio encoding to fix the QuickTime playback bug.</li>
+  <li>Replaced pillarbox padding with native full-bleed <strong>720×1280</strong> vertical framing.</li>
+  <li>Baked bilingual subtitles directly into the video pixels in mobile and widescreen safe zones.</li>
+</ul>
+<hr>
+<h2>3. The Hardest Problem and How We Solved It</h2>
+<p>Our single hardest engineering challenge was the <strong>Headless Remote GPU Platform Security Boundary (ADR 09)</strong>, combined with the downstream <strong>Apple CoreAudio 96kHz Codec Silence (Blocker 11)</strong>.</p>
+<h3>Problem A: The Kaggle REST API Compute Boundary</h3>
+<p>To generate neural video motion using Wan 2.2 I2V (14B parameters), we required high-VRAM NVIDIA GPUs (2x T4 or P100), which Kaggle offers on its free tier (30 hours/week). We wrote a Python orchestrator to programmatically push notebook kernels via Kaggle's REST API (<code>https://www.kaggle.com/api/v1/kernels/push</code>).</p>
+<p>However, while Kaggle's API accepts bearer tokens for reading data, any <code>POST</code> request attempting to allocate GPU compute programmatically returned <code>HTTP 401 Unauthorized access</code>. Kaggle's infrastructure intentionally gates GPU allocation behind interactive, human-verified web sessions to prevent automated botnet crypto-mining and headless compute abuse.</p>
+<ul>
+  <li><strong>How We Solved It (ADR 09 — The Asynchronous Drop-In Pattern):</strong></li>
+</ul>
+<p>Rather than writing brittle headless browser scrapers (which violate platform terms) or giving up on zero-cost pipelines, we architected a decoupled drop-in architecture:</p>
+<ol>
+  <li>The pipeline defaults to a built-in mathematical Ken Burns pan-and-zoom engine in FFmpeg, producing smooth 24fps motion from keyframes in under 2 seconds per shot. This guarantees the entire pipeline runs deterministically from a clean clone without blocking.</li>
+  <li>A file-system watcher monitors <code>outputs/wan_drops/{shot_id}.mp4</code>. When Wan 2.2 clips are batch-rendered via Kaggle's interactive session or local GPUs, the pipeline automatically ingests them on the next run without altering pipeline code.</li>
+</ol>
+<h3>Problem B: The QuickTime Silent Audio Bug (Blocker 11)</h3>
+<p>During User Test 2, video files played with full sound in VLC, but QuickTime Player on macOS was completely silent.</p>
+<ul>
+  <li><strong>Root Cause:</strong> FFmpeg's <code>loudnorm</code> filter (EBU R128 normalization) defaulted to an internal resampling rate of <strong>96,000 Hz mono</strong>. Apple CoreAudio's <code>AudioToolbox</code> framework strictly rejects 96 kHz AAC streams in standard MP4 containers, throwing error code <code>kAudioFileUnsupportedDataFormatError (-66680)</code> and muting audio playback.</li>
+  <li><strong>How We Solved It:</strong> We restructured the assembly audio filtergraph in <code>pipeline/stage6_assemble.py</code>:</li>
+</ul>
+<pre><code>  [1:a]aformat=channel_layouts=stereo:sample_rates=48000,asplit=2[v_main][v_sc];
   [2:a]aformat=channel_layouts=stereo:sample_rates=48000,volume=2.5[score];
   [score][v_sc]sidechaincompress=threshold=0.03:ratio=5:attack=200:release=1200[ducked_score];
   [v_main][ducked_score]amix=inputs=2:duration=first:dropout_transition=2[mixed_audio];
-  [mixed_audio]loudnorm=I=-14:TP=-1.0:LRA=11,aformat=channel_layouts=stereo:sample_rates=48000[aout]
-  ```
-  Adding explicit `-ar 48000 -ac 2` and `aformat` constraints restored universal, pristine playback across macOS, iOS, Android, and web players.
+  [mixed_audio]loudnorm=I=-14:TP=-1.0:LRA=11,aformat=channel_layouts=stereo:sample_rates=48000[aout]</code></pre>
+<p>Adding explicit <code>-ar 48000 -ac 2</code> and <code>aformat</code> constraints restored universal, pristine playback across macOS, iOS, Android, and web players.</p>
+<hr>
+<h2>4. The Suggested Practice That Helped and the One That Did Not</h2>
+<h3>The Practice That Helped: Single Source of Truth Contract + Content-Addressable Caching</h3>
+<ul>
+  <li><strong>The Practice:</strong> Decoupling creative design from execution code into a strictly validated JSON contract (<code>storyboard.json</code> governed by <code>schema/storyboard.schema.json</code>), bound to content-addressable <strong>SHA-256 caching</strong>.</li>
+  <li><strong>Why It Succeeded:</strong> In early tests, running generative pipelines was chaotic: prompts were hardcoded across multiple <code>.py</code> scripts, causing subtle prompt drift, duplicated model calls, and wasted quota. By centralizing all shot durations, character DNA, camera motion, and audio cues into <code>storyboard.json</code>, every stage derived its cache keys deterministically:</li>
+</ul>
+<div class="math-box">\text{CacheKey} = \text{SHA256}(\text{Prompt} + \text{Duration} + \text{Seed} + \text{InputHash})</div>
+<p>When a developer tweaks only Shot 03's camera prompt and re-runs the pipeline, Shots 1, 2, and 4–9 return instant cache hits in <strong>0.001s</strong>, and only Shot 03 regenerates. This single practice transformed the pipeline from a fragile prototype into a professional software system.</p>
+<h3>The Practice That Did Not Help: Relying on Built-In FFmpeg Subtitle Filters & Unconditioned Multilingual TTS</h3>
+<ul>
+  <li><strong>The Practice:</strong> Using standard FFmpeg <code>-vf subtitles=subtitles.srt</code> or <code>drawtext</code> filters, and relying on default commercial multilingual TTS out of the box.</li>
+  <li><strong>Why It Failed:</strong></li>
+</ul>
+<ol>
+  <li><em>FFmpeg Filter Portability Failure:</em> Standard Homebrew and Linux FFmpeg binary distributions frequently omit <code>libass</code> and <code>libfreetype</code> compile flags. Attempting to use <code>subtitles=...</code> caused clean clone builds on other machines to crash with <code>No such filter: &#x27;subtitles&#x27;</code>.</li>
+  <li><em>Unconditioned Multilingual TTS Failure:</em> Commercial TTS engines advertised as "multilingual" handle Amharic Ge'ez script by transliterating characters phonetically as flat syllables, completely ignoring unwritten consonant gemination (<em>ጥብቅና ላልት</em>). Relying on the tool's default capability produced robotic, incomprehensible speech.</li>
+</ol>
+<ul>
+  <li><strong>Our Workaround:</strong> We discarded the broken <code>libass</code> filter and built a pure-Python Pillow subtitle engine that renders pixel-perfect open captions using native system fonts, composited via FFmpeg's universal <code>overlay</code> filter. For TTS, we developed an explicit phonetic steering wrapper.</li>
+</ul>
+<hr>
+<h2>5. Ceiling Work: Pushing Beyond Baseline Requirements</h2>
+<p>To deliver an exceptional production, we pushed significantly beyond the baseline project requirements:</p>
+<ol>
+  <li><strong>Declarative Character Consistency System (ADR 08):</strong></li>
+</ol>
+<p>Standard diffusion pipelines suffer severe character drift across shots. We established a formal <code>&quot;characters&quot;</code> contract in <code>schema/storyboard.schema.json</code> locking physical DNA attributes (age, skin tone, facial structure, clothing) for 5 distinct roles. We generated a master 2×3 character reference grid (<code>references/boys_arba_minch_sheet.png</code>) and injected strict East African Habesha anthropomorphic keywords, completely preventing racial or facial drift across shots.</p>
+<ol>
+  <li><strong>Zero-Dependency Pixel-Burned Subtitle Engine (ADR 07):</strong></li>
+</ol>
+<p>Rather than settling for soft <code>.srt</code> files that social media feeds strip away, we built an automated subtitle burning engine in <code>stage6_assemble.py</code>:</p>
+<ul>
+  <li>Auto-wrapping text preventing line overflow.</li>
+  <li>Dynamic semi-transparent rounded pill backdrops (<code>rgba(10, 10, 14, 210)</code>) with hairline borders and text drop shadows.</li>
+  <li>Safe-zone positioning: 16:9 lower third (<code>y=665</code>) and 9:16 mobile safe zone (<code>y=1020</code>), guaranteeing captions are never obscured by TikTok/Reels UI buttons.</li>
+</ul>
+<ol>
+  <li><strong>Native Dual-Aspect Ratio Architecture (16:9 Cinema & 9:16 Mobile):</strong></li>
+</ol>
+<p>Instead of taking a 16:9 video and applying blurry letterbox bars or cheap center cropping, our pipeline generates native framing for both aspect ratios: full 1280×720 widescreen panorama and native full-bleed 720×1280 vertical video.</p>
+<ol>
+  <li><strong>Complete Zero-Cost Free-Tier Accounting ($0.00 vs $7.77):</strong></li>
+</ol>
+<p>We engineered the entire production without entering a credit card, orchestrating open weights and developer tiers with complete cost transparency in <code>COSTS.md</code> and <code>runs.jsonl</code>.</p>
+<hr>
+<h2>6. What We Would Build Next (Future Roadmap)</h2>
+<p>If given another sprint, our roadmap focuses on three high-impact extensions:</p>
+<ol>
+  <li><strong>Interactive Web-Based Storyboard Studio (GUI):</strong></li>
+</ol>
+<p>Build a lightweight local web interface (FastAPI + React) allowing non-technical directors to edit narration lines, drag shot durations on a timeline, preview sidechain ducking in real-time, and trigger single-shot re-renders with visual diffs.</p>
+<ol>
+  <li><strong>Fine-Tuned Habesha LoRA & Native Amharic Voice Engine:</strong></li>
+</ol>
+<ul>
+  <li>Train an open-source FLUX LoRA on curated archival and contemporary Ethiopian portrait photography to further refine cultural nuances (traditional Gamo woven textiles, Arba Minch vegetation).</li>
+  <li>Fine-tune an open-source voice model (XTTS-v2 or VITS) specifically on native Amharic speakers with explicit Ge'ez gemination markers, completely eliminating synthetic pronunciation artifacts.</li>
+</ul>
+<ol>
+  <li><strong>Agentic Distributed Cloud Sharding:</strong></li>
+</ol>
+<p>Develop an agentic worker swarm that parallelizes video generation across multiple free cloud GPU instances (e.g., sharding 3 shots to Kaggle, 3 shots to Google Colab, and 3 shots to local hardware), aggregating clips automatically via webhooks into a GitHub Actions CI/CD release pipeline.</p>
+<hr>
+<h2>7. System Architecture, Data Flow & Benchmarks</h2>
+<div class="arch-grid">
+  <div class="arch-box">
+    <div class="arch-title">1. Contract & Schema</div>
+    <div class="arch-body">storyboard.json<br><small>schema/storyboard.schema.json</small></div>
+  </div>
+  <div class="arch-arrow">&rarr;</div>
+  <div class="arch-box">
+    <div class="arch-title">2. Generative Stages</div>
+    <div class="arch-body">
+      • Gemini 3.8 Flash TTS (Amharic)<br>
+      • Cloudflare FLUX.1 Schnell Keyframes<br>
+      • Wan 2.2 I2V / Ken Burns Pan-Zoom<br>
+      • ACE-Step 1.5 Sacred Score
+    </div>
+  </div>
+  <div class="arch-arrow">&rarr;</div>
+  <div class="arch-box">
+    <div class="arch-title">3. Deterministic Caching</div>
+    <div class="arch-body">Content-Addressable SHA-256<br><small>runs.jsonl (Audit Trail)</small></div>
+  </div>
+  <div class="arch-arrow">&rarr;</div>
+  <div class="arch-box">
+    <div class="arch-title">4. Assembly & Master</div>
+    <div class="arch-body">
+      • Sidechain Ducking (-14 LUFS)<br>
+      • Baked-in Bilingual Subtitles<br>
+      • 3s 'Made with AI' End Card<br>
+      • 16:9 Cinema & 9:16 Mobile
+    </div>
+  </div>
+</div>
+<h3>Measured Stage Latency & Resource Utilization</h3>
+<p><em>Benchmark conducted on a 72.5-second, 9-shot film on an Apple M-series developer machine:</em></p>
+<table>
+  <thead>
+    <tr>
+      <th>Pipeline Stage</th>
+      <th>Operations</th>
+      <th>Fresh Latency</th>
+      <th>Cached Re-Run</th>
+      <th>Compute Provider</th>
+      <th>Resource Footprint</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Stage 1: Validation</strong></td>
+      <td>JSON Schema validation</td>
+      <td>0.04s</td>
+      <td>0.04s</td>
+      <td>Local CPU</td>
+      <td>< 15 MB RAM</td>
+    </tr>
+    <tr>
+      <td><strong>Stage 2: Narration</strong></td>
+      <td>9 Amharic audio tracks</td>
+      <td>11.2s</td>
+      <td>0.001s</td>
+      <td>Google AI Studio</td>
+      <td>Serverless</td>
+    </tr>
+    <tr>
+      <td><strong>Stage 3: Keyframes</strong></td>
+      <td>9 FLUX stills (4-step)</td>
+      <td>14.8s</td>
+      <td>0.001s</td>
+      <td>Cloudflare Workers AI</td>
+      <td>Serverless</td>
+    </tr>
+    <tr>
+      <td><strong>Stage 4: Moving Shots</strong></td>
+      <td>9 video clips (720p, 24fps)</td>
+      <td>48.0s (Ken Burns)</td>
+      <td>0.001s</td>
+      <td>Local FFmpeg / Kaggle</td>
+      <td>Multi-core CPU</td>
+    </tr>
+    <tr>
+      <td><strong>Stage 5: Music Score</strong></td>
+      <td>3 ACE-Step candidates</td>
+      <td>8.5s</td>
+      <td>0.001s</td>
+      <td>Local / Kaggle Synthesis</td>
+      <td>< 4 GB VRAM</td>
+    </tr>
+    <tr>
+      <td><strong>Stage 6: Assembly</strong></td>
+      <td>Ducking, Loudnorm, Subtitles</td>
+      <td>2.1s</td>
+      <td>2.1s</td>
+      <td>Local FFmpeg 6.0</td>
+      <td>Multi-core CPU</td>
+    </tr>
+    <tr>
+      <td><strong>Total Pipeline</strong></td>
+      <td><strong>End-to-End Build</strong></td>
+      <td><strong>~84.6s</strong></td>
+      <td><strong>< 4.2s</strong></td>
+      <td><strong>100% Free Tier</strong></td>
+      <td><strong>Zero Memory Leaks</strong></td>
+    </tr>
+  </tbody>
+</table>
+<h3>Economic Analysis: Commercial SaaS vs. Open Zero-Cost Pipeline</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Production Component</th>
+      <th>Commercial Equivalent</th>
+      <th>SaaS Provider Unit Rate</th>
+      <th>Commercial Cost</th>
+      <th>Our Pipeline Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Storyboard & Script</td>
+      <td>GPT-4o</td>
+      <td>$0.005 / 1k tokens</td>
+      <td>$0.03</td>
+      <td><strong>$0.00</strong> (Gemini Free Tier)</td>
+    </tr>
+    <tr>
+      <td>Voice Narration</td>
+      <td>ElevenLabs Multilingual</td>
+      <td>$0.30 / 1k characters</td>
+      <td>$0.28</td>
+      <td><strong>$0.00</strong> (Gemini Flash TTS)</td>
+    </tr>
+    <tr>
+      <td>Keyframes (9 stills)</td>
+      <td>Midjourney v6 / DALL-E 3</td>
+      <td>$0.04 / image</td>
+      <td>$0.36</td>
+      <td><strong>$0.00</strong> (Cloudflare FLUX)</td>
+    </tr>
+    <tr>
+      <td>Video Motion (68s)</td>
+      <td>Runway Gen-3 / Sora</td>
+      <td>$0.10 / second</td>
+      <td>$6.80</td>
+      <td><strong>$0.00</strong> (Wan 2.2 / Ken Burns)</td>
+    </tr>
+    <tr>
+      <td>Score (3 candidates)</td>
+      <td>Suno v3 / Udio</td>
+      <td>$0.10 / generation</td>
+      <td>$0.30</td>
+      <td><strong>$0.00</strong> (ACE-Step Open Weights)</td>
+    </tr>
+    <tr>
+      <td><strong>Total Production Cost</strong></td>
+      <td></td>
+      <td></td>
+      <td><strong>$7.77 / run</strong></td>
+      <td><strong>$0.00 (100% Free)</strong></td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h2>8. Ethical Safeguards, Real-Life Consent & Transparency</h2>
+<ol>
+  <li><strong>Consent of Living Persons:</strong> The names <strong>Mikiyas</strong>, <strong>Mihretab</strong>, and <strong>Surafel</strong> represent real living individuals whose explicit verbal consent was obtained before production began.</li>
+  <li><strong>Cultural Respect & Dignity:</strong> Prompts strictly avoided exoticized, war-torn, or impoverished tropes, intentionally focusing on Ethiopia's stunning biodiversity, lush groundwater forests, and genuine childhood joy.</li>
+  <li><strong>Mandatory AI Disclosure:</strong> Both master video cuts include an automated 3-second end card (<em>"Made with AI • For Mikiyas, Mihretab, and Surafel"</em>), and all public social posts are published with the platform's AI transparency label active.</li>
+</ol>
+<hr>
+<h2>9. Conclusion</h2>
+<p><em>The Forty Springs of Arba Minch</em> demonstrates that professional-grade generative cinema does not require commercial subscriptions or opaque SaaS tools. By treating generative filmmaking as a rigorous software engineering discipline—governed by schema contracts, content-addressable caching, safe-zone subtitle compositing, and broadcast audio standards—we created a deeply personal, culturally authentic film at <strong>$0.00 cost</strong> with complete reproducibility and deterministic execution.</p>
 
----
-
-## 4. The Suggested Practice That Helped and the One That Did Not
-
-### The Practice That Helped: Single Source of Truth Contract + Content-Addressable Caching
-* **The Practice:** Decoupling creative design from execution code into a strictly validated JSON contract (`storyboard.json` governed by `schema/storyboard.schema.json`), bound to content-addressable **SHA-256 caching**.
-* **Why It Succeeded:** In early tests, running generative pipelines was chaotic: prompts were hardcoded across multiple `.py` scripts, causing subtle prompt drift, duplicated model calls, and wasted quota. By centralizing all shot durations, character DNA, camera motion, and audio cues into `storyboard.json`, every stage derived its cache keys deterministically:
-  $$\text{CacheKey} = \text{SHA256}(\text{Prompt} + \text{Duration} + \text{Seed} + \text{InputHash})$$
-  When a developer tweaks only Shot 03's camera prompt and re-runs the pipeline, Shots 1, 2, and 4–9 return instant cache hits in **0.001s**, and only Shot 03 regenerates. This single practice transformed the pipeline from a fragile prototype into a professional software system.
-
-### The Practice That Did Not Help: Relying on Built-In FFmpeg Subtitle Filters & Unconditioned Multilingual TTS
-* **The Practice:** Using standard FFmpeg `-vf subtitles=subtitles.srt` or `drawtext` filters, and relying on default commercial multilingual TTS out of the box.
-* **Why It Failed:**
-  1. *FFmpeg Filter Portability Failure:* Standard Homebrew and Linux FFmpeg binary distributions frequently omit `libass` and `libfreetype` compile flags. Attempting to use `subtitles=...` caused clean clone builds on other machines to crash with `No such filter: 'subtitles'`.
-  2. *Unconditioned Multilingual TTS Failure:* Commercial TTS engines advertised as "multilingual" handle Amharic Ge'ez script by transliterating characters phonetically as flat syllables, completely ignoring unwritten consonant gemination (*ጥብቅና ላልት*). Relying on the tool's default capability produced robotic, incomprehensible speech.
-* **Our Workaround:** We discarded the broken `libass` filter and built a pure-Python Pillow subtitle engine that renders pixel-perfect open captions using native system fonts, composited via FFmpeg's universal `overlay` filter. For TTS, we developed an explicit phonetic steering wrapper.
-
----
-
-## 5. Ceiling Work: Pushing Beyond Baseline Requirements
-
-To deliver an exceptional production, we pushed significantly beyond the baseline project requirements:
-
-1. **Declarative Character Consistency System (ADR 08):**
-   Standard diffusion pipelines suffer severe character drift across shots. We established a formal `"characters"` contract in `schema/storyboard.schema.json` locking physical DNA attributes (age, skin tone, facial structure, clothing) for 5 distinct roles. We generated a master 2×3 character reference grid (`references/boys_arba_minch_sheet.png`) and injected strict East African Habesha anthropomorphic keywords, completely preventing racial or facial drift across shots.
-2. **Zero-Dependency Pixel-Burned Subtitle Engine (ADR 07):**
-   Rather than settling for soft `.srt` files that social media feeds strip away, we built an automated subtitle burning engine in `stage6_assemble.py`:
-   - Auto-wrapping text preventing line overflow.
-   - Dynamic semi-transparent rounded pill backdrops (`rgba(10, 10, 14, 210)`) with hairline borders and text drop shadows.
-   - Safe-zone positioning: 16:9 lower third (`y=665`) and 9:16 mobile safe zone (`y=1020`), guaranteeing captions are never obscured by TikTok/Reels UI buttons.
-3. **Native Dual-Aspect Ratio Architecture (16:9 Cinema & 9:16 Mobile):**
-   Instead of taking a 16:9 video and applying blurry letterbox bars or cheap center cropping, our pipeline generates native framing for both aspect ratios: full 1280×720 widescreen panorama and native full-bleed 720×1280 vertical video.
-4. **Complete Zero-Cost Free-Tier Accounting ($0.00 vs $7.77):**
-   We engineered the entire production without entering a credit card, orchestrating open weights and developer tiers with complete cost transparency in `COSTS.md` and `runs.jsonl`.
-
----
-
-## 6. What We Would Build Next (Future Roadmap)
-
-If given another sprint, our roadmap focuses on three high-impact extensions:
-
-1. **Interactive Web-Based Storyboard Studio (GUI):**
-   Build a lightweight local web interface (FastAPI + React) allowing non-technical directors to edit narration lines, drag shot durations on a timeline, preview sidechain ducking in real-time, and trigger single-shot re-renders with visual diffs.
-2. **Fine-Tuned Habesha LoRA & Native Amharic Voice Engine:**
-   - Train an open-source FLUX LoRA on curated archival and contemporary Ethiopian portrait photography to further refine cultural nuances (traditional Gamo woven textiles, Arba Minch vegetation).
-   - Fine-tune an open-source voice model (XTTS-v2 or VITS) specifically on native Amharic speakers with explicit Ge'ez gemination markers, completely eliminating synthetic pronunciation artifacts.
-3. **Agentic Distributed Cloud Sharding:**
-   Develop an agentic worker swarm that parallelizes video generation across multiple free cloud GPU instances (e.g., sharding 3 shots to Kaggle, 3 shots to Google Colab, and 3 shots to local hardware), aggregating clips automatically via webhooks into a GitHub Actions CI/CD release pipeline.
-
----
-
-## 7. System Architecture, Data Flow & Benchmarks
-
-```mermaid
-flowchart TD
-    subgraph Config ["1. Storyboard Contract"]
-        SB["storyboard.json"] -->|Validated by| S1["pipeline/stage1_validate.py<br/>schema/storyboard.schema.json"]
-    end
-
-    subgraph Generation ["2. Generative Stages"]
-        S1 --> S2["Stage 2: Narration<br/>Gemini 3.8 Flash TTS (Amharic)"]
-        S1 --> S3["Stage 3: Keyframes<br/>Cloudflare FLUX.1 Schnell"]
-        S3 --> S4["Stage 4: Moving Shots<br/>Wan 2.2 I2V / Ken Burns Pan-Zoom"]
-        S1 --> S5["Stage 5: Music Score<br/>ACE-Step 1.5 Polyphonic Score"]
-    end
-
-    subgraph Caching ["3. Deterministic Caching"]
-        CACHE["pipeline/common.py<br/>Content-Addressable SHA-256"]
-        S2 -.-> CACHE
-        S3 -.-> CACHE
-        S4 -.-> CACHE
-        S5 -.-> CACHE
-        CACHE --> LOG["runs.jsonl (Audit Trail)"]
-    end
-
-    subgraph Assembly ["4. Assembly & Audio Mastering"]
-        S2 --> S6["Stage 6: FFmpeg Audio Compositor"]
-        S4 --> S6
-        S5 --> S6
-        S6 --> DUCK["Dynamic Sidechain Ducking (-14 LUFS)"]
-        DUCK --> BAKE["Baked-in Subtitle Engine (Pillow + Overlay)"]
-        BAKE --> CARD["Automated 3s 'Made with AI' End Card"]
-    end
-
-    subgraph Deliverables ["5. Master Deliverables"]
-        CARD --> EXP1["outputs/exports/heritage_short_16x9.mp4<br/>(1280x720 Cinema Master)"]
-        CARD --> EXP2["outputs/exports/heritage_short_9x16.mp4<br/>(720x1280 Mobile Vertical Master)"]
-    end
-```
-
-### Measured Stage Latency & Resource Utilization
-*Benchmark conducted on a 72.5-second, 9-shot film on an Apple M-series developer machine:*
-
-| Pipeline Stage | Operations | Fresh Latency | Cached Re-Run | Compute Provider | Resource Footprint |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Stage 1: Validation** | JSON Schema validation | 0.04s | 0.04s | Local CPU | < 15 MB RAM |
-| **Stage 2: Narration** | 9 Amharic audio tracks | 11.2s | 0.001s | Google AI Studio | Serverless |
-| **Stage 3: Keyframes** | 9 FLUX stills (4-step) | 14.8s | 0.001s | Cloudflare Workers AI | Serverless |
-| **Stage 4: Moving Shots** | 9 video clips (720p, 24fps) | 48.0s (Ken Burns) | 0.001s | Local FFmpeg / Kaggle | Multi-core CPU |
-| **Stage 5: Music Score** | 3 ACE-Step candidates | 8.5s | 0.001s | Local / Kaggle Synthesis | < 4 GB VRAM |
-| **Stage 6: Assembly** | Ducking, Loudnorm, Subtitles | 2.1s | 2.1s | Local FFmpeg 6.0 | Multi-core CPU |
-| **Total Pipeline** | **End-to-End Build** | **~84.6s** | **< 4.2s** | **100% Free Tier** | **Zero Memory Leaks** |
-
-### Economic Analysis: Commercial SaaS vs. Open Zero-Cost Pipeline
-| Production Component | Commercial Equivalent | SaaS Provider Unit Rate | Commercial Cost | Our Pipeline Cost |
-| :--- | :--- | :--- | :--- | :--- |
-| Storyboard & Script | GPT-4o | $0.005 / 1k tokens | $0.03 | **$0.00** (Gemini Free Tier) |
-| Voice Narration | ElevenLabs Multilingual | $0.30 / 1k characters | $0.28 | **$0.00** (Gemini Flash TTS) |
-| Keyframes (9 stills) | Midjourney v6 / DALL-E 3 | $0.04 / image | $0.36 | **$0.00** (Cloudflare FLUX) |
-| Video Motion (68s) | Runway Gen-3 / Sora | $0.10 / second | $6.80 | **$0.00** (Wan 2.2 / Ken Burns) |
-| Score (3 candidates) | Suno v3 / Udio | $0.10 / generation | $0.30 | **$0.00** (ACE-Step Open Weights) |
-| **Total Production Cost**| | | **$7.77 / run** | **$0.00 (100% Free)** |
-
----
-
-## 8. Ethical Safeguards, Real-Life Consent & Transparency
-
-1. **Consent of Living Persons:** The names **Mikiyas**, **Mihretab**, and **Surafel** represent real living individuals whose explicit verbal consent was obtained before production began.
-2. **Cultural Respect & Dignity:** Prompts strictly avoided exoticized, war-torn, or impoverished tropes, intentionally focusing on Ethiopia's stunning biodiversity, lush groundwater forests, and genuine childhood joy.
-3. **Mandatory AI Disclosure:** Both master video cuts include an automated 3-second end card (*"Made with AI • For Mikiyas, Mihretab, and Surafel"*), and all public social posts are published with the platform's AI transparency label active.
-
----
-
-## 9. Conclusion
-*The Forty Springs of Arba Minch* demonstrates that professional-grade generative cinema does not require commercial subscriptions or opaque SaaS tools. By treating generative filmmaking as a rigorous software engineering discipline—governed by schema contracts, content-addressable caching, safe-zone subtitle compositing, and broadcast audio standards—we created a deeply personal, culturally authentic film at **$0.00 cost** with complete reproducibility and deterministic execution.
-
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js">
+  </main>
+</body>
+</html>
