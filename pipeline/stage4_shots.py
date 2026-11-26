@@ -29,13 +29,11 @@ KEYFRAMES_DIR = OUTPUTS_DIR / "keyframes"
 SHOTS_DIR = OUTPUTS_DIR / "shots"
 
 
-def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict, out_path: Path):
+def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict, out_path: Path, aspect: str = "16x9"):
     """
     Implements Ken Burns slow pan-and-zoom using FFmpeg zoompan filter
-    as described in the 10 Academy guide:
-    'The slow pan-and-zoom over a still (Ken Burns) is a respectable shot,
-    and a fallback when a clip fails.'
-    Returns True if a real encoded video was produced, False if placeholder was used.
+    as described in the 10 Academy guide.
+    Supports both 16:9 widescreen panorama and 9:16 full-bleed vertical mobile formats.
     """
     fps = 24
     total_frames = int(duration * fps)
@@ -63,9 +61,16 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
 
     ffmpeg_bin = shutil.which("ffmpeg")
     if ffmpeg_bin:
-        # Pre-crop square 1024x1024 keyframe to 16:9 panorama without stretching, then apply camera motion
-        prep_filter = "crop=in_w:in_w*9/16:0:(in_h-in_w*9/16)/2,scale=1280:720"
-        filter_str = f"{prep_filter},zoompan=z='{zoom_expr}':x='{x_expr}':y='{y_expr}':d={total_frames}:s=1280x720:fps={fps}"
+        if aspect == "9x16":
+            # Native full-bleed 9:16 vertical crop (720x1280) as preferred for mobile
+            prep_filter = "crop=in_h*9/16:in_h:(in_w-in_h*9/16)/2:0,scale=720:1280"
+            out_size = "720x1280"
+        else:
+            # Native 16:9 widescreen panorama crop (1280x720) without stretching
+            prep_filter = "crop=in_w:in_w*9/16:0:(in_h-in_w*9/16)/2,scale=1280:720"
+            out_size = "1280x720"
+
+        filter_str = f"{prep_filter},zoompan=z='{zoom_expr}':x='{x_expr}':y='{y_expr}':d={total_frames}:s={out_size}:fps={fps}"
         cmd = [
             ffmpeg_bin, "-y",
             "-loop", "1",
@@ -80,10 +85,8 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
         if res.returncode == 0 and out_path.exists():
             return True  # Real encoded video
 
-    # Lightweight fallback if FFmpeg is absent: duplicate keyframe as placeholder mp4 / raw loop
-    # If OpenCV or imageio is available, write frames, else copy static or write minimal placeholder
     _synthesize_placeholder_clip(image_path, duration, out_path)
-    return False  # Placeholder
+    return False
 
 
 def _synthesize_placeholder_clip(image_path: Path, duration: float, out_path: Path):
@@ -125,10 +128,13 @@ def run_shots_stage(target_shot_id=None, force_regenerate=False):
         }
         input_hash = compute_sha256(cache_data)
         out_mp4 = SHOTS_DIR / f"{shot_id}.mp4"
+        out_mp4_9x16 = SHOTS_DIR / f"{shot_id}_9x16.mp4"
 
         cached_file = get_cached_output("shots", input_hash, ".mp4")
         if cached_file and not force_regenerate:
             shutil.copy2(cached_file, out_mp4)
+            if not out_mp4_9x16.exists():
+                generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4_9x16, aspect="9x16")
             print(f"  ⚡ [{shot_id}] CACHE HIT (hash: {input_hash[:8]}...) -> Reusing moving shot")
             log_run(
                 stage="shots",
@@ -143,17 +149,19 @@ def run_shots_stage(target_shot_id=None, force_regenerate=False):
             output_clips[shot_id] = out_mp4
             continue
 
-        print(f"  🎬 [{shot_id}] Animating shot ({duration}s): {motion_cfg.get('camera_motion', 'drift')}")
+        print(f"  🎬 [{shot_id}] Animating shot ({duration}s, 16:9 & 9:16): {motion_cfg.get('camera_motion', 'drift')}")
         t0 = time.time()
 
         # Check if Kaggle Wan 2.2 clip is already dropped in outputs/wan_drops/{shot_id}.mp4
         wan_drop = PROJECT_ROOT / "outputs" / "wan_drops" / f"{shot_id}.mp4"
         if wan_drop.exists() and wan_drop.stat().st_size > 1000:
             shutil.copy2(wan_drop, out_mp4)
+            generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4_9x16, aspect="9x16")
             model_used = "Wan-2.2-TI2V-5B-Kaggle"
             used_mock = False
         else:
-            success = generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4)
+            success = generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4, aspect="16x9")
+            generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4_9x16, aspect="9x16")
             used_mock = not success
             model_used = "FFmpeg-KenBurns-PanZoom" if not used_mock else "placeholder-stub"
 

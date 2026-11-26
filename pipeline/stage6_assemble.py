@@ -340,10 +340,10 @@ def build_radio_cut(storyboard: dict):
     return radio_cut_mp4
 
 
-def generate_end_card(storyboard: dict, out_mp4: Path):
+def generate_end_card(storyboard: dict, out_mp4: Path, width: int = 1280, height: int = 720):
     """
     Renders a 3-second 'Made with AI' end card video clip as required by the 10 Academy rubric.
-    Uses Pillow with clean typography on dark background, rendered to H.264 MP4.
+    Supports both 16:9 widescreen (1280x720) and 9:16 vertical mobile (720x1280).
     """
     end_card_cfg = storyboard.get("end_card", {})
     text = end_card_cfg.get("text", "Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel")
@@ -351,7 +351,7 @@ def generate_end_card(storyboard: dict, out_mp4: Path):
 
     try:
         from PIL import Image, ImageDraw, ImageFont
-        img = Image.new("RGB", (1280, 720), color=(12, 10, 16))
+        img = Image.new("RGB", (width, height), color=(12, 10, 16))
         draw = ImageDraw.Draw(img)
 
         font_candidates = [
@@ -361,31 +361,36 @@ def generate_end_card(storyboard: dict, out_mp4: Path):
         ]
         font_path = next((c for c in font_candidates if Path(c).exists()), None)
         try:
-            f_main = ImageFont.truetype(font_path, 26) if font_path else ImageFont.load_default()
-            f_sub = ImageFont.truetype(font_path, 16) if font_path else ImageFont.load_default()
+            f_main = ImageFont.truetype(font_path, 24 if width >= 1000 else 20) if font_path else ImageFont.load_default()
+            f_sub = ImageFont.truetype(font_path, 16 if width >= 1000 else 14) if font_path else ImageFont.load_default()
         except Exception:
             f_main = f_sub = ImageFont.load_default()
 
-        # Center gold frame accent
-        draw.rectangle([80, 80, 1200, 640], outline=(180, 140, 80), width=1)
-        draw.rectangle([84, 84, 1196, 636], outline=(100, 80, 45), width=1)
+        # Gold frame accent
+        margin_x = 80 if width >= 1000 else 40
+        margin_y = 80 if height <= 800 else 120
+        draw.rectangle([margin_x, margin_y, width - margin_x, height - margin_y], outline=(180, 140, 80), width=1)
+        draw.rectangle([margin_x + 4, margin_y + 4, width - margin_x - 4, height - margin_y - 4], outline=(100, 80, 45), width=1)
+
+        # Center coordinates
+        cy = height // 2
 
         # Title
         title_text = "AI-CONTENT GENERATION: THE HERITAGE SHORT"
         bbox_t = draw.textbbox((0, 0), title_text, font=f_sub)
         w_t = bbox_t[2] - bbox_t[0]
-        draw.text(((1280 - w_t) // 2, 260), title_text, font=f_sub, fill=(180, 150, 100))
+        draw.text(((width - w_t) // 2, cy - 80), title_text, font=f_sub, fill=(180, 150, 100))
 
         # Main end card dedication
         bbox = draw.textbbox((0, 0), text, font=f_main)
         w = bbox[2] - bbox[0]
-        draw.text(((1280 - w) // 2, 340), text, font=f_main, fill=(240, 230, 210))
+        draw.text(((width - w) // 2, cy), text, font=f_main, fill=(240, 230, 210))
 
         # Sub line
         sub_text = "Arba Minch, Ethiopia • 2026"
         bbox_s = draw.textbbox((0, 0), sub_text, font=f_sub)
         w_s = bbox_s[2] - bbox_s[0]
-        draw.text(((1280 - w_s) // 2, 420), sub_text, font=f_sub, fill=(150, 140, 120))
+        draw.text(((width - w_s) // 2, cy + 80), sub_text, font=f_sub, fill=(150, 140, 120))
 
         card_png = out_mp4.with_suffix(".png")
         img.save(card_png)
@@ -402,7 +407,7 @@ def generate_end_card(storyboard: dict, out_mp4: Path):
             ]
             res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             if res.returncode == 0:
-                print(f"  🎬 Generated 3-second End Card clip: {out_mp4.name}")
+                print(f"  🎬 Generated 3-second End Card clip ({width}x{height}): {out_mp4.name}")
                 return out_mp4
     except Exception as e:
         print(f"  ⚠️ End card notice: {e}")
@@ -424,12 +429,15 @@ def assemble_final_film(storyboard: dict):
 
     score_wav = MUSIC_DIR / "final_score.wav"
     shots_manifest = EXPORTS_DIR / "shots_list.txt"
+    shots_manifest_9x16 = EXPORTS_DIR / "shots_list_9x16.txt"
 
-    # Generate 3-second 'Made with AI' end card
+    # Generate 3-second 'Made with AI' end cards (both 16:9 and 9:16)
     end_card_mp4 = EXPORTS_DIR / "end_card.mp4"
-    generate_end_card(storyboard, end_card_mp4)
+    end_card_9x16_mp4 = EXPORTS_DIR / "end_card_9x16.mp4"
+    generate_end_card(storyboard, end_card_mp4, width=1280, height=720)
+    generate_end_card(storyboard, end_card_9x16_mp4, width=720, height=1280)
 
-    # Write shots concatenation manifest
+    # Write 16:9 shots concatenation manifest
     with open(shots_manifest, "w") as f:
         for s in storyboard.get("shots", []):
             shot_file = SHOTS_DIR / f"{s['shot_id']}.mp4"
@@ -438,18 +446,29 @@ def assemble_final_film(storyboard: dict):
         if end_card_mp4.exists() and end_card_mp4.stat().st_size > 100:
             f.write(f"file '{end_card_mp4.resolve()}'\n")
 
+    # Write 9:16 native full-bleed vertical shots concatenation manifest (matching test_9_16.mp4)
+    with open(shots_manifest_9x16, "w") as f:
+        for s in storyboard.get("shots", []):
+            s_916 = SHOTS_DIR / f"{s['shot_id']}_9x16.mp4"
+            target_f = s_916 if s_916.exists() else SHOTS_DIR / f"{s['shot_id']}.mp4"
+            if target_f.exists():
+                f.write(f"file '{target_f.resolve()}'\n")
+        if end_card_9x16_mp4.exists() and end_card_9x16_mp4.stat().st_size > 100:
+            f.write(f"file '{end_card_9x16_mp4.resolve()}'\n")
+
     ffmpeg = shutil.which("ffmpeg")
     export_16_9 = EXPORTS_DIR / "heritage_short_16x9.mp4"
     export_9_16 = EXPORTS_DIR / "heritage_short_9x16.mp4"
 
     if ffmpeg and shots_manifest.stat().st_size > 0:
-        # 1. Assembling Horizontal 16:9 with Sidechain Ducking, Loudness Normalization, and Subtitle Track
-        print("  🎥 Rendering 16:9 master with ducked score, -14 LUFS loudness, and subtitle stream...")
         filter_ducking = (
             "[2:a][1:a]sidechaincompress=threshold=0.02:ratio=6:attack=300:release=1500[ducked_score];"
             "[1:a][ducked_score]amix=inputs=2:duration=first[mixed_audio];"
             "[mixed_audio]loudnorm=I=-14:TP=-1.0:LRA=11[aout]"
         )
+
+        # 1. Assembling Horizontal 16:9 with Sidechain Ducking, Loudness Normalization, and Subtitle Track
+        print("  🎥 Rendering 16:9 master with ducked score, -14 LUFS loudness, and subtitle stream...")
         cmd_16_9 = [
             ffmpeg, "-y",
             "-f", "concat", "-safe", "0", "-i", str(shots_manifest),
@@ -468,21 +487,22 @@ def assemble_final_film(storyboard: dict):
         ]
         subprocess.run(cmd_16_9, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        # 2. Rendering Vertical 9:16 (Professional mobile fit with ambient blurred background)
-        print("  📱 Rendering 9:16 mobile fit with ambient background and subtitle stream...")
-        mobile_filter = (
-            "split[main][bg];"
-            "[bg]scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280,boxblur=25:5[blurred];"
-            "[main]scale=720:405[fg];"
-            "[blurred][fg]overlay=0:(1280-405)/2"
-        )
+        # 2. Rendering Vertical 9:16 (Native full-bleed vertical framing, matching test_9_16.mp4)
+        print("  📱 Rendering 9:16 native vertical mobile master (full-bleed 720x1280)...")
         cmd_9_16 = [
             ffmpeg, "-y",
-            "-i", str(export_16_9),
-            "-vf", mobile_filter,
+            "-f", "concat", "-safe", "0", "-i", str(shots_manifest_9x16),
+            "-i", str(combined_voice),
+            "-i", str(score_wav),
+            "-i", str(srt_file),
+            "-filter_complex", filter_ducking,
+            "-map", "0:v", "-map", "[aout]", "-map", "3:s?",
             "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-c:a", "copy",
+            "-c:a", "aac", "-b:a", "192k",
             "-c:s", "mov_text",
+            "-metadata:s:s:0", "language=amh",
+            "-metadata:s:s:0", "title=Amharic & English Subtitles",
+            "-disposition:s:0", "default+forced",
             str(export_9_16)
         ]
         subprocess.run(cmd_9_16, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
