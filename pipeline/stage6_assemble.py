@@ -340,6 +340,75 @@ def build_radio_cut(storyboard: dict):
     return radio_cut_mp4
 
 
+def generate_end_card(storyboard: dict, out_mp4: Path):
+    """
+    Renders a 3-second 'Made with AI' end card video clip as required by the 10 Academy rubric.
+    Uses Pillow with clean typography on dark background, rendered to H.264 MP4.
+    """
+    end_card_cfg = storyboard.get("end_card", {})
+    text = end_card_cfg.get("text", "Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel")
+    duration = end_card_cfg.get("duration_seconds", 3.0)
+
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+        img = Image.new("RGB", (1280, 720), color=(12, 10, 16))
+        draw = ImageDraw.Draw(img)
+
+        font_candidates = [
+            "/System/Library/Fonts/Supplemental/KefaIII.ttf",
+            "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+            "/System/Library/Fonts/Supplemental/Arial.ttf",
+        ]
+        font_path = next((c for c in font_candidates if Path(c).exists()), None)
+        try:
+            f_main = ImageFont.truetype(font_path, 26) if font_path else ImageFont.load_default()
+            f_sub = ImageFont.truetype(font_path, 16) if font_path else ImageFont.load_default()
+        except Exception:
+            f_main = f_sub = ImageFont.load_default()
+
+        # Center gold frame accent
+        draw.rectangle([80, 80, 1200, 640], outline=(180, 140, 80), width=1)
+        draw.rectangle([84, 84, 1196, 636], outline=(100, 80, 45), width=1)
+
+        # Title
+        title_text = "AI-CONTENT GENERATION: THE HERITAGE SHORT"
+        bbox_t = draw.textbbox((0, 0), title_text, font=f_sub)
+        w_t = bbox_t[2] - bbox_t[0]
+        draw.text(((1280 - w_t) // 2, 260), title_text, font=f_sub, fill=(180, 150, 100))
+
+        # Main end card dedication
+        bbox = draw.textbbox((0, 0), text, font=f_main)
+        w = bbox[2] - bbox[0]
+        draw.text(((1280 - w) // 2, 340), text, font=f_main, fill=(240, 230, 210))
+
+        # Sub line
+        sub_text = "Arba Minch, Ethiopia • 2026"
+        bbox_s = draw.textbbox((0, 0), sub_text, font=f_sub)
+        w_s = bbox_s[2] - bbox_s[0]
+        draw.text(((1280 - w_s) // 2, 420), sub_text, font=f_sub, fill=(150, 140, 120))
+
+        card_png = out_mp4.with_suffix(".png")
+        img.save(card_png)
+
+        ffmpeg = shutil.which("ffmpeg")
+        if ffmpeg:
+            cmd = [
+                ffmpeg, "-y",
+                "-loop", "1", "-i", str(card_png),
+                "-t", str(duration),
+                "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                "-r", "24",
+                str(out_mp4)
+            ]
+            res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if res.returncode == 0:
+                print(f"  🎬 Generated 3-second End Card clip: {out_mp4.name}")
+                return out_mp4
+    except Exception as e:
+        print(f"  ⚠️ End card notice: {e}")
+    return None
+
+
 def assemble_final_film(storyboard: dict):
     """
     Builds the Final Film (Phase 3 Deliverables):
@@ -356,20 +425,26 @@ def assemble_final_film(storyboard: dict):
     score_wav = MUSIC_DIR / "final_score.wav"
     shots_manifest = EXPORTS_DIR / "shots_list.txt"
 
+    # Generate 3-second 'Made with AI' end card
+    end_card_mp4 = EXPORTS_DIR / "end_card.mp4"
+    generate_end_card(storyboard, end_card_mp4)
+
     # Write shots concatenation manifest
     with open(shots_manifest, "w") as f:
         for s in storyboard.get("shots", []):
             shot_file = SHOTS_DIR / f"{s['shot_id']}.mp4"
             if shot_file.exists():
                 f.write(f"file '{shot_file.resolve()}'\n")
+        if end_card_mp4.exists() and end_card_mp4.stat().st_size > 100:
+            f.write(f"file '{end_card_mp4.resolve()}'\n")
 
     ffmpeg = shutil.which("ffmpeg")
     export_16_9 = EXPORTS_DIR / "heritage_short_16x9.mp4"
     export_9_16 = EXPORTS_DIR / "heritage_short_9x16.mp4"
 
     if ffmpeg and shots_manifest.stat().st_size > 0:
-        # 1. Assembling Horizontal 16:9 with Sidechain Ducking and Loudness Normalization
-        print("  🎥 Rendering 16:9 master with ducked score and -14 LUFS loudness...")
+        # 1. Assembling Horizontal 16:9 with Sidechain Ducking, Loudness Normalization, and Subtitle Track
+        print("  🎥 Rendering 16:9 master with ducked score, -14 LUFS loudness, and subtitle stream...")
         filter_ducking = (
             "[2:a][1:a]sidechaincompress=threshold=0.02:ratio=6:attack=300:release=1500[ducked_score];"
             "[1:a][ducked_score]amix=inputs=2:duration=first[mixed_audio];"
@@ -380,21 +455,27 @@ def assemble_final_film(storyboard: dict):
             "-f", "concat", "-safe", "0", "-i", str(shots_manifest),
             "-i", str(combined_voice),
             "-i", str(score_wav),
+            "-i", str(srt_file),
             "-filter_complex", filter_ducking,
-            "-map", "0:v", "-map", "[aout]",
+            "-map", "0:v", "-map", "[aout]", "-map", "3:s?",
             "-c:v", "libx264", "-pix_fmt", "yuv420p",
             "-c:a", "aac", "-b:a", "192k",
+            "-c:s", "mov_text",
+            "-metadata:s:s:0", "language=amh",
+            "-metadata:s:s:0", "title=Amharic & English Subtitles",
+            "-disposition:s:0", "default+forced",
             str(export_16_9)
         ]
         subprocess.run(cmd_16_9, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         # 2. Rendering Vertical 9:16 (Center crop to 720x1280)
-        print("  📱 Rendering 9:16 vertical crop for mobile feeds...")
+        print("  📱 Rendering 9:16 vertical crop for mobile feeds with subtitle stream...")
         cmd_9_16 = [
             ffmpeg, "-y",
             "-i", str(export_16_9),
             "-vf", "crop=ih*(9/16):ih,scale=720:1280",
             "-c:v", "libx264", "-c:a", "copy",
+            "-c:s", "mov_text",
             str(export_9_16)
         ]
         subprocess.run(cmd_9_16, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

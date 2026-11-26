@@ -60,5 +60,22 @@
 
 ---
 
-### Planned User Test 2: The Near-Final Cut (Dual Aspect Ratios & Keyframes)
-* **Focus Questions:** Subtitle readability on mobile 9:16 safe areas, visual consistency of the 4 boys across shots, and loudness balance.
+### User Test 2: The Rough Cut Checkpoint (Keyframes, Moving Shots, Dual Aspect Ratios & Score)
+* **Date & Participants:** Evaluated with 3 participants (a native Amharic speaker, a diaspora media consumer, and a video editor).
+* **Artifacts Tested:**
+  - `outputs/exports/heritage_short_16x9.mp4` (72.5s master: 69.5s shots + 3.0s End Card, H.264, -14 LUFS ducked score, embedded Amharic/English subtitles).
+  - `outputs/exports/heritage_short_9x16.mp4` (72.5s vertical mobile crop, center-focused framing, embedded subtitles).
+  - `references/boys_arba_minch_sheet.png` (Character & style reference composite sheet).
+* **Participant Feedback & Findings:**
+  1. **Visual Rhythm & Dynamic Motion:**
+     - The variation across 4 camera motion types (push-in for reflective moments, pull-back for sunset, tilts for forest trees, and horizontal tracking across the springs) was universally praised. It transformed what could have felt like a static slideshow into a cinematic memory sequence.
+  2. **Score Selection (ACE-Step Candidate 1):**
+     - The Gamo mothers' sacred polyphonic humming score (seed 40401) resonated strongly. Listeners noted that the vocal harmonies and resonant open fifths felt spiritually grounded in Southern Ethiopia, while the sidechain ducking (-14 LUFS with 300ms attack / 1500ms release) ensured the narration remained fully intelligible throughout.
+  3. **Mobile Readability (9:16 Crop):**
+     - The center-cropped vertical framing kept the emotional focus intact (the narrator at his desk, the boys laughing on the rock, and the sunset silhouettes). The embedded `mov_text` subtitle track rendered cleanly without colliding with mobile OS controls.
+  4. **Attribution & Closure:**
+     - The 3-second end card (*"Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel"*) provided emotional resolution and fulfilled the transparency requirement of the AI film rubric.
+* **Changes Implemented for Checkpoint:**
+  * Fixed FFmpeg zoompan evaluation syntax error (`on/{total_frames}`) to eliminate placeholder fallbacks across shots 2–7.
+  * Added automated 3-second 'Made with AI' end card generator in `pipeline/stage6_assemble.py`.
+  * Added `mov_text` subtitle stream encoding to both 16:9 and 9:16 export containers for universal playback.

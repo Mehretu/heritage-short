@@ -93,3 +93,28 @@
 
 
 
+
+---
+
+## 9. Blocker: Cloudflare FLUX DNS Resolution Failure from Agent Sandbox Shell
+* **What Broke:** `python3 run_pipeline.py --stage keyframes` running from the agent's shell environment produced `urllib.error.URLError: <urlopen error [Errno 8] nodename nor servname provided, or not known>` for all 9 FLUX API calls, even with `BypassSandbox: true`.
+* **Root Cause:** The agent execution sandbox and even the sandbox-bypass shell on this machine cannot resolve external DNS (`api.cloudflare.com`). `curl https://api.cloudflare.com` returned empty — no route to internet from the agent process context.
+* **Failed Attempt 1:** Ran `python3 run_pipeline.py --stage keyframes` in sandboxed mode → DNS blocked.
+* **Failed Attempt 2:** Ran same command with `BypassSandbox: true` → still DNS error (not a sandbox restriction, is a network routing constraint in the agent shell environment).
+* **Resolution:**
+  1. Upgraded `fallback_procedural_image()` to full cinematic Pillow renderer (Experiment 12) so pipeline output is visually meaningful while FLUX is unavailable from agent context.
+  2. **User must run `make keyframes` from their own macOS terminal** where internet is accessible — this will call Cloudflare FLUX live and cache real JPEG images.
+  3. After `make keyframes` succeeds with real images, run `make shots` and `make film` to build the full rough cut from FLUX keyframes.
+  4. The cinematic Pillow fallbacks are NOT cached (`used_mock` guard), so once real FLUX images arrive they overwrite automatically without poisoning the content-addressable cache.
+
+---
+
+## 10. Blocker: Stage 3 Cache Poisoning — Procedural Fallback Written to Cache
+* **What Broke:** Previous runs of `python3 run_pipeline.py --stage keyframes` wrote solid-color PPM blocks to the content-addressable cache under the FLUX prompt hashes. Subsequent runs always hit cache and returned the placeholder, making it impossible to get real FLUX images without manual cache purge.
+* **Root Cause:** Line 174 of `stage3_keyframes.py` called `store_cached_output("keyframes", input_hash, out_png)` unconditionally, regardless of whether `used_mock=True`.
+* **Failed Attempt 1:** Running `--force` flag bypasses the read-cache check but `store_cached_output` still cached the new mock output, re-poisoning the cache every time.
+* **Resolution:**
+  1. Added `if not used_mock:` guard before `store_cached_output()` call in stage3_keyframes.py.
+  2. Purged all 9 poisoned cache entries: `rm -rf outputs/cache/keyframes`.
+  3. Purged stale solid-color PNG files: `rm -f outputs/keyframes/*.png`.
+  4. All 9 shot MP4 stubs (32-byte MOCK_VIDEO_CONTAINER files) also cleared.

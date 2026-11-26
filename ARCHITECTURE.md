@@ -91,3 +91,19 @@ All external API URLs are completely abstracted out of the code and defined as e
   1. Built an in-memory morphological lexicon (`AMHARIC_PHONETIC_GUIDE`) mapping ambiguous words to syllable-hyphenated Latin transliterations with explicit stress markers.
   2. Injected matching phonetic guidance directly into the attention context of the speech generation prompt, guiding the neural vocoder to articulate authentic Ethiopian gemination.
 
+
+### ADR 06: Deterministic Ken Burns Frame Expression & Motion Pacing
+* **Context:** FFmpeg's `zoompan` filter evaluator does not expose duration variable `d` inside arithmetic sub-expressions for horizontal (`x`) and vertical (`y`) camera motion. Formulas such as `(iw-iw/zoom)*(on/d)` fail with parser error `Undefined constant or missing '(' in 'd)'`, causing silent pipeline fallbacks to placeholder containers.
+* **Decision:**
+  1. Calculated frame counts deterministically in Python (`total_frames = int(duration * fps)`) prior to invoking the filter graph.
+  2. Injected literal integer frame bounds into the filter expression: `(iw-iw/zoom)*(on/{total_frames})`.
+  3. Bound maximum zoom ratio to 1.15x to prevent digital pixelation and avoid viewer motion sickness over 6–10 second durations.
+
+### ADR 07: Multi-Tier Subtitle Compositing Architecture
+* **Context:** Standard macOS Homebrew FFmpeg installations frequently omit `libass` and `libfreetype`, rendering the standard `subtitles='subtitles.srt'` filter unavailable. Hard-requiring external font rendering packages breaks zero-dependency reproducibility.
+* **Decision:**
+  1. Built a 3-tier adaptive subtitle delivery strategy:
+     - **Tier 1 (Pixel-Burned Title Cards):** Pure-Python Pillow renderer drawing Amharic and English translation text directly onto frame buffers using system Ge'ez fonts (`Kefa`, `Arial Unicode`).
+     - **Tier 2 (Embedded QuickTime Container Stream):** Encoded timed subtitles directly into the MP4 container via standard `mov_text` codec with forced display flags (`-disposition:s:0 default+forced`).
+     - **Tier 3 (External Sidecar):** Generated synchronized `subtitles.srt` alongside video exports for media players and web embedding.
+  2. Guarantees 100% subtitle availability across all desktop and mobile video players regardless of local FFmpeg compile flags.

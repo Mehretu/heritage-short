@@ -18,7 +18,7 @@ sys.path.insert(0, str(pipeline_dir))
 
 from stage1_validate import validate_storyboard
 from stage2_narration import run_narration_stage
-from stage3_keyframes import run_keyframes_stage
+from stage3_keyframes import run_keyframes_stage, generate_reference_sheet
 from stage4_shots import run_shots_stage
 from stage5_music import run_music_stage
 from stage6_assemble import run_assemble_stage
@@ -28,7 +28,7 @@ def main():
     parser = argparse.ArgumentParser(description="The Heritage Short AI Production Pipeline")
     parser.add_argument(
         "--stage",
-        choices=["validate", "narration", "keyframes", "shots", "music", "assemble", "radio-cut", "all"],
+        choices=["validate", "narration", "keyframes", "reference-sheet", "shots", "music", "assemble", "radio-cut", "film", "all"],
         default="all",
         help="Pipeline stage to execute (default: all)"
     )
@@ -60,15 +60,22 @@ def main():
     if args.stage in ["keyframes", "all"]:
         run_keyframes_stage(target_shot_id=args.shot, force_regenerate=args.force)
 
-    if args.stage in ["shots", "all"]:
+    if args.stage == "reference-sheet":
+        from stage3_keyframes import generate_reference_sheet
+        from common import load_storyboard, PROJECT_ROOT
+        sb = load_storyboard()
+        ref_path = PROJECT_ROOT / "references" / "boys_arba_minch_sheet.png"
+        generate_reference_sheet(sb, ref_path)
+
+    if args.stage in ["shots", "all", "film"]:
         run_shots_stage(target_shot_id=args.shot, force_regenerate=args.force)
 
-    if args.stage in ["music", "all", "radio-cut"]:
+    if args.stage in ["music", "all", "radio-cut", "film"]:
         run_music_stage(force_regenerate=args.force)
 
     if args.stage == "radio-cut":
         run_assemble_stage(radio_cut_only=True)
-    elif args.stage in ["assemble", "all"]:
+    elif args.stage in ["assemble", "all", "film"]:
         run_assemble_stage(radio_cut_only=False)
 
     print("================================================================================")

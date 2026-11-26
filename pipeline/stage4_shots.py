@@ -35,6 +35,7 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
     as described in the 10 Academy guide:
     'The slow pan-and-zoom over a still (Ken Burns) is a respectable shot,
     and a fallback when a clip fails.'
+    Returns True if a real encoded video was produced, False if placeholder was used.
     """
     fps = 24
     total_frames = int(duration * fps)
@@ -53,11 +54,11 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
     elif "tilt" in cam_motion or "down" in cam_motion:
         zoom_expr = "1.08"
         x_expr = "iw/2-(iw/zoom/2)"
-        y_expr = "ih/zoom*(on/d)"
+        y_expr = f"ih/zoom*(on/{total_frames})"
     else:
         # Subtle horizontal pan
         zoom_expr = "1.10"
-        x_expr = "(iw-iw/zoom)*(on/d)"
+        x_expr = f"(iw-iw/zoom)*(on/{total_frames})"
         y_expr = "ih/2-(ih/zoom/2)"
 
     ffmpeg_bin = shutil.which("ffmpeg")
@@ -75,11 +76,12 @@ def generate_ken_burns_shot(image_path: Path, duration: float, motion_cfg: dict,
         ]
         res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if res.returncode == 0 and out_path.exists():
-            return
+            return True  # Real encoded video
 
     # Lightweight fallback if FFmpeg is absent: duplicate keyframe as placeholder mp4 / raw loop
     # If OpenCV or imageio is available, write frames, else copy static or write minimal placeholder
     _synthesize_placeholder_clip(image_path, duration, out_path)
+    return False  # Placeholder
 
 
 def _synthesize_placeholder_clip(image_path: Path, duration: float, out_path: Path):
@@ -147,12 +149,16 @@ def run_shots_stage(target_shot_id=None, force_regenerate=False):
         if wan_drop.exists():
             shutil.copy2(wan_drop, out_mp4)
             model_used = "Wan-2.2-TI2V-5B-Kaggle"
+            used_mock = False
         else:
-            generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4)
-            model_used = "FFmpeg-KenBurns-PanZoom"
+            success = generate_ken_burns_shot(keyframe_path, duration, motion_cfg, out_mp4)
+            used_mock = not success
+            model_used = "FFmpeg-KenBurns-PanZoom" if not used_mock else "placeholder-stub"
 
         latency = time.time() - t0
-        store_cached_output("shots", input_hash, out_mp4)
+        # Guard: only cache real encoded video — never cache MOCK_VIDEO_CONTAINER stubs
+        if not used_mock:
+            store_cached_output("shots", input_hash, out_mp4)
 
         log_run(
             stage="shots",
