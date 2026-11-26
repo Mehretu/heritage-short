@@ -1,44 +1,44 @@
 1
-00:00:00,200 --> 00:00:06,799
-በጧቱ ፀጥታ ውስጥ የልጅነቴ ከተማ ትነቃለች።
-(In the morning silence, the city of my childhood awakens.)
+00:00:00,200 --> 00:00:06,299
+አንዳንድ ምሽት በሥራ ጠረጴዛዬ ላይ ስቀመጥ፣ አእምሮዬ ወደ ኋላ ይሮጣል።
+(Some nights, sitting at my work desk, my mind runs back in time.)
 
 2
-00:00:07,200 --> 00:00:13,300
-እማዬ ሁልጊዜ አረንጓዴውን የቡና ፍሬ በእጇ ታበጥራለች።
-(My mother always sifted the raw green coffee beans by hand.)
+00:00:06,700 --> 00:00:13,800
+ወደ ልጅነቴ ከተማ... ወደ አርባ ምንጭ፤ ያ የምድር ገነት ወደነበረው ጥቅጥቅ ደን።
+(To the town of my childhood... to Arba Minch, to that dense forest that was heaven on earth.)
 
 3
-00:00:13,699 --> 00:00:20,300
-መከራ ቢመጣም ቡና ሳይፈላ ቀን አይጀምርም ትል ነበር።
-(She used to say: whatever hardship arrives, no day begins without brewing coffee.)
+00:00:14,199 --> 00:00:20,300
+እኔ፣ ወንድሜ ሚኪያስ፣ ምሕረተአብ እና ሱራፌል... ከእማዬ ዓይን ተደብቀን የምናሴረው ሴራ ሁልጊዜ ቅዳሜ ነበር።
+(Me, my brother Mikiyas, Mihretab, and Surafel... hiding from our mothers' watchful eyes was our Saturday mission.)
 
 4
-00:00:20,699 --> 00:00:26,800
-ፍሬዎቹ በእሳት ሲያብረቀርቁ ጭሱ በቤቱ ውስጥ ይሰራጫል።
-(As the beans glisten over the coals, the fragrance spreads through the home.)
+00:00:20,699 --> 00:00:27,300
+ሳንደናገጥ በባዶ እግራችን ወደ ደኑ ስንሮጥ፣ ነፃነታችን በዙሪያችን ይዘፍን ነበር።
+(Running barefoot into the forest without looking back, freedom sang all around us.)
 
 5
-00:00:27,199 --> 00:00:33,799
-ጭሱን ወደ እኛ እያወዛወዘች ምርቃቷን ታዘንባለች።
-(Wafting the fragrant smoke toward us, she poured out her blessings.)
+00:00:27,699 --> 00:00:33,299
+ከመሬት ሥር የሚፈልቁት አርባ ምንጮች... ንጹሕ፣ ቀዝቃዛ እና ሕያው።
+(The forty natural springs bubbling from the earth... pure, cold, and vibrant with life.)
 
 6
-00:00:34,200 --> 00:00:39,799
-ጥቁሯ ጀበና በእርጋታ ስትፈላ ትዕግስትን አስተማረችን።
-(The black clay jebena simmering peacefully taught us quiet patience.)
+00:00:33,700 --> 00:00:40,799
+ያ የተፈጥሮ ገንዳ ውስጥ ስንዘል፣ የዓለም ጭንቀት ሁሉ በውኃው ላይ ቀልጦ ይጠፋል።
+(When we plunged into that natural pool, all the worries of the world melted away upon the water.)
 
 7
-00:00:40,200 --> 00:00:46,799
-አቦል ሲቀዳ ትውልዶች በአንድ ሰሌዳ ዙሪያ ይሰበሰባሉ።
-(As the first cup is poured, generations gather around one mat.)
+00:00:41,200 --> 00:00:47,299
+ሚኪያስ፣ ምሕረተአብ፣ ሱራፌል... በድንጋይ ላይ ተቀምጠን በሳቅ የምናሳልፈው ያ ሰዓት፣ ከማንኛውም ሀብት ይበልጥ ነበር።
+(Mikiyas, Mihretab, Surafel... sitting on the warm rocks laughing together, those hours were worth more than any treasure.)
 
 8
-00:00:47,200 --> 00:00:53,299
-ዛሬ ባሕር ማዶ ብሆንም ይህ መዓዛ ሁልጊዜ ወደቤቴ ይመልሰኛል።
-(Today, even across oceans, this scent always brings me back home.)
+00:00:47,700 --> 00:00:54,299
+ፀሐይ ስትጠልቅ ወደ ቤት ስንመለስ፣ እማዬ ብትቆጣንም በውስጣችን ያለው ገነት አልጠፋም።
+(When we walked home at sunset, even if mother scolded us, the paradise inside us never faded.)
 
 9
-00:00:53,700 --> 00:01:00,299
-ሥራችን ቅርሳችን ነው፤ ፍቅር ደግሞ ቋንቋችን ነው።
-(Our roots are our heritage; love is our enduring language.)
+00:00:54,700 --> 00:01:00,799
+ዛሬም እዚህ ጠረጴዛዬ ላይ ብሆን... የአርባ ምንጭ ምንጮች በልቤ ውስጥ ለዘላለም ይፈሳሉ።
+(Even today at my desk... the forty springs of Arba Minch flow in my heart forever.)
