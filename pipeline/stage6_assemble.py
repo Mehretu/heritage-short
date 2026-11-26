@@ -462,9 +462,11 @@ def assemble_final_film(storyboard: dict):
 
     if ffmpeg and shots_manifest.stat().st_size > 0:
         filter_ducking = (
-            "[2:a][1:a]sidechaincompress=threshold=0.02:ratio=6:attack=300:release=1500[ducked_score];"
-            "[1:a][ducked_score]amix=inputs=2:duration=first[mixed_audio];"
-            "[mixed_audio]loudnorm=I=-14:TP=-1.0:LRA=11[aout]"
+            "[1:a]aformat=channel_layouts=stereo:sample_rates=48000,asplit=2[v_main][v_sc];"
+            "[2:a]aformat=channel_layouts=stereo:sample_rates=48000,volume=2.5[score];"
+            "[score][v_sc]sidechaincompress=threshold=0.03:ratio=5:attack=200:release=1200[ducked_score];"
+            "[v_main][ducked_score]amix=inputs=2:duration=first:dropout_transition=2[mixed_audio];"
+            "[mixed_audio]loudnorm=I=-14:TP=-1.0:LRA=11,aformat=channel_layouts=stereo:sample_rates=48000[aout]"
         )
 
         # 1. Assembling Horizontal 16:9 with Sidechain Ducking, Loudness Normalization, and Subtitle Track
@@ -478,11 +480,11 @@ def assemble_final_film(storyboard: dict):
             "-filter_complex", filter_ducking,
             "-map", "0:v", "-map", "[aout]", "-map", "3:s?",
             "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "192k",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
             "-c:s", "mov_text",
             "-metadata:s:s:0", "language=amh",
-            "-metadata:s:s:0", "title=Amharic & English Subtitles",
-            "-disposition:s:0", "default+forced",
+            "-metadata:s:s:0", "title=Amharic and English Subtitles",
+            "-disposition:s:0", "default",
             str(export_16_9)
         ]
         subprocess.run(cmd_16_9, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -498,11 +500,11 @@ def assemble_final_film(storyboard: dict):
             "-filter_complex", filter_ducking,
             "-map", "0:v", "-map", "[aout]", "-map", "3:s?",
             "-c:v", "libx264", "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "192k",
+            "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
             "-c:s", "mov_text",
             "-metadata:s:s:0", "language=amh",
-            "-metadata:s:s:0", "title=Amharic & English Subtitles",
-            "-disposition:s:0", "default+forced",
+            "-metadata:s:s:0", "title=Amharic and English Subtitles",
+            "-disposition:s:0", "default",
             str(export_9_16)
         ]
         subprocess.run(cmd_9_16, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
