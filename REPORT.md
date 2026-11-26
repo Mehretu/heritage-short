@@ -185,16 +185,5 @@ By orchestrating open weights and legitimate developer tiers with content-addres
 
 ---
 
-## 8. Five-Minute Walkthrough Video Script & Demonstration Guide
-
-| Time Window | Segment | Key Talking Points & Screen Actions |
-| :--- | :--- | :--- |
-| **0:00 – 1:30** | **System Architecture & Data Flow** | Show `storyboard.json` and `schema/storyboard.schema.json`. Explain how `run_pipeline.py` orchestrates TTS, FLUX keyframes, motion, and FFmpeg assembly deterministically. |
-| **1:30 – 3:00** | **One Hard Engineering Decision** | Highlight **ADR 09 (Asynchronous Remote GPU Ingestion)** and **Blocker 11 (48kHz Stereo AAC QuickTime Fix)**. Discuss overcoming headless Kaggle GPU restrictions without stalling local builds. |
-| **3:00 – 4:30** | **Live Shot Regeneration Demo** | Open `storyboard.json`, modify the motion prompt for Shot 03, run `python3 run_pipeline.py --stage shots --shot shot_03`. Open `runs.jsonl` to prove only Shot 03 recomputed (0.8s) while all other 8 shots hit cache in 0.001s. |
-| **4:30 – 5:00** | **Master Export Playback & Wrap-Up** | Play the first 15 seconds of `heritage_short_16x9.mp4` and `heritage_short_9x16.mp4`. Show the ducked score, synchronized subtitles, and the 'Made with AI' end card. |
-
----
-
-## 9. Conclusion
+## 8. Conclusion
 *The Forty Springs of Arba Minch* proves that production-grade generative cinema does not require commercial subscriptions or opaque SaaS tools. By treating generative filmmaking as a rigorous software engineering discipline—anchored in schema contracts, content-addressable caching, and strict audio-visual mastering standards—we achieved a culturally resonant, emotionally moving short film with complete determinism, zero commercial cost, and rapid re-render capabilities.
