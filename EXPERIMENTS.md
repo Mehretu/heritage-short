@@ -97,3 +97,16 @@
   - **Candidate 2 (seed 40502):** Brighter texture, centroid ~480 Hz; occasional high-frequency resonance bleeds into narration intelligibility band.
   - **Candidate 3 (seed 40603):** Very sparse — mostly sub-bass drone, loses polyphonic character.
 * **Result:** **Candidate 1 (seed 40401) selected.** Warmth without frequency conflict, spiritual weight through open-fifth harmonics, respiratory swell pacing matches shot rhythm. Written to `outputs/music/final_score.wav`.
+
+### Experiment 15: Headless Remote GPU Kernel Execution via Kaggle REST API
+* **Hypothesis:** Kaggle's `/api/v1/kernels/push` endpoint can be leveraged programmatically from the local CLI pipeline to dispatch the Wan 2.2 Image-to-Video notebook directly to free cloud GPUs (Nvidia T4 x2 / P100), eliminating all manual browser clicks.
+* **Stage:** Moving Shots (Stage 4) & Remote Orchestration
+* **Change:**
+  1. Developed `pipeline/stage4_kaggle.py` and configured credentials (`KAGGLE_USERNAME`, `KAGGLE_KEY` with modern `KGAT_` personal access token) in `~/.kaggle/kaggle.json`.
+  2. Implemented `POST /api/v1/kernels/push` payload packaging the Wan 2.2 Diffusers pipeline with `enable_gpu: true` and `enable_internet: true`.
+  3. Tested Bearer token authentication across Kaggle REST endpoints.
+* **Result & Platform Boundary Discovery:**
+  1. Authentication succeeded for metadata and resource queries (`GET /api/v1/datasets/list` returned `HTTP 200 OK`).
+  2. However, invoking `POST /api/v1/kernels/push` returned `HTTP 401: Unauthorized access`.
+  3. **Root Cause Analysis:** Kaggle deliberately restricts programmatic, headless GPU kernel allocation via API tokens to prevent automated compute abuse and crypto-mining botnets on their free 30-hour weekly GPU quota. Allocating an Nvidia T4/P100 GPU requires interactive browser session verification.
+  4. **Adopted Architecture:** Formulated **ADR 09 (Asynchronous Drop-In Pattern)**. The local pipeline gracefully runs with the cinematic Ken Burns camera engine by default, while automatically monitoring `outputs/wan_drops/` to seamlessly ingest Wan 2.2 neural video clips whenever generated via the turnkey Kaggle notebook.

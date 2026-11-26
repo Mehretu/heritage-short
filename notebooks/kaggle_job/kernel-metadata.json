@@ -1,0 +1,11 @@
+{
+  "id": "mehretuabreham/heritage-short-wan2",
+  "title": "The Heritage Short - Wan 2.2 Video Generator",
+  "code_file": "wan2_kaggle_pipeline.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "machine_shape": "NvidiaTeslaT4"
+}

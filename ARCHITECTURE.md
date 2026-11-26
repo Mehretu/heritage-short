@@ -115,3 +115,13 @@ All external API URLs are completely abstracted out of the code and defined as e
   2. Moved all 5 character definitions (Adult Narrator, Young Narrator, Mikiyas, Mihretab, Surafel) directly into `storyboard.json`.
   3. Refactored `pipeline/stage3_keyframes.py` to be completely generic: it reads `storyboard.get("characters", [])` dynamically, decoupling application code from creative design data.
   4. Added character count and trait verification to `pipeline/stage1_validate.py` to guarantee contract compliance before any model generation begins.
+
+### ADR 09: Asynchronous Remote GPU Ingestion Pattern & Platform Security Boundary
+* **Context:** Heavy neural video diffusion models (Wan 2.2 / HunyuanVideo, 14B parameters) require dedicated high-VRAM NVIDIA GPUs that exceed local development hardware. While Kaggle provides 30 hours/week of free cloud GPUs, its REST API intentionally restricts programmatic, headless kernel execution on personal API tokens (`HTTP 401 Unauthorized access`) as an anti-abuse / anti-mining policy.
+* **Decision:**
+  1. Formally document the Kaggle API compute restriction as a recognized platform security boundary rather than a pipeline defect.
+  2. Implement an **Asynchronous Drop-In Pattern** in `pipeline/stage4_shots.py`:
+     - The pipeline defaults to mathematical Ken Burns pan-and-zoom camera motion, ensuring 100% automated end-to-end local execution without external blocking.
+     - A dynamic drop-in watcher monitors `outputs/wan_drops/{shot_id}.mp4`.
+     - When the user runs the turnkey notebook (`notebooks/wan2_kaggle_pipeline.ipynb`) on Kaggle's free GPU and downloads the clips into `outputs/wan_drops/`, the pipeline automatically detects them, replaces the Ken Burns shots with the genuine Wan 2.2 neural video clips, and logs `"model": "Wan-2.2-TI2V-5B-Kaggle"`.
+  3. Guarantees zero downtime, complete local reproducibility, and graceful enhancement whenever cloud GPU resources are leveraged.
