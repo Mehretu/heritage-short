@@ -77,7 +77,7 @@
      - *Deeper Feedback Analysis:* Surafel's visceral reaction confirms the film achieved its exact dramatic objective: evoking the stark contrast between their childhood sensory freedom in Arba Minch (sneaking off past mothers' watch, where getting scolded was "worth it") and the isolating reality of adult desk-bound software engineering (*"the ጠረጴዛ part"*). His amusement at the AI Amharic's robotic timbre (*"ye ai amaregna besak gedelegn"*) also validated our decision to keep the platform AI disclosure prominent.
   2. **Score Selection & Personal Tribute (Reported by Mikiyas):**
      - *Feedback:* "Candidate 1 (the sacred Gamo polyphonic humming with seed 40401) gave me chills. It captured the exact feeling of the Arba Minch forest mist in the morning. Surafel and Mihretab will love seeing our names on the end card."
-     - *Action Taken:* Locked Candidate 1 permanently as `outputs/music/final_score.wav` and added the dedicated 3-second dedication end card: *"Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel"*.
+     - *Action Taken:* Locked Candidate 1 permanently as `outputs/music/final_score.wav` and added the dedicated 3-second dedication end card: *"Made with AI • For Mikiyas, Mihretab, and Surafel"*.
   3. **Audio Codec & QuickTime Playback Blocker (Reported by Dawit):**
      - *Feedback:* "When I opened the 16:9 file in QuickTime Player on macOS, the video was completely silent, even though the waveform in VLC and ffprobe showed an audio stream."
      - *Root Cause Analysis:* FFmpeg's `loudnorm` filter without explicit `-ar 48000 -ac 2` defaulted to 96,000 Hz mono. Apple's CoreAudio framework (`AudioToolbox`) rejects 96 kHz AAC inside standard MP4 containers (`kAudioFileUnsupportedDataFormatError (-66680)`).

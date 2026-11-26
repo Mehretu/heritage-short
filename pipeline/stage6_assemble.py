@@ -346,7 +346,7 @@ def generate_end_card(storyboard: dict, out_mp4: Path, width: int = 1280, height
     Supports both 16:9 widescreen (1280x720) and 9:16 vertical mobile (720x1280).
     """
     end_card_cfg = storyboard.get("end_card", {})
-    text = end_card_cfg.get("text", "Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel")
+    text = end_card_cfg.get("text", "Made with AI • For Mikiyas, Mihretab, and Surafel")
     duration = end_card_cfg.get("duration_seconds", 3.0)
 
     try:

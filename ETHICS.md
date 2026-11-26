@@ -37,5 +37,5 @@
 ## 3. Watermarking & Public Platform AI Disclosure
 * **Digital Provenance:** SynthID watermarks and metadata from Gemini and Cloudflare remain intact in exported video files.
 * **On-Screen Disclosure:** The film features a visible 3-second closing card:
-  `"Made with AI • Antigravity Pipeline • Dedicated to Arba Minch & Childhood Brotherhood"`
+  `"Made with AI • Dedicated to Arba Minch & Childhood Brotherhood"`
 * **Platform Toggles:** AI content labels will be enabled on YouTube, TikTok, and Instagram upon publishing.

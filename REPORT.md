@@ -181,7 +181,7 @@ By orchestrating open weights and legitimate developer tiers with content-addres
 
 1. **Consent & Living Representations:** The names **Mikiyas**, **Mihretab**, and **Surafel** represent real individuals whose explicit verbal consent was obtained. Prompts were intentionally crafted to preserve nostalgic, respectful, and joyful framing.
 2. **Cultural Safeguards:** Prompts explicitly prohibited exoticized tropes or war imagery, centering instead on Ethiopia's lush natural landscapes and joyful childhood brotherhood.
-3. **Mandatory AI Disclosure:** Both video masters include a burned 3-second end card (*"Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel"*), and all public social posts are published with the platform's AI transparency label active.
+2. **Mandatory AI Disclosure:** Both video masters include a burned 3-second end card (*"Made with AI • For Mikiyas, Mihretab, and Surafel"*), and all public social posts are published with the platform's AI transparency label active.
 
 ---
 
