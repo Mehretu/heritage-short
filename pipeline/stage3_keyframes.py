@@ -234,23 +234,156 @@ def fallback_procedural_image(shot_id: str, prompt: str, seed: int, style_info: 
     print(f"    [cinematic-renderer] Rendered {shot_id} → {out_path.name}")
 
 
-def generate_reference_sheet(storyboard: dict, out_path: Path):
+# Specifications for the 5 Story Characters + Arba Minch Setting Anchor
+# Updated with exact user character features:
+# - Adult Narrator: afro hair, dark skin, slightly short nose
+# - Young Narrator: mini-afro, dark skin, slightly short nose, vintage beige tee
+# - Mikiyas: younger brother, slim face, sharp long nose, mischievous grin, yellow shirt
+# - Mihretab: light skin, handsome well-defined features, joyful smile, green shirt
+# - Surafel: deep dark skin (darkest), lean/skinny build, confident smile, blue shirt
+CHARACTER_SPECS = [
+    {
+        "id": "adult_narrator",
+        "name": "Narrator (Adult)",
+        "role": "Present Day • Age 26",
+        "seed": 201,
+        "prompt": (
+            "Character reference portrait, 26-year-old Ethiopian male software engineer, "
+            "natural rounded afro hair, dark brown skin tone, slightly short nose, "
+            "thoughtful intelligent dark eyes, wearing black crewneck, soft glowing computer monitor illumination, "
+            "warm ambient desk lighting, 35mm film photography, cinematic portrait"
+        )
+    },
+    {
+        "id": "young_narrator",
+        "name": "Narrator (Young)",
+        "role": "Childhood Core • Age 11",
+        "seed": 202,
+        "prompt": (
+            "Character reference portrait, 11-year-old Ethiopian boy, natural mini-afro curly black hair, "
+            "dark brown skin tone, slightly short nose, expressive lively dark eyes, gentle curious smile, "
+            "wearing a vintage beige cotton t-shirt, 35mm film photography, warm natural daylight, childhood portrait"
+        )
+    },
+    {
+        "id": "mikiyas",
+        "name": "Mikiyas",
+        "role": "Younger Brother • Age 9",
+        "seed": 303,
+        "prompt": (
+            "Character reference portrait, 9-year-old Ethiopian boy, younger brother, "
+            "slim narrow face, distinct sharp long nose, completely clear skin, no markings, no red dot, no bindi, "
+            "playful mischievous grin, bright eyes, curly hair, vintage yellow cotton shirt, "
+            "35mm film photography, sunny daylight"
+        )
+    },
+    {
+        "id": "mihretab",
+        "name": "Mihretab",
+        "role": "Childhood Friend • Age 11",
+        "seed": 304,
+        "prompt": (
+            "Character reference portrait, 11-year-old Ethiopian boy, noticeably light-skinned Ethiopian boy, "
+            "light caramel skin tone, handsome attractive facial features, symmetrical charming face, "
+            "joyful warm smile, neat textured hair, vintage faded green cotton shirt, 35mm film photography, sun-dappled lighting"
+        )
+    },
+    {
+        "id": "surafel",
+        "name": "Surafel",
+        "role": "Childhood Friend • Age 12",
+        "seed": 305,
+        "prompt": (
+            "Character reference portrait, 12-year-old Ethiopian boy, very dark skin, "
+            "deep ebony dark brown complexion, rich dark skin tone, lean skinny build, narrow shoulders, "
+            "confident cheerful smile, expressive eyes, vintage blue cotton shirt, 35mm film photography, bright daylight"
+        )
+    },
+    {
+        "id": "arba_minch_style",
+        "name": "Arba Minch Springs",
+        "role": "Setting & Style Anchor",
+        "seed": 206,
+        "prompt": (
+            "Golden style reference photograph of Arba Minch Ethiopia, crystal clear turquoise natural spring water pool, "
+            "giant ancient rainforest fig trees, sunbeams through emerald canopy, black volcanic stones, "
+            "2000s 35mm film aesthetic, Kodak Daylight 5600K"
+        )
+    }
+]
+
+
+def generate_reference_sheet(storyboard: dict, out_path: Path, force=False):
     """
-    Generate a character and style reference sheet PNG for the Heritage Short.
-    Composites the first row (shot_01 / shot_09 = desk shots representing narrator)
-    and the adventure shots (shot_04/06/07) side-by-side, with style spec annotations.
-    If FLUX keyframes exist, tiles them; otherwise renders a Pillow style guide.
-    Uses Cloudflare FLUX to generate the sheet if credentials are available.
+    Generates the complete Character and Style Reference Sheet for the Heritage Short.
+    Generates reference portraits for all 5 characters + Arba Minch setting using Cloudflare FLUX,
+    then composites them into a publication-quality reference grid with typography and style specs.
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    char_dir = PROJECT_ROOT / "references" / "characters"
+    char_dir.mkdir(parents=True, exist_ok=True)
+
+    print("🎨 [Reference Sheet] Generating individual character & style portraits via Cloudflare FLUX...")
+
+    char_images = {}
+    for spec in CHARACTER_SPECS:
+        cid = spec["id"]
+        c_prompt = spec["prompt"]
+        c_seed = spec["seed"]
+        c_path = char_dir / f"{cid}.png"
+
+        # Content-addressable cache check
+        cache_data = {"prompt": c_prompt, "seed": c_seed, "type": "character_reference"}
+        c_hash = compute_sha256(cache_data)
+        cached_file = get_cached_output("keyframes", c_hash, ".png")
+
+        if cached_file and not force and c_path.exists():
+            print(f"  ⚡ [{spec['name']}] CACHE HIT -> Reusing portrait")
+            char_images[cid] = c_path
+            continue
+
+        print(f"  📸 [{spec['name']}] Calling Cloudflare FLUX (seed={c_seed})...")
+        t0 = time.time()
+        used_mock = False
+
+        if CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN:
+            try:
+                generate_cloudflare_flux(c_prompt, c_seed, c_path)
+            except Exception as e:
+                print(f"  ⚠️ Cloudflare AI generation failed ({e}); falling back to cinematic renderer.")
+                fallback_procedural_image(f"char_{cid}", c_prompt, c_seed, "Character Reference", c_path)
+                used_mock = True
+        else:
+            fallback_procedural_image(f"char_{cid}", c_prompt, c_seed, "Character Reference", c_path)
+            used_mock = True
+
+        latency = time.time() - t0
+        if not used_mock:
+            store_cached_output("keyframes", c_hash, c_path)
+
+        log_run(
+            stage="reference_sheet",
+            model="FLUX.1-schnell" if not used_mock else "procedural-renderer",
+            parameters={"prompt": c_prompt, "seed": c_seed},
+            seed=c_seed,
+            latency_seconds=latency,
+            cost_usd=0.0,
+            cached=False,
+            metadata={"character_id": cid, "hash": c_hash}
+        )
+        print(f"  ✅ [{spec['name']}] Portrait saved in {latency:.2f}s -> {c_path.name}")
+        char_images[cid] = c_path
+
+    # Composite into master reference sheet
     try:
         from PIL import Image, ImageDraw, ImageFont
     except ImportError:
-        print("  ⚠️ Pillow not available; skipping reference sheet")
-        return
+        print("  ⚠️ Pillow not installed; cannot composite sheet.")
+        return out_path
 
-    rng = random.Random(99999)
-    width, height = 1280, 900
+    width, height = 1500, 1150
+    sheet = Image.new("RGB", (width, height), color=(14, 12, 16))
+    draw = ImageDraw.Draw(sheet)
 
     font_candidates = [
         "/System/Library/Fonts/Supplemental/KefaIII.ttf",
@@ -259,66 +392,73 @@ def generate_reference_sheet(storyboard: dict, out_path: Path):
     ]
     font_path = next((c for c in font_candidates if Path(c).exists()), None)
     try:
-        font_h = ImageFont.truetype(font_path, 26) if font_path else ImageFont.load_default()
-        font_m = ImageFont.truetype(font_path, 18) if font_path else ImageFont.load_default()
-        font_s = ImageFont.truetype(font_path, 13) if font_path else ImageFont.load_default()
+        f_title = ImageFont.truetype(font_path, 28) if font_path else ImageFont.load_default()
+        f_sub = ImageFont.truetype(font_path, 16) if font_path else ImageFont.load_default()
+        f_name = ImageFont.truetype(font_path, 20) if font_path else ImageFont.load_default()
+        f_role = ImageFont.truetype(font_path, 14) if font_path else ImageFont.load_default()
+        f_spec = ImageFont.truetype(font_path, 14) if font_path else ImageFont.load_default()
     except Exception:
-        font_h = font_m = font_s = ImageFont.load_default()
+        f_title = f_sub = f_name = f_role = f_spec = ImageFont.load_default()
 
-    sheet = Image.new("RGB", (width, height), color=(12, 10, 8))
-    draw = ImageDraw.Draw(sheet)
+    # Top Header
+    draw.rectangle([0, 0, width, 70], fill=(24, 20, 28))
+    draw.text((40, 14), "THE FORTY SPRINGS OF ARBA MINCH • CHARACTER & STYLE REFERENCE SHEET", font=f_title, fill=(230, 200, 140))
+    draw.text((40, 46), "AI Heritage Short Film • 5 Narrative Characters & Environment Anchor • Generated with FLUX.1-schnell", font=f_sub, fill=(170, 160, 145))
+    draw.line([(0, 70), (width, 70)], fill=(180, 140, 80), width=1)
 
-    # Header band
-    draw.rectangle([0, 0, width, 60], fill=(25, 20, 15))
-    draw.text((30, 15), "CHARACTER & STYLE REFERENCE — The Forty Springs of Arba Minch (AI Heritage Short)", font=font_m, fill=(220, 190, 130))
-    draw.line([(0, 60), (width, 60)], fill=(180, 140, 80), width=1)
+    # 2 rows x 3 columns grid
+    tile_w, tile_h = 440, 310
+    start_x, start_y = 40, 95
+    h_gap, v_gap = 30, 50
 
-    # Tile any available keyframes (top row: shots 1,2,3; bottom: 4,5,6)
-    tile_w, tile_h = 400, 230
-    kf_dir = OUTPUTS_DIR / "keyframes"
-    tile_shots = ["shot_01", "shot_02", "shot_03", "shot_04", "shot_05", "shot_06"]
-    for idx, sid in enumerate(tile_shots):
-        col = idx % 3
+    for idx, spec in enumerate(CHARACTER_SPECS):
         row = idx // 3
-        px = 20 + col * (tile_w + 10)
-        py = 75 + row * (tile_h + 35)
-        kf = kf_dir / f"{sid}.png"
-        if kf.exists():
+        col = idx % 3
+        px = start_x + col * (tile_w + h_gap)
+        py = start_y + row * (tile_h + v_gap)
+
+        cid = spec["id"]
+        c_path = char_images.get(cid)
+
+        # Image tile
+        if c_path and c_path.exists():
             try:
-                tile_img = Image.open(kf).resize((tile_w, tile_h), Image.LANCZOS)
-                sheet.paste(tile_img, (px, py))
+                t_img = Image.open(c_path).resize((tile_w, tile_h), Image.LANCZOS)
+                sheet.paste(t_img, (px, py))
             except Exception:
-                draw.rectangle([px, py, px + tile_w, py + tile_h], fill=(30, 25, 20))
+                draw.rectangle([px, py, px + tile_w, py + tile_h], fill=(30, 25, 30))
         else:
-            draw.rectangle([px, py, px + tile_w, py + tile_h], fill=(30, 25, 20))
+            draw.rectangle([px, py, px + tile_w, py + tile_h], fill=(30, 25, 30))
 
-        label = sid.replace("_", " ").upper()
-        draw.text((px + 8, py + tile_h + 5), label, font=font_s, fill=(180, 160, 120))
+        # Thin border around each tile
+        draw.rectangle([px, py, px + tile_w, py + tile_h], outline=(100, 80, 50), width=1)
 
-    # Style spec panel (right column-ish, using remaining shots)
-    spec_x = 20
-    spec_y = 75 + 2 * (tile_h + 35) + 20
-    draw.line([(spec_x, spec_y), (width - spec_x, spec_y)], fill=(100, 80, 50), width=1)
-    spec_y += 12
+        # Label band below tile
+        label_y = py + tile_h + 6
+        draw.text((px, label_y), spec["name"].upper(), font=f_name, fill=(240, 225, 190))
+        draw.text((px + 230, label_y + 3), spec["role"], font=f_role, fill=(180, 160, 120))
 
-    style_specs = [
-        ("VISUAL STYLE",    "2000s 35mm film, warm Kodak Daylight 5600K, authentic Ethiopian youth"),
-        ("COLOR PALETTE",   "Deep rainforest emerald · turquoise spring · terracotta soil · golden hour"),
-        ("LIGHTING",        "Morning sunbeams through jungle canopy; cool monitor glow (shots 1 & 9)"),
-        ("CHARACTERS",      "Ethiopian boys ~10–12 y/o · short natural hair · simple cotton clothing"),
-        ("NARRATOR (ADULT)","~26 y/o Ethiopian male · modern desk environment · pensive, reflective"),
-        ("LOCATIONS",       "Arba Minch forest spring, hilltop panorama, forest path, sunset walk"),
-        ("SCORE",           "Gamo mothers' polyphonic vocal hymns · BPM 62 · modal open fifths"),
-        ("LANGUAGE",        "Amharic (Ge'ez script) narration · English subtitle translation"),
-        ("ASSIGNMENT",      "10 Academy AI-Content Generation: Heritage Short — Phase 2 Checkpoint"),
+    # Bottom Specification Panel
+    spec_box_y = start_y + 2 * (tile_h + v_gap) + 10
+    draw.rectangle([40, spec_box_y, width - 40, height - 30], fill=(22, 19, 25), outline=(80, 65, 45), width=1)
+    draw.text((60, spec_box_y + 12), "STYLE BLOCK SPECIFICATION (INVARIANT CONDITIONING ACROSS ALL SHOTS)", font=f_sub, fill=(200, 170, 110))
+    draw.line([(60, spec_box_y + 34), (width - 60, spec_box_y + 34)], fill=(70, 55, 40), width=1)
+
+    specs = [
+        ("VISUAL STYLE:", "2000s 35mm film aesthetic, warm Kodak Daylight 5600K, rich tropical emerald greens, natural sunbeams, authentic nostalgic Ethiopian youth."),
+        ("COLOR PALETTE:", "Deep rainforest emerald (#0D3B2E), turquoise spring water (#2E8B9A), terracotta soil (#8C4325), golden hour sunlight (#F4B24B)."),
+        ("LIGHTING:", "Modern cool monitor glow for desk frames (shots 1 & 9); soft natural morning sunbeams and warm golden hour for childhood memories (shots 2-8)."),
+        ("CONSISTENCY:", "Each character prompt anchors to these exact visual features, hair textures, age bands, and vintage Ethiopian cotton clothing across all shots.")
     ]
-    for label, value in style_specs:
-        draw.text((spec_x, spec_y), f"  {label}:", font=font_m, fill=(200, 170, 100))
-        draw.text((spec_x + 220, spec_y), value, font=font_m, fill=(210, 200, 185))
-        spec_y += 26
+    cur_y = spec_box_y + 44
+    for label, val in specs:
+        draw.text((60, cur_y), label, font=f_spec, fill=(180, 150, 90))
+        draw.text((220, cur_y), val, font=f_spec, fill=(210, 205, 195))
+        cur_y += 24
 
     sheet.save(out_path, "PNG")
-    print(f"  🎨 Reference sheet saved → {out_path}")
+    print(f"\n  🎨 Complete Master Character & Style Reference Sheet saved → {out_path} ({out_path.stat().st_size:,} bytes)")
+    return out_path
 
 
 def run_keyframes_stage(target_shot_id=None, force_regenerate=False):

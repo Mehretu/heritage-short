@@ -65,7 +65,7 @@ def main():
         from common import load_storyboard, PROJECT_ROOT
         sb = load_storyboard()
         ref_path = PROJECT_ROOT / "references" / "boys_arba_minch_sheet.png"
-        generate_reference_sheet(sb, ref_path)
+        generate_reference_sheet(sb, ref_path, force=args.force)
 
     if args.stage in ["shots", "all", "film"]:
         run_shots_stage(target_shot_id=args.shot, force_regenerate=args.force)

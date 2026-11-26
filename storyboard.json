@@ -46,7 +46,7 @@
         "prosody_note": "Quiet, reflective, gentle exhale"
       },
       "image_prompt": {
-        "prompt": "Young adult Ethiopian professional sitting at a desk with a glowing computer monitor late at night, soft warm desk lamp, thoughtful reflective expression, looking away from screen, cinematic moody lighting",
+        "prompt": "Young adult Ethiopian software professional with natural afro hair, dark brown skin, slightly short nose, sitting at modern work desk with glowing computer monitor late at night, soft warm desk lamp, thoughtful reflective expression, looking away from screen, cinematic moody lighting, 35mm film",
         "negative_prompt": "cartoon, oversaturated, messy, bright daylight",
         "seed": 201,
         "reference_tag": "desk_present"
@@ -102,7 +102,7 @@
         "prosody_note": "Playful, fond smile, whispering excitement"
       },
       "image_prompt": {
-        "prompt": "Four young Ethiopian boys, ages 10 to 12, standing near a rustic wooden compound gate, whispering playfully and looking around mischievously, sunny morning in a provincial town, authentic 1990s attire, warm film grain",
+        "prompt": "Four young Ethiopian boys, ages 9 to 12, standing near a rustic wooden compound gate: the 11-year-old narrator with mini-afro and dark skin in beige shirt, his 9-year-old brother Mikiyas with slim face and sharp long nose in yellow shirt, light-skinned Mihretab with handsome features in green shirt, and skinny deep dark-skinned Surafel in blue shirt; whispering playfully and looking around mischievously, sunny morning, authentic 1990s attire, warm film grain",
         "negative_prompt": "modern smartphones, western city streets, extra limbs, deformed faces",
         "seed": 203,
         "reference_tag": "four_boys_conspiracy"
@@ -130,7 +130,7 @@
         "prosody_note": "Energetic, exhilarating, nostalgic"
       },
       "image_prompt": {
-        "prompt": "Four barefoot young Ethiopian boys joyfully running down a sun-dappled dirt path into a towering rainforest, lush ferns and giant fig trees, golden sunbeams slicing through green leaves, dynamic motion, 35mm film",
+        "prompt": "Four barefoot young Ethiopian boys joyfully running down a sun-dappled dirt path into a towering rainforest: dark-skinned narrator with mini-afro in beige shirt, younger brother Mikiyas with slim face in yellow shirt, light-skinned Mihretab in green shirt, and skinny dark Surafel in blue shirt; lush ferns and giant fig trees, golden sunbeams slicing through green leaves, dynamic motion, 35mm film",
         "negative_prompt": "shoes, cars, scary dark forest, blurry artifacts",
         "seed": 204,
         "reference_tag": "forest_run"
@@ -186,7 +186,7 @@
         "prosody_note": "Euphoric, warm, release of joy"
       },
       "image_prompt": {
-        "prompt": "Four Ethiopian boys swimming and splashing in a pristine natural forest pool, turquoise clear water, surrounded by ancient jungle roots and vines, sunbeams illuminating water droplets in mid-air, pure childhood euphoria",
+        "prompt": "Four Ethiopian boys swimming and splashing in a pristine natural forest pool: dark-skinned narrator with mini-afro, younger brother Mikiyas with slim face, light-skinned Mihretab with handsome features, and skinny dark Surafel; turquoise clear water, surrounded by ancient jungle roots and vines, sunbeams illuminating water droplets in mid-air, pure childhood euphoria",
         "negative_prompt": "chlorine tiled pool, modern swimwear, adult swimmers, scary depth",
         "seed": 206,
         "reference_tag": "swimming_pool_joy"
@@ -214,7 +214,7 @@
         "prosody_note": "Tender affection, genuine brotherhood"
       },
       "image_prompt": {
-        "prompt": "Two Ethiopian boys sitting on a sun-warmed mossy river rock beside the spring pool, dripping wet with genuine happy smiles, sharing a laugh, lush green jungle backdrop, soft warm golden light, cinematic portrait",
+        "prompt": "Two Ethiopian boys sitting on a sun-warmed mossy river rock beside the spring pool: younger brother Mikiyas with his slim face and sharp long nose, and light-skinned friend Mihretab with handsome features and warm joyful smile; dripping wet with genuine happy smiles, sharing a laugh, lush green jungle backdrop, soft warm golden light, cinematic portrait",
         "negative_prompt": "sad expressions, modern clothes, disfigured faces",
         "seed": 207,
         "reference_tag": "boys_laughing_rock"
@@ -242,7 +242,7 @@
         "prosody_note": "Nostalgic, gentle humor, heartwarming"
       },
       "image_prompt": {
-        "prompt": "Silhouettes of four young boys walking along an earthen pathway at golden sunset, tall tropical trees and acacia silhouetted against deep amber and violet sky, warm evening light in Arba Minch",
+        "prompt": "Silhouettes of four young boys walking along an earthen pathway at golden sunset: dark-skinned narrator with mini-afro, slim-faced Mikiyas with sharp nose, light-skinned Mihretab, and skinny dark Surafel; tall tropical trees and acacia silhouetted against deep amber and violet sky, warm evening light in Arba Minch",
         "negative_prompt": "city skyline, darkness, muddy indistinct shapes",
         "seed": 208,
         "reference_tag": "sunset_walk_home"
@@ -270,7 +270,7 @@
         "prosody_note": "Peaceful, grounded, inspiring final cadence"
       },
       "image_prompt": {
-        "prompt": "Close-up portrait of the adult Ethiopian man sitting at his modern computer desk, smiling serenely with eyes full of warm memories, looking up toward the room window, soft ambient light, 35mm film grain",
+        "prompt": "Close-up portrait of the adult Ethiopian software engineer with natural afro hair, dark brown skin, slightly short nose, sitting at his modern computer desk, smiling serenely with eyes full of warm memories, looking up toward the room window, soft ambient light, 35mm film grain",
         "negative_prompt": "depressed, crying, harsh contrast, blurry",
         "seed": 209,
         "reference_tag": "desk_resolution"
