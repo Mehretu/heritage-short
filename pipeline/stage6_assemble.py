@@ -136,6 +136,202 @@ def generate_subtitle_cards(storyboard: dict, cards_dir: Path):
     return cards
 
 
+def wrap_text(text: str, font, max_width: int, draw) -> list:
+    """Wraps text into multiple lines so it fits comfortably within max_width."""
+    words = text.split(" ")
+    lines = []
+    current_line = []
+    for word in words:
+        test_line = " ".join(current_line + [word])
+        bbox = draw.textbbox((0, 0), test_line, font=font)
+        if bbox[2] - bbox[0] <= max_width:
+            current_line.append(word)
+        else:
+            if current_line:
+                lines.append(" ".join(current_line))
+            current_line = [word]
+    if current_line:
+        lines.append(" ".join(current_line))
+    return lines
+
+
+def generate_burned_subtitle_overlays(storyboard: dict) -> dict:
+    """
+    Renders pixel-perfect transparent subtitle overlay PNGs with bilingual text
+    (Amharic and English translation) on sleek semi-transparent dark rounded pills.
+    Generates both 16:9 (1280x720) and 9:16 (720x1280) overlays with broadcast safe zones.
+    """
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        return {}
+
+    sub_dir = OUTPUTS_DIR / "subtitles"
+    sub_dir.mkdir(parents=True, exist_ok=True)
+
+    font_candidates = [
+        "/System/Library/Fonts/Supplemental/KefaIII.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf"
+    ]
+    font_path = next((f for f in font_candidates if Path(f).exists()), None)
+
+    overlays = {"16x9": {}, "9x16": {}}
+    shots = storyboard.get("shots", [])
+
+    # Configuration per aspect ratio: (width, height, max_text_width, y_target, am_size, en_size)
+    aspect_configs = {
+        "16x9": (1280, 720, 1060, 665, 25, 18),
+        "9x16": (720, 1280, 620, 1020, 22, 16)
+    }
+
+    for aspect, (w, h, max_w, y_target, am_sz, en_sz) in aspect_configs.items():
+        try:
+            f_am = ImageFont.truetype(font_path, am_sz) if font_path else ImageFont.load_default()
+            f_en = ImageFont.truetype(font_path, en_sz) if font_path else ImageFont.load_default()
+        except Exception:
+            f_am = f_en = ImageFont.load_default()
+
+        for shot in shots:
+            sid = shot["shot_id"]
+            narration = shot.get("narration", {})
+            am_text = narration.get("text", "").strip()
+            en_trans = narration.get("english_translation", "").strip()
+            en_text = f"({en_trans})" if en_trans else ""
+
+            if not am_text and not en_text:
+                continue
+
+            img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+            draw = ImageDraw.Draw(img)
+
+            am_lines = wrap_text(am_text, f_am, max_w, draw) if am_text else []
+            en_lines = wrap_text(en_text, f_en, max_w, draw) if en_text else []
+
+            am_bboxes = [draw.textbbox((0, 0), l, font=f_am) for l in am_lines]
+            en_bboxes = [draw.textbbox((0, 0), l, font=f_en) for l in en_lines]
+
+            am_widths = [b[2] - b[0] for b in am_bboxes]
+            en_widths = [b[2] - b[0] for b in en_bboxes]
+            am_heights = [b[3] - b[1] for b in am_bboxes]
+            en_heights = [b[3] - b[1] for b in en_bboxes]
+
+            all_widths = am_widths + en_widths
+            max_content_w = max(all_widths) if all_widths else 200
+
+            line_gap = 5
+            sec_gap = 9 if (am_lines and en_lines) else 0
+            total_content_h = (
+                sum(am_heights) + max(0, len(am_heights) - 1) * line_gap +
+                sec_gap +
+                sum(en_heights) + max(0, len(en_heights) - 1) * line_gap
+            )
+
+            pad_x = 24
+            pad_y = 12
+            pill_w = max_content_w + pad_x * 2
+            pill_h = total_content_h + pad_y * 2
+
+            pill_x = (w - pill_w) // 2
+            pill_y = y_target - pill_h
+
+            # Draw sleek semi-transparent pill backdrop with hairline border
+            draw.rounded_rectangle(
+                [pill_x, pill_y, pill_x + pill_w, pill_y + pill_h],
+                radius=12,
+                fill=(10, 10, 14, 210),
+                outline=(255, 255, 255, 35),
+                width=1
+            )
+
+            # Draw Amharic lines (centered)
+            cur_y = pill_y + pad_y
+            for l, lw, lh in zip(am_lines, am_widths, am_heights):
+                lx = pill_x + (pill_w - lw) // 2
+                draw.text((lx + 1, cur_y + 1), l, font=f_am, fill=(0, 0, 0, 160))
+                draw.text((lx, cur_y), l, font=f_am, fill=(255, 255, 255, 255))
+                cur_y += lh + line_gap
+
+            cur_y += sec_gap - line_gap
+
+            # Draw English translation lines (centered, warm off-white)
+            for l, lw, lh in zip(en_lines, en_widths, en_heights):
+                lx = pill_x + (pill_w - lw) // 2
+                draw.text((lx + 1, cur_y + 1), l, font=f_en, fill=(0, 0, 0, 160))
+                draw.text((lx, cur_y), l, font=f_en, fill=(228, 222, 208, 255))
+                cur_y += lh + line_gap
+
+            out_png = sub_dir / f"{sid}_{aspect}.png"
+            img.save(out_png)
+            overlays[aspect][sid] = out_png
+
+    return overlays
+
+
+def bake_subtitles_into_shots(storyboard: dict) -> tuple:
+    """
+    Overlays the burned-in subtitle PNG cards directly onto each moving shot video clip.
+    Returns (sub_shots_16_9, sub_shots_9_16) lists of Paths.
+    """
+    overlays = generate_burned_subtitle_overlays(storyboard)
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        return [], []
+
+    shots = storyboard.get("shots", [])
+    sub_shots_16_9 = []
+    sub_shots_9_16 = []
+
+    for shot in shots:
+        sid = shot["shot_id"]
+
+        # 16:9 shot
+        src_16_9 = SHOTS_DIR / f"{sid}.mp4"
+        dst_16_9 = SHOTS_DIR / f"{sid}_sub.mp4"
+        ov_16_9 = overlays.get("16x9", {}).get(sid)
+
+        if src_16_9.exists() and ov_16_9 and ov_16_9.exists():
+            if not dst_16_9.exists() or dst_16_9.stat().st_mtime < max(src_16_9.stat().st_mtime, ov_16_9.stat().st_mtime):
+                cmd = [
+                    ffmpeg, "-y",
+                    "-i", str(src_16_9),
+                    "-i", str(ov_16_9),
+                    "-filter_complex", "[0:v][1:v]overlay=0:0",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
+                    str(dst_16_9)
+                ]
+                subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            sub_shots_16_9.append(dst_16_9 if dst_16_9.exists() else src_16_9)
+        elif src_16_9.exists():
+            sub_shots_16_9.append(src_16_9)
+
+        # 9:16 vertical shot
+        src_9_16 = SHOTS_DIR / f"{sid}_9x16.mp4"
+        if not src_9_16.exists():
+            src_9_16 = src_16_9
+        dst_9_16 = SHOTS_DIR / f"{sid}_9x16_sub.mp4"
+        ov_9_16 = overlays.get("9x16", {}).get(sid)
+
+        if src_9_16.exists() and ov_9_16 and ov_9_16.exists():
+            if not dst_9_16.exists() or dst_9_16.stat().st_mtime < max(src_9_16.stat().st_mtime, ov_9_16.stat().st_mtime):
+                cmd = [
+                    ffmpeg, "-y",
+                    "-i", str(src_9_16),
+                    "-i", str(ov_9_16),
+                    "-filter_complex", "[0:v][1:v]overlay=0:0",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-preset", "veryfast",
+                    str(dst_9_16)
+                ]
+                subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            sub_shots_9_16.append(dst_9_16 if dst_9_16.exists() else src_9_16)
+        elif src_9_16.exists():
+            sub_shots_9_16.append(src_9_16)
+
+    print(f"  ✨ Baked pixel-perfect bilingual subtitles into all {len(shots)} shots (16:9 & 9:16).")
+    return sub_shots_16_9, sub_shots_9_16
+
+
 def concatenate_narration_audio(storyboard: dict, out_combined_wav: Path):
     """Combine individual shot narration audio into one continuous master track."""
     import wave
@@ -437,22 +633,22 @@ def assemble_final_film(storyboard: dict):
     generate_end_card(storyboard, end_card_mp4, width=1280, height=720)
     generate_end_card(storyboard, end_card_9x16_mp4, width=720, height=1280)
 
+    # Bake pixel-perfect bilingual subtitles directly into video frames (open captions)
+    sub_shots_16_9, sub_shots_9_16 = bake_subtitles_into_shots(storyboard)
+
     # Write 16:9 shots concatenation manifest
     with open(shots_manifest, "w") as f:
-        for s in storyboard.get("shots", []):
-            shot_file = SHOTS_DIR / f"{s['shot_id']}.mp4"
-            if shot_file.exists():
-                f.write(f"file '{shot_file.resolve()}'\n")
+        for sfile in sub_shots_16_9:
+            if sfile.exists():
+                f.write(f"file '{sfile.resolve()}'\n")
         if end_card_mp4.exists() and end_card_mp4.stat().st_size > 100:
             f.write(f"file '{end_card_mp4.resolve()}'\n")
 
-    # Write 9:16 native full-bleed vertical shots concatenation manifest (matching test_9_16.mp4)
+    # Write 9:16 native full-bleed vertical shots concatenation manifest
     with open(shots_manifest_9x16, "w") as f:
-        for s in storyboard.get("shots", []):
-            s_916 = SHOTS_DIR / f"{s['shot_id']}_9x16.mp4"
-            target_f = s_916 if s_916.exists() else SHOTS_DIR / f"{s['shot_id']}.mp4"
-            if target_f.exists():
-                f.write(f"file '{target_f.resolve()}'\n")
+        for sfile in sub_shots_9_16:
+            if sfile.exists():
+                f.write(f"file '{sfile.resolve()}'\n")
         if end_card_9x16_mp4.exists() and end_card_9x16_mp4.stat().st_size > 100:
             f.write(f"file '{end_card_9x16_mp4.resolve()}'\n")
 
