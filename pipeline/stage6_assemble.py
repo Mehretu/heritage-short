@@ -182,20 +182,43 @@ def build_radio_cut(storyboard: dict):
         ]
         res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if res.returncode != 0:
-            # Fallback if libass subtitle filter is unavailable
+            # Fallback: embed subtitles into MP4 container via mov_text codec (supported on all FFmpeg builds)
             fallback_cmd = [
                 ffmpeg, "-y",
                 "-f", "lavfi", "-i", f"color=c=black:s=1280x720:d={total_duration}:r=24",
                 "-i", str(combined_voice),
                 "-i", str(score_wav),
+                "-i", str(srt_file),
                 "-filter_complex",
                 "[2:a]volume=0.22[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout]",
-                "-map", "0:v", "-map", "[aout]",
+                "-map", "0:v", "-map", "[aout]", "-map", "3:s",
                 "-c:v", "libx264", "-c:a", "aac", "-b:a", "192k",
+                "-c:s", "mov_text",
+                "-metadata:s:s:0", "language=amh",
+                "-metadata:s:s:0", "title=Amharic & English Subtitles",
+                "-disposition:s:0", "default+forced",
                 str(radio_cut_mp4)
             ]
-            subprocess.run(fallback_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        print(f"  ✅ Radio Cut Video (with burned subtitles) exported successfully: {radio_cut_mp4}")
+            fallback_res = subprocess.run(fallback_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if fallback_res.returncode == 0:
+                print(f"  ✅ Radio Cut Video (with embedded subtitle track) exported: {radio_cut_mp4}")
+            else:
+                # Ultimate fallback without subtitle stream
+                basic_cmd = [
+                    ffmpeg, "-y",
+                    "-f", "lavfi", "-i", f"color=c=black:s=1280x720:d={total_duration}:r=24",
+                    "-i", str(combined_voice),
+                    "-i", str(score_wav),
+                    "-filter_complex",
+                    "[2:a]volume=0.22[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout]",
+                    "-map", "0:v", "-map", "[aout]",
+                    "-c:v", "libx264", "-c:a", "aac", "-b:a", "192k",
+                    str(radio_cut_mp4)
+                ]
+                subprocess.run(basic_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                print(f"  ✅ Radio Cut Video exported: {radio_cut_mp4}")
+        else:
+            print(f"  ✅ Radio Cut Video (with burned-in subtitles) exported successfully: {radio_cut_mp4}")
     else:
         # Save placeholder radio cut manifest
         with open(radio_cut_mp4.with_suffix(".txt"), "w") as f:
