@@ -107,3 +107,11 @@ All external API URLs are completely abstracted out of the code and defined as e
      - **Tier 2 (Embedded QuickTime Container Stream):** Encoded timed subtitles directly into the MP4 container via standard `mov_text` codec with forced display flags (`-disposition:s:0 default+forced`).
      - **Tier 3 (External Sidecar):** Generated synchronized `subtitles.srt` alongside video exports for media players and web embedding.
   2. Guarantees 100% subtitle availability across all desktop and mobile video players regardless of local FFmpeg compile flags.
+
+### ADR 08: Declarative Character Contract & Schema Validation
+* **Context:** Hardcoding character descriptions inside generation script variables (e.g. `CHARACTER_SPECS` in `stage3_keyframes.py`) violates the single-source-of-truth principle. It bypasses schema validation in Stage 1, creates coupling between character design and execution logic, and prevents declarative consistency auditing across shots.
+* **Decision:**
+  1. Formalized the character contract inside `schema/storyboard.schema.json` with strict schema validation enforcing at least 5 characters, each requiring structured `physical_traits` (`hair`, `skin_tone`, `facial_features`, `clothing`), `prompt`, and fixed `seed`.
+  2. Moved all 5 character definitions (Adult Narrator, Young Narrator, Mikiyas, Mihretab, Surafel) directly into `storyboard.json`.
+  3. Refactored `pipeline/stage3_keyframes.py` to be completely generic: it reads `storyboard.get("characters", [])` dynamically, decoupling application code from creative design data.
+  4. Added character count and trait verification to `pipeline/stage1_validate.py` to guarantee contract compliance before any model generation begins.

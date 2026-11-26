@@ -10,6 +10,78 @@
     "voice_name": "Charon",
     "voice_instruction": "Warm, reflective, unhurried young Ethiopian male baritone cadence with gentle pauses as if recollecting a treasured memory."
   },
+  "characters": [
+    {
+      "character_id": "adult_narrator",
+      "name": "Narrator (Adult)",
+      "role": "Present Day",
+      "age": 26,
+      "physical_traits": {
+        "hair": "natural rounded afro hair",
+        "skin_tone": "dark brown",
+        "facial_features": "slightly short nose, thoughtful intelligent dark eyes",
+        "clothing": "black crewneck"
+      },
+      "prompt": "Character reference portrait, 26-year-old Ethiopian male software engineer, natural rounded afro hair, dark brown skin tone, slightly short nose, thoughtful intelligent dark eyes, wearing black crewneck, soft glowing computer monitor illumination, warm ambient desk lighting, 35mm film photography, cinematic portrait",
+      "seed": 201
+    },
+    {
+      "character_id": "young_narrator",
+      "name": "Narrator (Young)",
+      "role": "Childhood Core",
+      "age": 11,
+      "physical_traits": {
+        "hair": "natural mini-afro curly black hair",
+        "skin_tone": "dark brown",
+        "facial_features": "slightly short nose, expressive lively dark eyes, gentle curious smile",
+        "clothing": "vintage beige cotton t-shirt"
+      },
+      "prompt": "Character reference portrait, 11-year-old Ethiopian boy, natural mini-afro curly black hair, dark brown skin tone, slightly short nose, expressive lively dark eyes, gentle curious smile, wearing a vintage beige cotton t-shirt, 35mm film photography, warm natural daylight, childhood portrait",
+      "seed": 202
+    },
+    {
+      "character_id": "mikiyas",
+      "name": "Mikiyas",
+      "role": "Younger Brother",
+      "age": 9,
+      "physical_traits": {
+        "hair": "textured curly hair",
+        "skin_tone": "warm brown",
+        "facial_features": "slim narrow face, distinct sharp long nose, completely clear skin, no markings, no red dot",
+        "clothing": "vintage yellow cotton t-shirt"
+      },
+      "prompt": "Character reference portrait, 9-year-old Ethiopian boy, younger brother, slim narrow face, distinct sharp long nose, completely clear skin, no markings, no red dot, no bindi, playful mischievous grin, bright eyes, curly hair, vintage yellow cotton shirt, 35mm film photography, sunny daylight",
+      "seed": 303
+    },
+    {
+      "character_id": "mihretab",
+      "name": "Mihretab",
+      "role": "Childhood Friend",
+      "age": 11,
+      "physical_traits": {
+        "hair": "neat textured hair",
+        "skin_tone": "light brown / light caramel",
+        "facial_features": "handsome well-defined attractive features, symmetrical face, joyful warm smile",
+        "clothing": "vintage faded green cotton t-shirt"
+      },
+      "prompt": "Character reference portrait, 11-year-old Ethiopian boy, noticeably light-skinned Ethiopian boy, light caramel skin tone, handsome attractive facial features, symmetrical charming face, joyful warm smile, neat textured hair, vintage faded green cotton shirt, 35mm film photography, sun-dappled lighting",
+      "seed": 304
+    },
+    {
+      "character_id": "surafel",
+      "name": "Surafel",
+      "role": "Childhood Friend",
+      "age": 12,
+      "physical_traits": {
+        "hair": "natural textured hair",
+        "skin_tone": "deep dark brown (darkest of all)",
+        "facial_features": "spirited expressive eyes, confident cheerful smile, lean skinny build",
+        "clothing": "vintage blue cotton t-shirt"
+      },
+      "prompt": "Character reference portrait, 12-year-old Ethiopian boy, very dark skin, deep ebony dark brown complexion, rich dark skin tone, lean skinny build, narrow shoulders, confident cheerful smile, expressive eyes, vintage blue cotton shirt, 35mm film photography, bright daylight",
+      "seed": 305
+    }
+  ],
   "style_block": {
     "visual_style": "2000s 35mm film aesthetic, warm Kodak daylight, vibrant tropical emerald greens, natural sunbeams filtering through giant rainforest trees, crystal water refractions, nostalgic authentic Ethiopian youth",
     "aspect_ratios": ["16:9", "9:16"],

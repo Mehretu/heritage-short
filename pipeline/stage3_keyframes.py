@@ -234,72 +234,26 @@ def fallback_procedural_image(shot_id: str, prompt: str, seed: int, style_info: 
     print(f"    [cinematic-renderer] Rendered {shot_id} → {out_path.name}")
 
 
-# Specifications for the 5 Story Characters + Arba Minch Setting Anchor
-# Updated with exact user character features:
-# - Adult Narrator: afro hair, dark skin, slightly short nose
-# - Young Narrator: mini-afro, dark skin, slightly short nose, vintage beige tee
-# - Mikiyas: younger brother, slim face, sharp long nose, mischievous grin, yellow shirt
-# - Mihretab: light skin, handsome well-defined features, joyful smile, green shirt
-# - Surafel: deep dark skin (darkest), lean/skinny build, confident smile, blue shirt
-CHARACTER_SPECS = [
-    {
-        "id": "adult_narrator",
-        "name": "Narrator (Adult)",
-        "role": "Present Day • Age 26",
-        "seed": 201,
-        "prompt": (
-            "Character reference portrait, 26-year-old Ethiopian male software engineer, "
-            "natural rounded afro hair, dark brown skin tone, slightly short nose, "
-            "thoughtful intelligent dark eyes, wearing black crewneck, soft glowing computer monitor illumination, "
-            "warm ambient desk lighting, 35mm film photography, cinematic portrait"
-        )
-    },
-    {
-        "id": "young_narrator",
-        "name": "Narrator (Young)",
-        "role": "Childhood Core • Age 11",
-        "seed": 202,
-        "prompt": (
-            "Character reference portrait, 11-year-old Ethiopian boy, natural mini-afro curly black hair, "
-            "dark brown skin tone, slightly short nose, expressive lively dark eyes, gentle curious smile, "
-            "wearing a vintage beige cotton t-shirt, 35mm film photography, warm natural daylight, childhood portrait"
-        )
-    },
-    {
-        "id": "mikiyas",
-        "name": "Mikiyas",
-        "role": "Younger Brother • Age 9",
-        "seed": 303,
-        "prompt": (
-            "Character reference portrait, 9-year-old Ethiopian boy, younger brother, "
-            "slim narrow face, distinct sharp long nose, completely clear skin, no markings, no red dot, no bindi, "
-            "playful mischievous grin, bright eyes, curly hair, vintage yellow cotton shirt, "
-            "35mm film photography, sunny daylight"
-        )
-    },
-    {
-        "id": "mihretab",
-        "name": "Mihretab",
-        "role": "Childhood Friend • Age 11",
-        "seed": 304,
-        "prompt": (
-            "Character reference portrait, 11-year-old Ethiopian boy, noticeably light-skinned Ethiopian boy, "
-            "light caramel skin tone, handsome attractive facial features, symmetrical charming face, "
-            "joyful warm smile, neat textured hair, vintage faded green cotton shirt, 35mm film photography, sun-dappled lighting"
-        )
-    },
-    {
-        "id": "surafel",
-        "name": "Surafel",
-        "role": "Childhood Friend • Age 12",
-        "seed": 305,
-        "prompt": (
-            "Character reference portrait, 12-year-old Ethiopian boy, very dark skin, "
-            "deep ebony dark brown complexion, rich dark skin tone, lean skinny build, narrow shoulders, "
-            "confident cheerful smile, expressive eyes, vintage blue cotton shirt, 35mm film photography, bright daylight"
-        )
-    },
-    {
+def get_character_specs_from_storyboard(storyboard: dict):
+    """
+    Extracts character specifications directly from the storyboard.json declarative contract.
+    Decoupled design: characters, traits, seeds, and prompts live entirely in storyboard.json.
+    Appends the Arba Minch setting anchor from the style block to form the 6-panel reference grid.
+    """
+    chars = storyboard.get("characters", [])
+    specs = []
+    for c in chars:
+        specs.append({
+            "id": c.get("character_id"),
+            "name": c.get("name"),
+            "role": f"{c.get('role')} • Age {c.get('age')}",
+            "seed": c.get("seed", 100),
+            "prompt": c.get("prompt")
+        })
+
+    # Add setting & style anchor from style block
+    style_block = storyboard.get("style_block", {})
+    specs.append({
         "id": "arba_minch_style",
         "name": "Arba Minch Springs",
         "role": "Setting & Style Anchor",
@@ -307,26 +261,27 @@ CHARACTER_SPECS = [
         "prompt": (
             "Golden style reference photograph of Arba Minch Ethiopia, crystal clear turquoise natural spring water pool, "
             "giant ancient rainforest fig trees, sunbeams through emerald canopy, black volcanic stones, "
-            "2000s 35mm film aesthetic, Kodak Daylight 5600K"
+            f"Style: {style_block.get('visual_style', '2000s 35mm film aesthetic, warm Kodak Daylight 5600K')}"
         )
-    }
-]
+    })
+    return specs
 
 
 def generate_reference_sheet(storyboard: dict, out_path: Path, force=False):
     """
     Generates the complete Character and Style Reference Sheet for the Heritage Short.
-    Generates reference portraits for all 5 characters + Arba Minch setting using Cloudflare FLUX,
-    then composites them into a publication-quality reference grid with typography and style specs.
+    Reads character specifications from storyboard.json, generates individual reference
+    portraits via Cloudflare FLUX, then composites them into a reference grid with style specs.
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     char_dir = PROJECT_ROOT / "references" / "characters"
     char_dir.mkdir(parents=True, exist_ok=True)
 
+    character_specs = get_character_specs_from_storyboard(storyboard)
     print("🎨 [Reference Sheet] Generating individual character & style portraits via Cloudflare FLUX...")
 
     char_images = {}
-    for spec in CHARACTER_SPECS:
+    for spec in character_specs:
         cid = spec["id"]
         c_prompt = spec["prompt"]
         c_seed = spec["seed"]
@@ -411,7 +366,7 @@ def generate_reference_sheet(storyboard: dict, out_path: Path, force=False):
     start_x, start_y = 40, 95
     h_gap, v_gap = 30, 50
 
-    for idx, spec in enumerate(CHARACTER_SPECS):
+    for idx, spec in enumerate(character_specs):
         row = idx // 3
         col = idx % 3
         px = start_x + col * (tile_w + h_gap)

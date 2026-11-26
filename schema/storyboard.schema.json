@@ -8,6 +8,7 @@
     "logline",
     "language",
     "total_target_duration_seconds",
+    "characters",
     "style_block",
     "shots",
     "music",
@@ -23,6 +24,41 @@
       "minimum": 60.0,
       "maximum": 90.0,
       "description": "Overall target duration between 60 and 90 seconds"
+    },
+    "characters": {
+      "type": "array",
+      "description": "Declarative cast specifications with physical DNA anchors for FLUX consistency",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "character_id",
+          "name",
+          "role",
+          "age",
+          "physical_traits",
+          "prompt",
+          "seed"
+        ],
+        "properties": {
+          "character_id": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "age": { "type": "integer" },
+          "physical_traits": {
+            "type": "object",
+            "required": ["hair", "skin_tone", "facial_features", "clothing"],
+            "properties": {
+              "hair": { "type": "string" },
+              "skin_tone": { "type": "string" },
+              "facial_features": { "type": "string" },
+              "clothing": { "type": "string" }
+            }
+          },
+          "prompt": { "type": "string" },
+          "seed": { "type": "integer" }
+        }
+      }
     },
     "voice_profile": {
       "type": "object",
