@@ -1,7 +1,7 @@
 # AI-Content Generation: The Heritage Short
 
-> **"The Scent of Roasted Coffee: A Mother's Sunday"**
-> A 68-second generative short film exploring intergenerational family continuity through the Ethiopian coffee ceremony.
+> **"The Forty Springs of Arba Minch (የአርባ ምንጭ 40 ምንጮች)"**
+> A 72.5-second generative short film capturing the nostalgic journey of an adult developer looking back at his childhood adventures in Arba Minch with his brother Mikiyas and inseparable friends Mihretab and Surafel.
 
 ---
 
@@ -9,17 +9,22 @@
 From a clean clone, run the entire pipeline end-to-end:
 
 ```bash
-# 1. Install dependencies (optional for mock run, recommended for production)
+# 1. Install dependencies
 pip install -r requirements.txt
 
 # 2. Run the entire film production pipeline
 make film
 ```
 *Outputs will be generated in `outputs/exports/`:*
-* Horizontal Master: `outputs/exports/heritage_short_16x9.mp4`
-* Vertical Master: `outputs/exports/heritage_short_9x16.mp4`
-* Synchronized Subtitles: `outputs/exports/subtitles.srt`
-* Complete Model Audit Log: `runs.jsonl`
+* **16:9 Widescreen Panorama Master:** `outputs/exports/heritage_short_16x9.mp4` (1280×720 • 72.5s)
+* **9:16 Full-Bleed Vertical Mobile Master:** `outputs/exports/heritage_short_9x16.mp4` (720×1280 • 72.5s)
+* **Synchronized Subtitles:** `outputs/exports/subtitles.srt` (Amharic & English)
+* **Complete Model Audit Log:** `runs.jsonl`
+
+To watch both finished films immediately:
+```bash
+make play
+```
 
 ---
 
