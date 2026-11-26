@@ -3,7 +3,7 @@
   "logline": "From behind a glowing computer screen late at night, a developer is transported back to the emerald forests and forty springs of Arba Minch, where four boys risked their mothers' scoldings for one afternoon of heaven.",
   "treatment": "Sitting at a cluttered work desk in the quiet of the night, the narrator remembers childhood in Arba Minch. Looking out from the hill above the town, the ancient groundwater forest appears like paradise between the great lakes. Four young boys—the narrator, his brother Mikiyas, and inseparable friends Mihretab and Surafel—sneak out past their mothers' watch to plunge into the secret natural spring pool. The memory of pure water, towering fig trees, and unbroken brotherhood proves that paradise was never lost; it remains the foundation of who they are today.",
   "language": "Amharic",
-  "total_target_duration_seconds": 68.0,
+  "total_target_duration_seconds": 69.5,
   "voice_profile": {
     "speaker_name": "Narrator (Young Adult Male)",
     "gender": "male",
@@ -37,7 +37,7 @@
       "shot_id": "shot_01",
       "shot_number": 1,
       "shot_type": "medium_close_up",
-      "duration_seconds": 6.5,
+      "duration_seconds": 6.0,
       "reason": "Establishes the present-day frame: an adult working late at a desk; monitor glow highlights fatigue and sparks the nostalgic flashback.",
       "narration": {
         "text": "አንዳንድ ምሽት በሥራ ጠረጴዛዬ ላይ ስቀመጥ፣ አእምሮዬ ወደ ኋላ ይሮጣል።",
@@ -65,7 +65,7 @@
       "shot_id": "shot_02",
       "shot_number": 2,
       "shot_type": "extreme_wide",
-      "duration_seconds": 7.5,
+      "duration_seconds": 6.5,
       "reason": "The dramatic transition into memory: reveals the breathtaking panoramic paradise of Arba Minch forest and lakes from the hilltop.",
       "narration": {
         "text": "ወደ ልጅነቴ ከተማ... ወደ አርባ ምንጭ፤ ያ የምድር ገነት ወደነበረው ጥቅጥቅ ደን።",
@@ -93,7 +93,7 @@
       "shot_id": "shot_03",
       "shot_number": 3,
       "shot_type": "medium",
-      "duration_seconds": 6.5,
+      "duration_seconds": 9.0,
       "reason": "Introduces the core characters and the relatable mischief: boys conspiring to sneak past their mothers for the weekend swim.",
       "narration": {
         "text": "እኔ፣ ወንድሜ ሚኪያስ፣ ምሕረተአብ እና ሱራፌል... ከእማዬ ዓይን ተደብቀን የምናሴረው ሴራ ሁልጊዜ ቅዳሜ ነበር።",
@@ -121,7 +121,7 @@
       "shot_id": "shot_04",
       "shot_number": 4,
       "shot_type": "wide",
-      "duration_seconds": 7.0,
+      "duration_seconds": 8.0,
       "reason": "Kinetic freedom: boys running barefoot into the cool shade of the forest, leaving all discipline behind.",
       "narration": {
         "text": "ሳንደናገጥ በባዶ እግራችን ወደ ደኑ ስንሮጥ፣ ነፃነታችን በዙሪያችን ይዘፍን ነበር።",
@@ -149,7 +149,7 @@
       "shot_id": "shot_05",
       "shot_number": 5,
       "shot_type": "close_up",
-      "duration_seconds": 6.0,
+      "duration_seconds": 7.5,
       "reason": "The sensory heart of Arba Minch: crystal spring water bubbling from the volcanic rocks, establishing the purity of the place.",
       "narration": {
         "text": "ከመሬት ሥር የሚፈልቁት አርባ ምንጮች... ንጹሕ፣ ቀዝቃዛ እና ሕያው።",
@@ -177,7 +177,7 @@
       "shot_id": "shot_06",
       "shot_number": 6,
       "shot_type": "wide",
-      "duration_seconds": 7.5,
+      "duration_seconds": 6.0,
       "reason": "The emotional climax of joy: boys diving and splashing into the hidden natural forest pool.",
       "narration": {
         "text": "ያ የተፈጥሮ ገንዳ ውስጥ ስንዘል፣ የዓለም ጭንቀት ሁሉ በውኃው ላይ ቀልጦ ይጠፋል።",
@@ -205,7 +205,7 @@
       "shot_id": "shot_07",
       "shot_number": 7,
       "shot_type": "medium_close_up",
-      "duration_seconds": 6.5,
+      "duration_seconds": 10.5,
       "reason": "Focuses on the enduring human connection: brotherhood between Mikiyas, Mihretab, Surafel, and the narrator.",
       "narration": {
         "text": "ሚኪያስ፣ ምሕረተአብ፣ ሱራፌል... በድንጋይ ላይ ተቀምጠን በሳቅ የምናሳልፈው ያ ሰዓት፣ ከማንኛውም ሀብት ይበልጥ ነበር።",
@@ -233,7 +233,7 @@
       "shot_id": "shot_08",
       "shot_number": 8,
       "shot_type": "wide",
-      "duration_seconds": 7.0,
+      "duration_seconds": 8.5,
       "reason": "The poignant transition of time: walking home at sunset, tired, drenched, but spiritually full.",
       "narration": {
         "text": "ፀሐይ ስትጠልቅ ወደ ቤት ስንመለስ፣ እማዬ ብትቆጣንም በውስጣችን ያለው ገነት አልጠፋም።",
@@ -261,7 +261,7 @@
       "shot_id": "shot_09",
       "shot_number": 9,
       "shot_type": "close_up",
-      "duration_seconds": 6.5,
+      "duration_seconds": 7.5,
       "reason": "Full circle resolution: back at the work desk, the adult narrator smiles. The memory revitalizes his present.",
       "narration": {
         "text": "ዛሬም እዚህ ጠረጴዛዬ ላይ ብሆን... የአርባ ምንጭ ምንጮች በልቤ ውስጥ ለዘላለም ይፈሳሉ።",

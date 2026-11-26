@@ -1,44 +1,44 @@
 1
-00:00:00,200 --> 00:00:06,299
+00:00:00,150 --> 00:00:05,860
 አንዳንድ ምሽት በሥራ ጠረጴዛዬ ላይ ስቀመጥ፣ አእምሮዬ ወደ ኋላ ይሮጣል።
 (Some nights, sitting at my work desk, my mind runs back in time.)
 
 2
-00:00:06,700 --> 00:00:13,800
+00:00:06,160 --> 00:00:12,431
 ወደ ልጅነቴ ከተማ... ወደ አርባ ምንጭ፤ ያ የምድር ገነት ወደነበረው ጥቅጥቅ ደን።
 (To the town of my childhood... to Arba Minch, to that dense forest that was heaven on earth.)
 
 3
-00:00:14,199 --> 00:00:20,300
+00:00:12,731 --> 00:00:21,442
 እኔ፣ ወንድሜ ሚኪያስ፣ ምሕረተአብ እና ሱራፌል... ከእማዬ ዓይን ተደብቀን የምናሴረው ሴራ ሁልጊዜ ቅዳሜ ነበር።
 (Me, my brother Mikiyas, Mihretab, and Surafel... hiding from our mothers' watchful eyes was our Saturday mission.)
 
 4
-00:00:20,699 --> 00:00:27,300
+00:00:21,742 --> 00:00:29,613
 ሳንደናገጥ በባዶ እግራችን ወደ ደኑ ስንሮጥ፣ ነፃነታችን በዙሪያችን ይዘፍን ነበር።
 (Running barefoot into the forest without looking back, freedom sang all around us.)
 
 5
-00:00:27,699 --> 00:00:33,299
+00:00:29,913 --> 00:00:36,904
 ከመሬት ሥር የሚፈልቁት አርባ ምንጮች... ንጹሕ፣ ቀዝቃዛ እና ሕያው።
 (The forty natural springs bubbling from the earth... pure, cold, and vibrant with life.)
 
 6
-00:00:33,700 --> 00:00:40,799
+00:00:37,204 --> 00:00:42,675
 ያ የተፈጥሮ ገንዳ ውስጥ ስንዘል፣ የዓለም ጭንቀት ሁሉ በውኃው ላይ ቀልጦ ይጠፋል።
 (When we plunged into that natural pool, all the worries of the world melted away upon the water.)
 
 7
-00:00:41,200 --> 00:00:47,299
+00:00:42,975 --> 00:00:53,406
 ሚኪያስ፣ ምሕረተአብ፣ ሱራፌል... በድንጋይ ላይ ተቀምጠን በሳቅ የምናሳልፈው ያ ሰዓት፣ ከማንኛውም ሀብት ይበልጥ ነበር።
 (Mikiyas, Mihretab, Surafel... sitting on the warm rocks laughing together, those hours were worth more than any treasure.)
 
 8
-00:00:47,700 --> 00:00:54,299
+00:00:53,706 --> 00:01:02,097
 ፀሐይ ስትጠልቅ ወደ ቤት ስንመለስ፣ እማዬ ብትቆጣንም በውስጣችን ያለው ገነት አልጠፋም።
 (When we walked home at sunset, even if mother scolded us, the paradise inside us never faded.)
 
 9
-00:00:54,700 --> 00:01:00,799
+00:01:02,397 --> 00:01:09,268
 ዛሬም እዚህ ጠረጴዛዬ ላይ ብሆን... የአርባ ምንጭ ምንጮች በልቤ ውስጥ ለዘላለም ይፈሳሉ።
 (Even today at my desk... the forty springs of Arba Minch flow in my heart forever.)

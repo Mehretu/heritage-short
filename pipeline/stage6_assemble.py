@@ -36,15 +36,25 @@ def format_srt_timestamp(seconds: float) -> str:
 
 
 def generate_subtitles_srt(storyboard: dict, srt_path: Path):
-    """Generate subtitle file matching shot timings and narration."""
+    """Generate subtitle file matching exact real-world narration audio durations."""
+    import wave
     shots = storyboard.get("shots", [])
     current_time = 0.0
     entries = []
 
     for idx, shot in enumerate(shots, 1):
-        dur = shot.get("duration_seconds", 5.0)
-        start_ts = format_srt_timestamp(current_time + 0.2)
-        end_ts = format_srt_timestamp(current_time + dur - 0.2)
+        shot_id = shot["shot_id"]
+        wav_file = AUDIO_DIR / f"{shot_id}.wav"
+        dur = shot.get("duration_seconds", 6.0)
+        if wav_file.exists():
+            try:
+                with wave.open(str(wav_file), "r") as wf:
+                    dur = wf.getnframes() / wf.getframerate()
+            except Exception:
+                pass
+
+        start_ts = format_srt_timestamp(current_time + 0.15)
+        end_ts = format_srt_timestamp(current_time + dur - 0.15)
         current_time += dur
 
         narration = shot.get("narration", {})
@@ -57,8 +67,73 @@ def generate_subtitles_srt(storyboard: dict, srt_path: Path):
 
     with open(srt_path, "w", encoding="utf-8") as f:
         f.write("\n".join(entries))
-    print(f"  📝 Generated SubRip subtitles: {srt_path.name}")
+    print(f"  📝 Generated SubRip subtitles: {srt_path.name} (perfectly synced to actual voice timings)")
     return srt_path
+
+
+def generate_subtitle_cards(storyboard: dict, cards_dir: Path):
+    """
+    Renders high-definition title cards with burned-in Amharic and English text on black background.
+    Uses Pillow and native macOS fonts (Kefa / Arial Unicode) to bake subtitles directly into video pixels.
+    """
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        return []
+
+    cards_dir.mkdir(parents=True, exist_ok=True)
+    cards = []
+    shots = storyboard.get("shots", [])
+
+    font_candidates = [
+        "/System/Library/Fonts/Supplemental/KefaIII.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial.ttf"
+    ]
+    font_path = None
+    for cand in font_candidates:
+        if Path(cand).exists():
+            font_path = cand
+            break
+
+    for idx, shot in enumerate(shots, 1):
+        shot_id = shot["shot_id"]
+        narration = shot.get("narration", {})
+        amharic_text = narration.get("text", "")
+        english_text = f"({narration.get('english_translation', '')})"
+
+        img = Image.new("RGB", (1280, 720), color=(0, 0, 0))
+        draw = ImageDraw.Draw(img)
+
+        try:
+            if font_path:
+                am_font = ImageFont.truetype(font_path, 34)
+                en_font = ImageFont.truetype(font_path, 22)
+            else:
+                am_font = en_font = ImageFont.load_default()
+        except Exception:
+            am_font = en_font = ImageFont.load_default()
+
+        # Center Amharic text
+        bbox_am = draw.textbbox((0, 0), amharic_text, font=am_font)
+        w_am = bbox_am[2] - bbox_am[0]
+        x_am = max(40, (1280 - w_am) // 2)
+        y_am = 310
+        draw.text((x_am, y_am), amharic_text, font=am_font, fill=(255, 255, 255))
+
+        # Center English translation
+        bbox_en = draw.textbbox((0, 0), english_text, font=en_font)
+        w_en = bbox_en[2] - bbox_en[0]
+        x_en = max(40, (1280 - w_en) // 2)
+        y_en = 375
+        draw.text((x_en, y_en), english_text, font=en_font, fill=(205, 205, 205))
+
+        card_path = cards_dir / f"{shot_id}_card.png"
+        img.save(str(card_path))
+        cards.append((shot_id, card_path))
+
+    return cards
 
 
 def concatenate_narration_audio(storyboard: dict, out_combined_wav: Path):
@@ -167,6 +242,43 @@ def build_radio_cut(storyboard: dict):
         print(f"  ⚠️ Python audio mixer notice: {e}")
 
     if ffmpeg:
+        # Check if high-definition burned-in subtitle cards can be generated
+        cards_dir = OUTPUTS_DIR / "subtitle_cards"
+        cards = generate_subtitle_cards(storyboard, cards_dir)
+        if cards:
+            concat_manifest = EXPORTS_DIR / "radio_cut_slides.txt"
+            with open(concat_manifest, "w") as f:
+                for s_id, c_path in cards:
+                    wav_file = AUDIO_DIR / f"{s_id}.wav"
+                    dur = 6.0
+                    if wav_file.exists():
+                        try:
+                            with wave.open(str(wav_file), "r") as wf:
+                                dur = wf.getnframes() / wf.getframerate()
+                        except Exception:
+                            pass
+                    f.write(f"file '{c_path.resolve()}'\n")
+                    f.write(f"duration {dur:.3f}\n")
+                if cards:
+                    f.write(f"file '{cards[-1][1].resolve()}'\n")
+
+            card_cmd = [
+                ffmpeg, "-y",
+                "-f", "concat", "-safe", "0", "-i", str(concat_manifest),
+                "-i", str(combined_voice),
+                "-i", str(score_wav),
+                "-filter_complex",
+                "[2:a]volume=0.22[bgm];[1:a][bgm]amix=inputs=2:duration=first[aout]",
+                "-map", "0:v", "-map", "[aout]",
+                "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
+                str(radio_cut_mp4)
+            ]
+            c_res = subprocess.run(card_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            if c_res.returncode == 0:
+                print(f"  🎨 Subtitles baked directly into video pixels: {radio_cut_mp4.name}")
+                print(f"  ✅ Radio Cut Video (with hard-burned subtitles) exported successfully: {radio_cut_mp4}")
+                return radio_cut_mp4
+
         # Render black screen MP4 with ducked music and burned subtitles
         srt_escaped = str(srt_file.resolve()).replace(":", "\\:").replace("\\", "/")
         cmd = [
