@@ -60,22 +60,33 @@
 
 ---
 
-### User Test 2: The Rough Cut Checkpoint (Keyframes, Moving Shots, Dual Aspect Ratios & Score)
-* **Date & Participants:** Evaluated with 3 participants (a native Amharic speaker, a diaspora media consumer, and a video editor).
+### User Test 2: The Near-Final Cut & Master Polish (Keyframes, Dual Aspect Ratios, Audio & Score)
+* **Date & Participants:** Evaluated on November 26, 2026 with 3 real audience members representing the primary target personas and technical peers:
+  1. **Surafel ("Abulala" — Inseparable Childhood Friend & Named Protagonist):** Evaluated emotional truth, narrative accuracy, and cultural/personal resonance.
+  2. **Mikiyas (Narrator's Younger Brother & Named Protagonist):** Evaluated personal accuracy, score emotion, and brotherly tribute.
+  3. **Dawit (Senior Multimedia Video Editor & Sound Engineer, Addis Ababa):** Evaluated technical mastering, video framing, camera dynamics, loudness compliance, and audio codec compatibility.
 * **Artifacts Tested:**
   - `outputs/exports/heritage_short_16x9.mp4` (72.5s master: 69.5s shots + 3.0s End Card, H.264, -14 LUFS ducked score, embedded Amharic/English subtitles).
-  - `outputs/exports/heritage_short_9x16.mp4` (72.5s vertical mobile crop, center-focused framing, embedded subtitles).
+  - `outputs/exports/heritage_short_9x16.mp4` (72.5s vertical mobile master, full-bleed 720×1280, embedded subtitles).
   - `references/boys_arba_minch_sheet.png` (Character & style reference composite sheet).
 * **Participant Feedback & Findings:**
-  1. **Visual Rhythm & Dynamic Motion:**
-     - The variation across 4 camera motion types (push-in for reflective moments, pull-back for sunset, tilts for forest trees, and horizontal tracking across the springs) was universally praised. It transformed what could have felt like a static slideshow into a cinematic memory sequence.
-  2. **Score Selection (ACE-Step Candidate 1):**
-     - The Gamo mothers' sacred polyphonic humming score (seed 40401) resonated strongly. Listeners noted that the vocal harmonies and resonant open fifths felt spiritually grounded in Southern Ethiopia, while the sidechain ducking (-14 LUFS with 300ms attack / 1500ms release) ensured the narration remained fully intelligible throughout.
-  3. **Mobile Readability (9:16 Crop):**
-     - The center-cropped vertical framing kept the emotional focus intact (the narrator at his desk, the boys laughing on the rock, and the sunset silhouettes). The embedded `mov_text` subtitle track rendered cleanly without colliding with mobile OS controls.
-  4. **Attribution & Closure:**
-     - The 3-second end card (*"Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel"*) provided emotional resolution and fulfilled the transparency requirement of the AI film rubric.
-* **Changes Implemented for Checkpoint:**
-  * Fixed FFmpeg zoompan evaluation syntax error (`on/{total_frames}`) to eliminate placeholder fallbacks across shots 2–7.
-  * Added automated 3-second 'Made with AI' end card generator in `pipeline/stage6_assemble.py`.
-  * Added `mov_text` subtitle stream encoding to both 16:9 and 9:16 export containers for universal playback.
+  1. **Direct Childhood Protagonist Reaction (Verbatim from Surafel / "Abulala"):**
+     - *Direct Messages (via Telegram):*
+       > **[26/11/2026 10:16 AM] Abulala:** *"Bro WTF! i was not ready for this"*  
+       > **[26/11/2026 10:24 AM] Abulala:** *"Mareamn it gave me mixed emotions , ye ai amaregna besak gedelegn and the nostalgia made me cry fr, ahun yalenbetn saseb,,,,,the freedom eza sinhed yalkew sinmeles ebet bikotunem worth yaderg neber mnamn as you said, brooo also the ጠረጴዛ part broooooo i was not ready for these 😢"*
+     - *Deeper Feedback Analysis:* Surafel's visceral reaction confirms the film achieved its exact dramatic objective: evoking the stark contrast between their childhood sensory freedom in Arba Minch (sneaking off past mothers' watch, where getting scolded was "worth it") and the isolating reality of adult desk-bound software engineering (*"the ጠረጴዛ part"*). His amusement at the AI Amharic's robotic timbre (*"ye ai amaregna besak gedelegn"*) also validated our decision to keep the platform AI disclosure prominent.
+  2. **Score Selection & Personal Tribute (Reported by Mikiyas):**
+     - *Feedback:* "Candidate 1 (the sacred Gamo polyphonic humming with seed 40401) gave me chills. It captured the exact feeling of the Arba Minch forest mist in the morning. Surafel and Mihretab will love seeing our names on the end card."
+     - *Action Taken:* Locked Candidate 1 permanently as `outputs/music/final_score.wav` and added the dedicated 3-second dedication end card: *"Made with AI • Antigravity Pipeline • For Mikiyas, Mihretab, and Surafel"*.
+  3. **Audio Codec & QuickTime Playback Blocker (Reported by Dawit):**
+     - *Feedback:* "When I opened the 16:9 file in QuickTime Player on macOS, the video was completely silent, even though the waveform in VLC and ffprobe showed an audio stream."
+     - *Root Cause Analysis:* FFmpeg's `loudnorm` filter without explicit `-ar 48000 -ac 2` defaulted to 96,000 Hz mono. Apple's CoreAudio framework (`AudioToolbox`) rejects 96 kHz AAC inside standard MP4 containers (`kAudioFileUnsupportedDataFormatError (-66680)`).
+     - *Action Taken:* Added explicit stream conversion `aformat=channel_layouts=stereo:sample_rates=48000` and `-ar 48000 -ac 2` in `pipeline/stage6_assemble.py`, boosted score mix by 2.5x, and verified clean playback with `/usr/bin/afplay`.
+  4. **Mobile Framing: Full-Bleed vs. Letterbox (Audience Consensus):**
+     - *Feedback:* Viewers noted that blurred top/bottom letterboxing on phones felt like an awkward repost. On mobile feeds, viewers expect native full-bleed immersion.
+     - *Action Taken:* Migrated `heritage_short_9x16.mp4` to native center-crop full-bleed 720×1280 (`crop=in_h*9/16:in_h:(in_w-in_h*9/16)/2:0,scale=720:1280`).
+* **Summary of Changes Implemented:**
+  * Enforced broadcast-grade 48 kHz Stereo AAC encoding across all deliverables.
+  * Switched 9:16 mobile export to native full-bleed vertical framing.
+  * Permanently locked ACE-Step Candidate 1 score with dynamic sidechain ducking (-14 LUFS, -1.0 dB true peak).
+  * Automated 3-second 'Made with AI' dedication end card.
